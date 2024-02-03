@@ -1,17 +1,24 @@
-# lytcycle
+# README
 
-lytcycle （ライトサイクル）というサービスは、
+This README would normally document whatever steps are necessary to get the
+application up and running.
 
-[生産ラインのボトルネックを可視化したいけど、あまり費用をかけられないという]問題を解決したい、
+Things you may want to cover:
 
-[製造業の生産ライン構築者] 向けの、
+* Ruby version
 
-[生産ラインシミュレータ]です。
+* System dependencies
 
-ユーザーは [3Dシミュレータと同様に生産ラインのどこがネック工程になっているかを把握すること] ができ、
+* Configuration
 
-[高額な3Dシミュレータを導入するの] とは違って、
+* Database creation
 
-[詳細な3Dシミュレーション機能は省き、ネック工程の把握をするための機能しか持たないため、省いた分の開発コストが削減され、その分安価でシステムを販売することができ、ユーザーは低予算で導入できる]
+* Database initialization
 
-事が特徴です。
+* How to run the test suite
+
+* Services (job queues, cache servers, search engines, etc.)
+
+* Deployment instructions
+
+* ...
