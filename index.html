@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Animated Graph</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/cytoscape/dist/cytoscape.min.css"
+    />
+    <style>
+      #cy {
+        width: 100%;
+        height: 500px;
+        position: absolute;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="cy"></div>
+    <button onclick="animateGraph()">Animate Graph</button>
+
+    <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var cy = cytoscape({
+          container: document.getElementById("cy"),
+          elements: [
+            { data: { id: "node1" }, position: { x: 100, y: 100 } },
+            { data: { id: "node2" }, position: { x: 300, y: 100 } },
+            { data: { id: "edge1", source: "node1", target: "node2" } },
+          ],
+          style: [
+            {
+              selector: "node",
+              style: {
+                width: 30,
+                height: 30,
+                shape: "triangle",
+              },
+            },
+            {
+              selector: "edge",
+              style: {
+                "curve-style": "bezier",
+                "target-arrow-shape": "triangle",
+                "target-arrow-color": "#ccc",
+              },
+            },
+          ],
+        });
+
+        window.animateGraph = function () {
+          // ノードとエッジにアニメーションを追加
+          cy.elements().animate({
+            style: { opacity: 0.1 }, // 透明度を変化させるアニメーション
+            duration: 1000, // アニメーションの時間（ミリ秒）
+            easing: "linear", // アニメーションのイージング
+            complete: function () {
+              // アニメーション完了後のコールバック（この例では何もしない）
+            },
+          });
+        };
+      });
+    </script>
+  </body>
+</html>
