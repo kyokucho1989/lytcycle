@@ -1,0 +1,2 @@
+module SimuratesHelper
+end

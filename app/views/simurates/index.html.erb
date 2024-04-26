@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Simurates</h1>
+
+<div id="simurates">
+  <% @simurates.each do |simurate| %>
+    <%= render simurate %>
+    <p>
+      <%= link_to "Show this simurate", simurate %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New simurate", new_simurate_path %>
