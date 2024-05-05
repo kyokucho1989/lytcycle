@@ -11,7 +11,7 @@ class Operator {
     this.destination = 1;
     this.hasMaterial = false;
     this.arriveUpToDuration = 20;
-    this.arrivalTime = 0;
+    this.arrivalTime = 20;
     this.history = [];
   }
 
@@ -72,34 +72,36 @@ console.log(operator1);
 function countStart() {
   let endTime = 100;
   let t = 0;
-  if (operator1.arrivalTime == 0) {
-    operator1;
-  } else {
-  }
-  animeStart();
-  let x = 0;
-  let positions = [];
   while (t < endTime) {
-    x = t * 2;
-    positions.push({ t: t, x: x });
+    if (operator1.arrivalTime == 0) {
+      operator1.currentLocation = (operator1.currentLocation + 1) % 3;
+      operator1.currentLocation = (operator1.currentLocation + 1) % 3;
+      operator1.arrivalTime = 20;
+    } else {
+      operator1.arrivalTime = operator1.arrivalTime - 1;
+    }
     t = t + 1;
+    console.log("到着時間 %d", operator1.arrivalTime);
   }
-  // console.log(positions);
-  // alert("end");
+
+  animeStart();
 }
 
-function countOne(count) {
-  // return new Promise(function (resoleve, reject) {
-  console.log("%d aaa", count);
-  xc;
-  // setTimeout(() => {
-  //   resoleve(console.log("count.."));
-  // }, 1000);
-  // });
+function animeSet() {
+  const path = anime.path("#svg01 path.root1");
+  let object1 = {
+    targets: "#ob1",
+    translateX: path("x"),
+    translateY: path("y"),
+    direction: "alternate",
+    duration: 4000,
+    loop: true,
+    easing: "linear",
+  };
 }
 
 function animeStart() {
-  const path = anime.path("#svg01 path");
+  const path = anime.path("#svg01 path.root1");
   let object1 = {
     targets: "#ob1",
     translateX: path("x"),
