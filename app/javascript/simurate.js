@@ -1,14 +1,10 @@
 import anime from "animejs";
 
-/*
-
-*/
-
 class Operator {
   constructor(parameters) {
     this.name = parameters.name;
     this.currentLocation = 0;
-    this.destination = 1;
+    this.destination = 0;
     this.hasMaterial = false;
     this.arriveUpToDuration = 20;
     this.arrivalTime = 20;
@@ -72,63 +68,37 @@ console.log(operator1);
 function countStart() {
   let endTime = 100;
   let t = 0;
+  let object1, object2, object3;
+  var tl = anime.timeline({
+    easing: "easeOutExpo",
+  });
   while (t < endTime) {
     if (operator1.arrivalTime == 0) {
-      operator1.currentLocation = (operator1.currentLocation + 1) % 3;
-      operator1.currentLocation = (operator1.currentLocation + 1) % 3;
+      console.log(operator1.destination);
       operator1.arrivalTime = 20;
+      object1 = getAnimeObject(`root${operator1.destination}`);
+      tl.add(object1, t * 100);
+      operator1.destination = (operator1.destination + 1) % 3;
     } else {
       operator1.arrivalTime = operator1.arrivalTime - 1;
     }
     t = t + 1;
-    console.log("到着時間 %d", operator1.arrivalTime);
   }
-
-  animeStart();
 }
 
-function animeSet() {
-  const path = anime.path("#svg01 path.root1");
-  let object1 = {
+function getAnimeObject(rootName) {
+  const path = anime.path(`#svg01 path.${rootName}`);
+  let animeObject = {
     targets: "#ob1",
     translateX: path("x"),
     translateY: path("y"),
     direction: "alternate",
-    duration: 4000,
-    loop: true,
-    easing: "linear",
-  };
-}
-
-function animeStart() {
-  const path = anime.path("#svg01 path.root1");
-  let object1 = {
-    targets: "#ob1",
-    translateX: path("x"),
-    translateY: path("y"),
-    direction: "alternate",
-    duration: 4000,
-    loop: true,
-    easing: "linear",
-  };
-
-  let object2 = {
-    targets: "#ob2",
-    translateX: path("x"),
-    translateY: path("y"),
-    direction: "alternate",
-    duration: 4000,
-    loop: true,
-    easing: "easeInOutSine",
-  };
-
-  var tl = anime.timeline({
-    easing: "easeOutExpo",
     duration: 500,
-  });
+    loop: true,
+    easing: "linear",
+  };
 
-  // let tl = anime.timeline(object1);
-  tl.add(object1).add(object2, "-=2000");
+  return animeObject;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
