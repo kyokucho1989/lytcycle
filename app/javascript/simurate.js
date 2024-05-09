@@ -3,13 +3,21 @@ import anime from "animejs";
 class Operator {
   constructor(parameters) {
     this.name = parameters.name;
-    this.currentLocation = 0;
+
     this.destination = 0;
     this.hasMaterial = false;
     this.arriveUpToDuration = 20;
     this.arrivalTime = 20;
+    this.isMoving = false;
     this.history = [];
   }
+
+  // set currentLocation(name) {
+  //   this.currentLocation = name;
+  // }
+  // get currentLocation() {
+  //   return this.currentLocation;
+  // }
 
   addStateToHistory(t, state) {
     this.history.push({ t: t, state: state });
@@ -37,6 +45,13 @@ class Controller {
     this.lastId++;
     return this.lastId;
   }
+
+  determineRoute(operator) {
+    let destination, rootName;
+    destination = (operator.destination + 1) % 3;
+    rootName = `root${operator.destination}`;
+    return { destination, rootName };
+  }
 }
 const contoller = new Controller();
 
@@ -60,6 +75,9 @@ const goalPoint = new Location({
 });
 
 const operator1 = new Operator({ name: "Alice" });
+operator1.currentLocation = startPoint;
+console.log(operator1.currentLocation);
+// operator1.currentLocation = "startPoint";
 console.log(startPoint);
 console.log(location1);
 console.log(goalPoint);
@@ -69,6 +87,25 @@ function countStart() {
   let endTime = 100;
   let t = 0;
   let object1, object2, object3;
+
+  if (operator1.currentLocation == startPoint) {
+    console.log("start");
+  }
+
+  /*
+ オペレーターは移動中か
+    No ->
+    オペレータの現在地を取得
+
+
+    オペレーターの現在地を代入 idを代入する?
+    到着したら現在地に目的地のidを代入
+    　目的地を
+　オペレーターの現在の状態を取得
+　
+
+*/
+
   var tl = anime.timeline({
     easing: "easeOutExpo",
   });
@@ -76,7 +113,9 @@ function countStart() {
     if (operator1.arrivalTime == 0) {
       console.log(operator1.destination);
       operator1.arrivalTime = 20;
-      object1 = getAnimeObject(`root${operator1.destination}`);
+      let { destination, rootName } = contoller.determineRoute(operator1);
+      // object1 = getAnimeObject(`root${operator1.destination}`);
+      object1 = getAnimeObject(rootName);
       tl.add(object1, t * 100);
       operator1.destination = (operator1.destination + 1) % 3;
     } else {
