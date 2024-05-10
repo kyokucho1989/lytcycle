@@ -39,6 +39,11 @@ class Location {
 class Controller {
   constructor() {
     this.lastId = 0;
+    this.route = [
+      { name: "root0", to: 0 },
+      { name: "root1", to: 1 },
+      { name: "root2", to: 2 },
+    ];
   }
 
   assignId() {
@@ -77,25 +82,34 @@ const goalPoint = new Location({
 const operator1 = new Operator({ name: "Alice" });
 operator1.currentLocation = startPoint;
 console.log(operator1.currentLocation);
+startPoint.name = "aaa";
+console.log(operator1.currentLocation);
 // operator1.currentLocation = "startPoint";
-console.log(startPoint);
-console.log(location1);
-console.log(goalPoint);
-console.log(operator1);
+// console.log(startPoint);
+// console.log(location1);
+// console.log(goalPoint);
+// console.log(operator1);
 
 function countStart() {
   let endTime = 100;
   let t = 0;
   let object1, object2, object3;
 
-  if (operator1.currentLocation == startPoint) {
-    console.log("start");
-  }
-
   /*
  オペレーターは移動中か
     No ->
-    オペレータの現在地を取得
+    オペレータの現在地とその種類を取得
+    もしその地点が機械か
+      機械は停止中か？
+        -> 機械のスイッチON
+        　  機械を動かす
+
+          オペレータのステータスを移動中に変更
+            目的地を設定
+
+    YES ->
+      到着地点についているか？
+        No -> 移動させる
 
 
     オペレーターの現在地を代入 idを代入する?
@@ -110,17 +124,32 @@ function countStart() {
     easing: "easeOutExpo",
   });
   while (t < endTime) {
-    if (operator1.arrivalTime == 0) {
-      console.log(operator1.destination);
+    if (operator1.isMoving) {
+      console.log("moving");
+      if (operator1.arrivalTime == 0) {
+        operator1.isMoving = false;
+        operator1.currentLocation = operator1.destination;
+        // console.log(operator1.destination);
+      } else {
+        operator1.arrivalTime = operator1.arrivalTime - 1;
+      }
+    } else {
       operator1.arrivalTime = 20;
       let { destination, rootName } = contoller.determineRoute(operator1);
       // object1 = getAnimeObject(`root${operator1.destination}`);
       object1 = getAnimeObject(rootName);
       tl.add(object1, t * 100);
       operator1.destination = (operator1.destination + 1) % 3;
-    } else {
-      operator1.arrivalTime = operator1.arrivalTime - 1;
+
+      if (operator1.currentLocation == startPoint) {
+        console.log("start");
+      } else if (operator1.currentLocation == goalPoint) {
+        console.log("goal");
+      }
+
+      operator1.isMoving = true;
     }
+
     t = t + 1;
   }
 }
