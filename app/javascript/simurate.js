@@ -12,13 +12,6 @@ class Operator {
     this.history = [];
   }
 
-  // set currentLocation(name) {
-  //   this.currentLocation = name;
-  // }
-  // get currentLocation() {
-  //   return this.currentLocation;
-  // }
-
   addStateToHistory(t, state) {
     this.history.push({ t: t, state: state });
   }
@@ -39,11 +32,7 @@ class Location {
 class Controller {
   constructor() {
     this.lastId = 0;
-    this.route = [
-      { name: "root0", to: 0 },
-      { name: "root1", to: 1 },
-      { name: "root2", to: 2 },
-    ];
+    this.route = [];
   }
 
   assignId() {
@@ -51,13 +40,26 @@ class Controller {
     return this.lastId;
   }
 
+  setRoutes(routes) {
+    this.route = routes;
+  }
+
   determineRoute(operator) {
-    let destination, rootName;
-    destination = (operator.destination + 1) % 3;
-    rootName = `root${operator.destination}`;
+    let selectedRoot, rootName, destination, roots, currentLocation;
+    roots = this.route;
+    currentLocation = operator.currentLocation;
+    selectedRoot = roots.filter((root) => {
+      let fromPoint = Object.values(root)[1];
+      if (fromPoint.id == currentLocation.id) {
+        return root;
+      }
+    });
+    destination = selectedRoot[0].to;
+    rootName = selectedRoot[0].name;
     return { destination, rootName };
   }
 }
+
 const contoller = new Controller();
 
 const startPoint = new Location({
@@ -79,16 +81,16 @@ const goalPoint = new Location({
   type: "goal",
 });
 
+contoller.setRoutes([
+  { name: "root0", from: startPoint, to: location1 },
+  { name: "root1", form: location1, to: goalPoint },
+  { name: "root2", from: goalPoint, to: startPoint },
+]);
+
+console.log(contoller.route);
 const operator1 = new Operator({ name: "Alice" });
 operator1.currentLocation = startPoint;
 console.log(operator1.currentLocation);
-startPoint.name = "aaa";
-console.log(operator1.currentLocation);
-// operator1.currentLocation = "startPoint";
-// console.log(startPoint);
-// console.log(location1);
-// console.log(goalPoint);
-// console.log(operator1);
 
 function countStart() {
   let endTime = 100;
@@ -125,22 +127,20 @@ function countStart() {
   });
   while (t < endTime) {
     if (operator1.isMoving) {
-      console.log("moving");
       if (operator1.arrivalTime == 0) {
         operator1.isMoving = false;
         operator1.currentLocation = operator1.destination;
-        // console.log(operator1.destination);
+        console.log("現在地セット");
+        console.log(operator1.currentLocation);
       } else {
         operator1.arrivalTime = operator1.arrivalTime - 1;
       }
     } else {
       operator1.arrivalTime = 20;
       let { destination, rootName } = contoller.determineRoute(operator1);
-      // object1 = getAnimeObject(`root${operator1.destination}`);
       object1 = getAnimeObject(rootName);
       tl.add(object1, t * 100);
-      operator1.destination = (operator1.destination + 1) % 3;
-
+      operator1.destination = destination;
       if (operator1.currentLocation == startPoint) {
         console.log("start");
       } else if (operator1.currentLocation == goalPoint) {
