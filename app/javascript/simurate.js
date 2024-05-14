@@ -93,7 +93,7 @@ operator1.currentLocation = startPoint;
 console.log(operator1.currentLocation);
 
 function countStart() {
-  let endTime = 100;
+  let endTime = 90;
   let t = 0;
   let object1, object2, object3;
 
@@ -126,30 +126,61 @@ function countStart() {
     easing: "easeOutExpo",
   });
   while (t < endTime) {
+    console.log(`:t= ${t}`);
     if (operator1.isMoving) {
-      if (operator1.arrivalTime == 0) {
+      // console.log(`:到着時間= ${operator1.arrivalTime}`);
+      if (operator1.arrivalTime == t) {
         operator1.isMoving = false;
         operator1.currentLocation = operator1.destination;
-        console.log("現在地セット");
-        console.log(operator1.currentLocation);
+
+        // console.log("現在地セット");
+        // console.log(operator1.currentLocation);
       } else {
-        operator1.arrivalTime = operator1.arrivalTime - 1;
+        // operator1.arrivalTime = operator1.arrivalTime - 1;
       }
     } else {
-      operator1.arrivalTime = 20;
+      operator1.arrivalTime = t + 20;
       let { destination, rootName } = contoller.determineRoute(operator1);
       object1 = getAnimeObject(rootName);
       tl.add(object1, t * 100);
       operator1.destination = destination;
       if (operator1.currentLocation == startPoint) {
-        console.log("start");
+        // console.log(`start :t= ${t}`);
       } else if (operator1.currentLocation == goalPoint) {
-        console.log("goal");
+        // console.log(`goal :t=${t}`);
+      } else if (operator1.currentLocation == location1) {
+        // console.log(`加工地点 :t=${t}`);
+        if (!location1.isProcessing) {
+          location1.isProcessing = true;
+          location1.processingEndTime = t + location1.processingTime;
+          object2 = getMachineAnimeObject();
+          console.log(`加工地点 :t=${t}`);
+          tl.add(object2, t * 100)
+            .add({
+              targets: "#machine1",
+              easing: "steps(1)",
+              fill: "#00f",
+              duration: 3000,
+            })
+            .add({
+              targets: "#machine1",
+              easing: "steps(1)",
+              fill: "#000",
+              duration: 100,
+            });
+          console.log(tl);
+        }
       }
-
       operator1.isMoving = true;
     }
-
+    if (location1.isProcessing) {
+      // console.log(`加工終了時間:t= ${location1.processingEndTime}`);
+      if (location1.processingEndTime == t) {
+        // console.log("加工終了");
+        location1.isProcessing = false;
+      }
+    } else {
+    }
     t = t + 1;
   }
 }
@@ -164,6 +195,20 @@ function getAnimeObject(rootName) {
     duration: 500,
     loop: true,
     easing: "linear",
+  };
+
+  return animeObject;
+}
+
+function getMachineAnimeObject() {
+  // const path = anime.path(`#svg01 path.${rootName}`);
+  let animeObject = {
+    targets: "#machine1",
+    direction: "alternate",
+    // loop: true,
+    easing: "linear",
+    fill: "#00f",
+    duration: 100,
   };
 
   return animeObject;
