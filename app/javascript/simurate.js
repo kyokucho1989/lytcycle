@@ -1,4 +1,185 @@
 import anime from "animejs";
+import * as d3 from "d3";
+
+const width = 640;
+const height = 300;
+const step = 14;
+const marginTop = 20;
+const marginRight = 20;
+const marginBottom = 20;
+const marginLeft = 130;
+let nodes = [
+  { id: 1, name: "start" },
+  { id: 2, name: "goal" },
+];
+
+let links = [{ source: 1, target: 2, distance: 2 }];
+const orders = { byname: [1, 2] };
+// const height = (nodes.length - 1) * step + marginTop + marginBottom;
+const x = d3.scalePoint([1, 2], [100, 400]);
+console.log(x);
+const X = new Map(nodes.map(({ id }) => [id, x(id)]));
+
+function arc(d) {
+  console.log(X);
+  const x1 = X.get(d.source);
+  const x2 = X.get(d.target);
+  console.log(`M${x1} ${marginTop} L ${x2} ${marginTop}`);
+  return `M${x1} ${marginTop} L ${x2} ${marginTop}`;
+  // const r = Math.abs(x/y2 - y1) / 2;
+  // return `M${marginLeft},${y1}A${r},${r} 0,0,${
+  //   y1 < y2 ? 1 : 0
+  // } ${marginLeft},${y2}`;
+}
+
+const svg = d3
+  .select("body")
+  .append("svg")
+  .attr("width", width)
+  .attr("height", height);
+
+const path = svg
+  .insert("g", "*")
+  .selectAll("path")
+  .data(links)
+  .join("path")
+  .attr("d", arc);
+
+const label = svg
+  .append("g")
+  .attr("font-family", "sans-serif")
+  .attr("font-size", 16)
+  .attr("text-anchor", "end")
+  .selectAll("g")
+  .data(nodes)
+  .join("g")
+  .attr("transform", (d) => `translate(${X.get(d.id)},${marginTop})`)
+  .call((g) =>
+    g
+      .append("text")
+      .attr("x", -16)
+      .text((d) => d.name)
+  )
+  .call((g) => g.append("circle").attr("r", 12));
+
+function update() {
+  // label
+  //   .sort((a, b) => d3.ascending(X.get(a.id), X.get(b.id)))
+  //   .transition()
+  //   .duration(750)
+  //   .delay((d, i) => i * 20) // Make the movement start from the top.
+  //   .attrTween("transform", (d) => {
+  //     const i = d3.interpolateNumber(X.get(d.id), x(d.id));
+  //     return (t) => {
+  //       const y = i(t);
+  //       X.set(d.id, x);
+  //       return `translate(${X.get(d.id)},${marginTop})`;
+  //     };
+  //   });
+
+  path
+    .transition()
+    .duration(750 + nodes.length * 20) // Cover the maximum delay of the label transition.
+    .attrTween("d", (d) => () => arc(d));
+}
+
+// update();
+// d3.select("body")
+//   .append("table")
+//   .selectAll("tr")
+//   .data(matrix)
+//   .join("tr")
+//   .selectAll("td")
+//   .data((d) => d)
+//   .join("td")
+//   .text((d) => d);
+
+// var g = svg.append("g");
+// var link = d3.select("svg");
+// .selectAll("line")
+// .data(linksData)
+// .enter()
+// .append("line")
+// .attr("stroke-width", 10)
+// .attr("stroke", "orange");
+
+let svg2 = d3.select("div.myclass").append("span").text("from D3.js");
+// .append("svg")
+//     .attr("width", width).attr("height", height)
+// 要素の描画
+
+// function chart() {
+// // Specify the dimensions of the chart.
+// const width = 928;
+// const height = 600;
+
+// // Specify the color scale.
+// const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+// // The force simulation mutates links and nodes, so create a copy
+// // so that re-evaluating this cell produces the same result.
+// const links = data.links.map((d) => ({ ...d }));
+// const nodes = data.nodes.map((d) => ({ ...d }));
+
+// // Create a simulation with several forces.
+// const simulation = d3
+//   .forceSimulation(nodes)
+//   .force(
+//     "link",
+//     d3.forceLink(links).id((d) => d.id)
+//   )
+//   .force("charge", d3.forceManyBody())
+//   .force("center", d3.forceCenter(width / 2, height / 2))
+//   .on("tick", ticked);
+
+// // Create the SVG container.
+// const svg = d3
+//   .create("svg")
+//   .attr("width", width)
+//   .attr("height", height)
+//   .attr("viewBox", [0, 0, width, height])
+//   .attr("style", "max-width: 100%; height: auto;");
+
+// // Add a line for each link, and a circle for each node.
+// const link = svg
+//   .append("g")
+//   .attr("stroke", "#999")
+//   .attr("stroke-opacity", 0.6)
+//   .selectAll()
+//   .data(links)
+//   .join("line")
+//   .attr("stroke-width", (d) => Math.sqrt(d.value));
+
+// const node = svg
+//   .append("g")
+//   .attr("stroke", "#fff")
+//   .attr("stroke-width", 1.5)
+//   .selectAll()
+//   .data(nodes)
+//   .join("circle")
+//   .attr("r", 5)
+//   .attr("fill", (d) => color(d.group));
+
+// node.append("title").text((d) => d.id);
+
+// // Set the position attributes of links and nodes each time the simulation ticks.
+// function ticked() {
+//   link
+//     .attr("x1", (d) => d.source.x)
+//     .attr("y1", (d) => d.source.y)
+//     .attr("x2", (d) => d.target.x)
+//     .attr("y2", (d) => d.target.y);
+
+//   node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+// }
+
+// // When this cell is re-run, stop the previous simulation. (This doesn’t
+// // really matter since the target alpha is zero and the simulation will
+// // stop naturally, but it’s a good practice.)
+// invalidation.then(() => simulation.stop());
+
+// return svg.node();
+// }
 
 class Operator {
   constructor(parameters) {
