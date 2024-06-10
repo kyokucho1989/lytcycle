@@ -15,7 +15,8 @@
  */
 
 #ob1,
-#ob2 {
+#ob2,
+#startid {
   position: absolute;
 }
 

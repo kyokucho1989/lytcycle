@@ -2,35 +2,7 @@ import anime from "animejs";
 import * as d3 from "d3";
 
 const width = 640;
-const height = 300;
-const step = 14;
-const marginTop = 20;
-const marginRight = 20;
-const marginBottom = 20;
-const marginLeft = 130;
-let nodes = [
-  { id: 1, name: "start" },
-  { id: 2, name: "goal" },
-];
-
-let links = [{ source: 1, target: 2, distance: 2 }];
-const orders = { byname: [1, 2] };
-// const height = (nodes.length - 1) * step + marginTop + marginBottom;
-const x = d3.scalePoint([1, 2], [100, 400]);
-console.log(x);
-const X = new Map(nodes.map(({ id }) => [id, x(id)]));
-
-function arc(d) {
-  console.log(X);
-  const x1 = X.get(d.source);
-  const x2 = X.get(d.target);
-  console.log(`M${x1} ${marginTop} L ${x2} ${marginTop}`);
-  return `M${x1} ${marginTop} L ${x2} ${marginTop}`;
-  // const r = Math.abs(x/y2 - y1) / 2;
-  // return `M${marginLeft},${y1}A${r},${r} 0,0,${
-  //   y1 < y2 ? 1 : 0
-  // } ${marginLeft},${y2}`;
-}
+const height = 800;
 
 const svg = d3
   .select("body")
@@ -38,148 +10,137 @@ const svg = d3
   .attr("width", width)
   .attr("height", height);
 
-const path = svg
-  .insert("g", "*")
-  .selectAll("path")
-  .data(links)
-  .join("path")
-  .attr("d", arc);
+// const sim = d3.forceSimulation(nodes)
 
-const label = svg
-  .append("g")
-  .attr("font-family", "sans-serif")
-  .attr("font-size", 16)
-  .attr("text-anchor", "end")
-  .selectAll("g")
-  .data(nodes)
-  .join("g")
-  .attr("transform", (d) => `translate(${X.get(d.id)},${marginTop})`)
-  .call((g) =>
-    g
-      .append("text")
-      .attr("x", -16)
-      .text((d) => d.name)
+// this.name = parameters.name;
+// this.id = parameters.id;
+// this.processingTime = parameters.processingTime ?? 1;
+// this.storageSize = parameters.storageSize ?? 0;
+// this.isProcessing = false;
+// this.processingEndTime = 0;
+// this.type = parameters.type ?? "machine";
+
+let nodesData1 = [
+  {
+    index: 0,
+    x: 230,
+    y: 310,
+    r: 10,
+    id: "n0",
+    processingTime: 1,
+    type: "start",
+    name: "startPoint",
+  },
+  {
+    index: 1,
+    x: 330,
+    y: 60,
+    r: 15,
+    id: "n1",
+    processingTime: 15,
+    type: "machine",
+    name: "machine-no-1",
+    isProcessing: false,
+    storageSize: 0,
+    processingEndTime: 0,
+  },
+  {
+    index: 2,
+    x: 430,
+    y: 310,
+    r: 10,
+    id: "n2",
+    processingTime: 1,
+    type: "goal",
+    name: "goalPoint",
+  },
+];
+
+let linksData = [
+  { source: 0, target: 1, l: 20, id: "root10" },
+  { source: 1, target: 2, l: 20, id: "root11" },
+  { source: 2, target: 0, l: 20, id: "root12" },
+];
+
+var link = d3
+  .select("svg")
+  .selectAll("line")
+  .data(linksData)
+  .enter()
+  .append("line")
+  .attr("stroke-width", 1)
+  .attr("stroke", "black")
+  .attr("id", function (d) {
+    return d.id;
+  });
+
+svg
+  .insert("g")
+  .selectAll("line")
+  .data(linksData)
+  .enter()
+  .append("line")
+  .attr("stroke-width", 1)
+  .attr("stroke", "black")
+  .attr("id", function (d) {
+    return d.id;
+  });
+
+var node = d3
+  .select("svg")
+  .selectAll("circle")
+  .data(nodesData1)
+  .enter()
+  .append("circle")
+  .attr("r", function (d) {
+    return d.r;
+  })
+  .attr("stroke", "black")
+  .attr("fill", "LightSalmon")
+  .attr("id", function (d) {
+    return d.id;
+  });
+
+// シミュレーション描画
+let simulation = d3
+  .forceSimulation()
+  .force("link", d3.forceLink().strength(0).iterations(1))
+  .force("charge", d3.forceManyBody().strength(0))
+  .force(
+    "x",
+    d3
+      .forceX()
+      .strength(-0.01)
+      .x(100 / 2)
   )
-  .call((g) => g.append("circle").attr("r", 12));
+  .force(
+    "y",
+    d3
+      .forceY()
+      .strength(-0.001)
+      .y(100 / 2)
+  );
 
-function update() {
-  // label
-  //   .sort((a, b) => d3.ascending(X.get(a.id), X.get(b.id)))
-  //   .transition()
-  //   .duration(750)
-  //   .delay((d, i) => i * 20) // Make the movement start from the top.
-  //   .attrTween("transform", (d) => {
-  //     const i = d3.interpolateNumber(X.get(d.id), x(d.id));
-  //     return (t) => {
-  //       const y = i(t);
-  //       X.set(d.id, x);
-  //       return `translate(${X.get(d.id)},${marginTop})`;
-  //     };
-  //   });
+simulation.nodes(nodesData1).on("tick", ticked);
 
-  path
-    .transition()
-    .duration(750 + nodes.length * 20) // Cover the maximum delay of the label transition.
-    .attrTween("d", (d) => () => arc(d));
+simulation
+  .force("link")
+  .links(linksData)
+  .id(function (d) {
+    return d.index;
+  });
+
+function ticked() {
+  link
+    .attr("x1", (d) => d.source.x)
+    .attr("y1", (d) => d.source.y)
+    .attr("x2", (d) => d.target.x)
+    .attr("y2", (d) => d.target.y);
+
+  node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
 }
 
-// update();
-// d3.select("body")
-//   .append("table")
-//   .selectAll("tr")
-//   .data(matrix)
-//   .join("tr")
-//   .selectAll("td")
-//   .data((d) => d)
-//   .join("td")
-//   .text((d) => d);
-
-// var g = svg.append("g");
-// var link = d3.select("svg");
-// .selectAll("line")
-// .data(linksData)
-// .enter()
-// .append("line")
-// .attr("stroke-width", 10)
-// .attr("stroke", "orange");
-
-let svg2 = d3.select("div.myclass").append("span").text("from D3.js");
-// .append("svg")
-//     .attr("width", width).attr("height", height)
-// 要素の描画
-
-// function chart() {
-// // Specify the dimensions of the chart.
-// const width = 928;
-// const height = 600;
-
-// // Specify the color scale.
-// const color = d3.scaleOrdinal(d3.schemeCategory10);
-
-// // The force simulation mutates links and nodes, so create a copy
-// // so that re-evaluating this cell produces the same result.
-// const links = data.links.map((d) => ({ ...d }));
-// const nodes = data.nodes.map((d) => ({ ...d }));
-
-// // Create a simulation with several forces.
-// const simulation = d3
-//   .forceSimulation(nodes)
-//   .force(
-//     "link",
-//     d3.forceLink(links).id((d) => d.id)
-//   )
-//   .force("charge", d3.forceManyBody())
-//   .force("center", d3.forceCenter(width / 2, height / 2))
-//   .on("tick", ticked);
-
-// // Create the SVG container.
-// const svg = d3
-//   .create("svg")
-//   .attr("width", width)
-//   .attr("height", height)
-//   .attr("viewBox", [0, 0, width, height])
-//   .attr("style", "max-width: 100%; height: auto;");
-
-// // Add a line for each link, and a circle for each node.
-// const link = svg
-//   .append("g")
-//   .attr("stroke", "#999")
-//   .attr("stroke-opacity", 0.6)
-//   .selectAll()
-//   .data(links)
-//   .join("line")
-//   .attr("stroke-width", (d) => Math.sqrt(d.value));
-
-// const node = svg
-//   .append("g")
-//   .attr("stroke", "#fff")
-//   .attr("stroke-width", 1.5)
-//   .selectAll()
-//   .data(nodes)
-//   .join("circle")
-//   .attr("r", 5)
-//   .attr("fill", (d) => color(d.group));
-
-// node.append("title").text((d) => d.id);
-
-// // Set the position attributes of links and nodes each time the simulation ticks.
-// function ticked() {
-//   link
-//     .attr("x1", (d) => d.source.x)
-//     .attr("y1", (d) => d.source.y)
-//     .attr("x2", (d) => d.target.x)
-//     .attr("y2", (d) => d.target.y);
-
-//   node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
-// }
-
-// // When this cell is re-run, stop the previous simulation. (This doesn’t
-// // really matter since the target alpha is zero and the simulation will
-// // stop naturally, but it’s a good practice.)
-// invalidation.then(() => simulation.stop());
-
-// return svg.node();
-// }
+// クラス宣言
 
 class Operator {
   constructor(parameters) {
@@ -229,49 +190,63 @@ class Controller {
     let selectedRoot, rootName, destination, roots, currentLocation;
     roots = this.route;
     currentLocation = operator.currentLocation;
-    selectedRoot = roots.filter((root) => {
-      let fromPoint = Object.values(root)[1];
-      if (fromPoint.id == currentLocation.id) {
-        return root;
-      }
-    });
-    destination = selectedRoot[0].to;
-    rootName = selectedRoot[0].name;
+    console.log(currentLocation);
+    selectedRoot = roots.find(
+      (element) => element.source.index == currentLocation.index
+    );
+    console.log(selectedRoot);
+    destination = selectedRoot.target;
+    rootName = selectedRoot.id;
     return { destination, rootName };
   }
 }
 
 const contoller = new Controller();
 
-const startPoint = new Location({
-  name: "startPoint",
-  id: contoller.assignId(),
-  storageSize: 20,
-  type: "start",
-});
+// const startPoint = new Location({
+//   name: "startPoint",
+//   id: contoller.assignId(),
+//   storageSize: 20,
+//   type: "start",
+// });
 
-const location1 = new Location({
-  name: "spot1",
-  id: contoller.assignId(),
-  processingTime: 20,
-});
+// const location1 = new Location({
+//   name: "spot1",
+//   id: contoller.assignId(),
+//   processingTime: 20,
+// });
 
-const goalPoint = new Location({
-  name: "goalPoint",
-  id: contoller.assignId(),
-  type: "goal",
-});
+// const goalPoint = new Location({
+//   name: "goalPoint",
+//   id: contoller.assignId(),
+//   type: "goal",
+// });
 
-contoller.setRoutes([
-  { name: "root0", from: startPoint, to: location1 },
-  { name: "root1", form: location1, to: goalPoint },
-  { name: "root2", from: goalPoint, to: startPoint },
-]);
+contoller.setRoutes(linksData);
 
 console.log(contoller.route);
 const operator1 = new Operator({ name: "Alice" });
-operator1.currentLocation = startPoint;
+operator1.currentLocation = nodesData1.find((object) => object.type == "start");
 console.log(operator1.currentLocation);
+
+function countStart2() {
+  const path = anime.path(`line#l0`);
+  let animeObject = {
+    targets: "text#ob1",
+    translateX: path("x"),
+    translateY: path("y"),
+    direction: "alternate",
+    duration: 500,
+    loop: true,
+    easing: "linear",
+  };
+
+  var tl = anime.timeline({
+    easing: "easeOutExpo",
+  });
+
+  tl.add(animeObject);
+}
 
 function countStart() {
   let endTime = 90;
@@ -306,8 +281,10 @@ function countStart() {
   var tl = anime.timeline({
     easing: "easeOutExpo",
   });
+  let machine = nodesData1.find((object) => object.type == "machine");
+
   while (t < endTime) {
-    console.log(`:t= ${t}`);
+    // console.log(`:t= ${t}`);
     if (operator1.isMoving) {
       // console.log(`:到着時間= ${operator1.arrivalTime}`);
       if (operator1.arrivalTime == t) {
@@ -325,40 +302,40 @@ function countStart() {
       object1 = getAnimeObject(rootName);
       tl.add(object1, t * 100);
       operator1.destination = destination;
-      if (operator1.currentLocation == startPoint) {
-        // console.log(`start :t= ${t}`);
-      } else if (operator1.currentLocation == goalPoint) {
-        // console.log(`goal :t=${t}`);
-      } else if (operator1.currentLocation == location1) {
-        // console.log(`加工地点 :t=${t}`);
-        if (!location1.isProcessing) {
-          location1.isProcessing = true;
-          location1.processingEndTime = t + location1.processingTime;
+      if (operator1.currentLocation.type == "start") {
+        console.log(`start :t= ${t}`);
+      } else if (operator1.currentLocation.type == "goal") {
+        console.log(`goal :t=${t}`);
+      } else if (operator1.currentLocation.type == "machine") {
+        console.log(`加工地点 :t=${t}`);
+        if (!machine.isProcessing) {
+          machine.isProcessing = true;
+          machine.processingEndTime = t + machine.processingTime;
           object2 = getMachineAnimeObject();
-          console.log(`加工地点 :t=${t}`);
+          // console.log(`加工地点 :t=${t}`);
           tl.add(object2, t * 100)
             .add({
-              targets: "#machine1",
+              targets: "circle#n1",
               easing: "steps(1)",
               fill: "#00f",
               duration: 3000,
             })
             .add({
-              targets: "#machine1",
+              targets: "circle#n1",
               easing: "steps(1)",
               fill: "#000",
               duration: 100,
             });
-          console.log(tl);
+          // console.log(tl);
         }
       }
       operator1.isMoving = true;
     }
-    if (location1.isProcessing) {
+    if (machine.isProcessing) {
       // console.log(`加工終了時間:t= ${location1.processingEndTime}`);
-      if (location1.processingEndTime == t) {
+      if (machine.processingEndTime == t) {
         // console.log("加工終了");
-        location1.isProcessing = false;
+        machine.isProcessing = false;
       }
     } else {
     }
@@ -367,7 +344,7 @@ function countStart() {
 }
 
 function getAnimeObject(rootName) {
-  const path = anime.path(`#svg01 path.${rootName}`);
+  const path = anime.path(`#svg01 line#${rootName}`);
   let animeObject = {
     targets: "#ob1",
     translateX: path("x"),
@@ -384,7 +361,7 @@ function getAnimeObject(rootName) {
 function getMachineAnimeObject() {
   // const path = anime.path(`#svg01 path.${rootName}`);
   let animeObject = {
-    targets: "#machine1",
+    targets: "circle#n1",
     direction: "alternate",
     // loop: true,
     easing: "linear",
@@ -399,5 +376,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const start = document.getElementById("startbutton");
   if (start) {
     start.addEventListener("click", countStart, false);
+  }
+
+  const start2 = document.getElementById("startbutton2");
+  if (start2) {
+    start2.addEventListener("click", countStart2, false);
   }
 });
