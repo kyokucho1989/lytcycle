@@ -259,8 +259,16 @@ function countStart() {
     オペレータの現在地とその種類を取得
     もしその地点が機械か
       機械は停止中か？
-        -> 機械のスイッチON
-        　  機械を動かす
+        YES->
+          機械の中に完成品はあるか
+            YES ->
+              材料を入れ替え 作業者は材料を持ったまま
+            NO ->
+              作業者の持っている材料を投入　作業者は材料を持ってない
+          機械のスイッチON
+
+        NO ->
+          作業者はその地点のまま。オペレーターの状態を待機中に変更
 
           オペレータのステータスを移動中に変更
             目的地を設定
@@ -303,6 +311,7 @@ function countStart() {
       tl.add(object1, t * 100);
       operator1.destination = destination;
       if (operator1.currentLocation.type == "start") {
+        operator1.hasMaterial = true;
         console.log(`start :t= ${t}`);
       } else if (operator1.currentLocation.type == "goal") {
         console.log(`goal :t=${t}`);
