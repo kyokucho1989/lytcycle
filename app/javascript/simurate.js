@@ -10,16 +10,6 @@ const svg = d3
   .attr("width", width)
   .attr("height", height);
 
-// const sim = d3.forceSimulation(nodes)
-
-// this.name = parameters.name;
-// this.id = parameters.id;
-// this.processingTime = parameters.processingTime ?? 1;
-// this.storageSize = parameters.storageSize ?? 0;
-// this.isProcessing = false;
-// this.processingEndTime = 0;
-// this.type = parameters.type ?? "machine";
-
 let nodesData1 = [
   {
     index: 0,
@@ -41,6 +31,7 @@ let nodesData1 = [
     type: "machine",
     name: "machine-no-1",
     isProcessing: false,
+    hasMaterial: false,
     storageSize: 0,
     processingEndTime: 0,
   },
@@ -60,6 +51,9 @@ let linksData = [
   { source: 0, target: 1, l: 20, id: "root10" },
   { source: 1, target: 2, l: 20, id: "root11" },
   { source: 2, target: 0, l: 20, id: "root12" },
+  { source: 0, target: 2, l: 20, id: "re_root10" },
+  { source: 1, target: 0, l: 20, id: "re_root11" },
+  { source: 2, target: 1, l: 20, id: "re_root12" },
 ];
 
 var link = d3
@@ -151,6 +145,7 @@ class Operator {
     this.arriveUpToDuration = 20;
     this.arrivalTime = 20;
     this.isMoving = false;
+    this.isWaiting = false;
     this.history = [];
   }
 
@@ -191,36 +186,40 @@ class Controller {
     roots = this.route;
     currentLocation = operator.currentLocation;
     console.log(currentLocation);
-    selectedRoot = roots.find(
-      (element) => element.source.index == currentLocation.index
-    );
-    console.log(selectedRoot);
-    destination = selectedRoot.target;
+    switch (operator1.currentLocation.type) {
+      case "start":
+      // break;
+      case "goal":
+        selectedRoot = roots.find(
+          (element) => element.source.index == currentLocation.index
+        );
+        destination = selectedRoot.target;
+        break;
+      case "machine":
+        if (operator.hasMaterial) {
+          console.log("持ってる");
+          selectedRoot = roots.find(
+            (element) => element.source.index == currentLocation.index
+          );
+          destination = selectedRoot.target;
+        } else {
+          console.log("もってない");
+          selectedRoot = roots.find(
+            (element) =>
+              element.source.index == currentLocation.index &&
+              element.id.includes("re")
+          );
+          destination = selectedRoot.target;
+        }
+        break;
+    }
+
     rootName = selectedRoot.id;
     return { destination, rootName };
   }
 }
 
 const contoller = new Controller();
-
-// const startPoint = new Location({
-//   name: "startPoint",
-//   id: contoller.assignId(),
-//   storageSize: 20,
-//   type: "start",
-// });
-
-// const location1 = new Location({
-//   name: "spot1",
-//   id: contoller.assignId(),
-//   processingTime: 20,
-// });
-
-// const goalPoint = new Location({
-//   name: "goalPoint",
-//   id: contoller.assignId(),
-//   type: "goal",
-// });
 
 contoller.setRoutes(linksData);
 
@@ -229,64 +228,12 @@ const operator1 = new Operator({ name: "Alice" });
 operator1.currentLocation = nodesData1.find((object) => object.type == "start");
 console.log(operator1.currentLocation);
 
-function countStart2() {
-  const path = anime.path(`line#l0`);
-  let animeObject = {
-    targets: "text#ob1",
-    translateX: path("x"),
-    translateY: path("y"),
-    direction: "alternate",
-    duration: 500,
-    loop: true,
-    easing: "linear",
-  };
-
-  var tl = anime.timeline({
-    easing: "easeOutExpo",
-  });
-
-  tl.add(animeObject);
-}
-
 function countStart() {
   let endTime = 90;
   let t = 0;
-  let object1, object2, object3;
+  let object1, object2;
 
-  /*
- オペレーターは移動中か
-    No ->
-    オペレータの現在地とその種類を取得
-    もしその地点が機械か
-      機械は停止中か？
-        YES->
-          機械の中に完成品はあるか
-            YES ->
-              材料を入れ替え 作業者は材料を持ったまま
-            NO ->
-              作業者の持っている材料を投入　作業者は材料を持ってない
-          機械のスイッチON
-
-        NO ->
-          作業者はその地点のまま。オペレーターの状態を待機中に変更
-
-          オペレータのステータスを移動中に変更
-            目的地を設定
-
-    YES ->
-      到着地点についているか？
-        No -> 移動させる
-
-
-    オペレーターの現在地を代入 idを代入する?
-    到着したら現在地に目的地のidを代入
-    　目的地を
-　オペレーターの現在の状態を取得
-　
-
-*/
-
-  var tl = anime.timeline({
+  let tl = anime.timeline({
     easing: "easeOutExpo",
   });
   let machine = nodesData1.find((object) => object.type == "machine");
@@ -294,7 +241,6 @@ function countStart() {
   while (t < endTime) {
     // console.log(`:t= ${t}`);
     if (operator1.isMoving) {
-      // console.log(`:到着時間= ${operator1.arrivalTime}`);
       if (operator1.arrivalTime == t) {
         operator1.isMoving = false;
         operator1.currentLocation = operator1.destination;
@@ -305,40 +251,58 @@ function countStart() {
         // operator1.arrivalTime = operator1.arrivalTime - 1;
       }
     } else {
-      operator1.arrivalTime = t + 20;
-      let { destination, rootName } = contoller.determineRoute(operator1);
-      object1 = getAnimeObject(rootName);
-      tl.add(object1, t * 100);
-      operator1.destination = destination;
-      if (operator1.currentLocation.type == "start") {
-        operator1.hasMaterial = true;
-        console.log(`start :t= ${t}`);
-      } else if (operator1.currentLocation.type == "goal") {
-        console.log(`goal :t=${t}`);
-      } else if (operator1.currentLocation.type == "machine") {
-        console.log(`加工地点 :t=${t}`);
-        if (!machine.isProcessing) {
-          machine.isProcessing = true;
-          machine.processingEndTime = t + machine.processingTime;
-          object2 = getMachineAnimeObject();
-          // console.log(`加工地点 :t=${t}`);
-          tl.add(object2, t * 100)
-            .add({
-              targets: "circle#n1",
-              easing: "steps(1)",
-              fill: "#00f",
-              duration: 3000,
-            })
-            .add({
-              targets: "circle#n1",
-              easing: "steps(1)",
-              fill: "#000",
-              duration: 100,
-            });
-          // console.log(tl);
-        }
+      switch (operator1.currentLocation.type) {
+        case "machine":
+          console.log(`加工地点 :t=${t}`);
+          if (!machine.isProcessing || machine.processingEndTime < t) {
+            if (!machine.hasMaterial) {
+              operator1.hasMaterial = false;
+            }
+            machine.isProcessing = true;
+            machine.hasMaterial = true;
+            operator1.isWaiting = false;
+            machine.processingEndTime = t + machine.processingTime;
+            object2 = getMachineAnimeObject();
+            tl.add(object2, t * 100)
+              .add({
+                targets: "circle#n1",
+                easing: "steps(1)",
+                fill: "#00f",
+                duration: 3000,
+              })
+              .add({
+                targets: "circle#n1",
+                easing: "steps(1)",
+                fill: "#000",
+                duration: 100,
+              });
+            // console.log(tl);
+          } else {
+            operator1.isWaiting = true;
+            // if ()
+            console.log("待機中");
+          }
+          break;
+
+        case "start":
+          operator1.hasMaterial = true;
+          console.log(`start :t= ${t}`);
+          break;
+
+        case "goal":
+          console.log(`goal :t=${t}`);
+          operator1.hasMaterial = false;
+          break;
       }
-      operator1.isMoving = true;
+
+      if (!operator1.isWaiting) {
+        operator1.arrivalTime = t + 20;
+        let { destination, rootName } = contoller.determineRoute(operator1);
+        object1 = getAnimeObject(rootName);
+        tl.add(object1, t * 100);
+        operator1.destination = destination;
+        operator1.isMoving = true;
+      }
     }
     if (machine.isProcessing) {
       // console.log(`加工終了時間:t= ${location1.processingEndTime}`);
@@ -353,15 +317,16 @@ function countStart() {
 }
 
 function getAnimeObject(rootName) {
-  const path = anime.path(`#svg01 line#${rootName}`);
+  let path = anime.path(`#svg01 line#${rootName}`);
   let animeObject = {
     targets: "#ob1",
     translateX: path("x"),
     translateY: path("y"),
-    direction: "alternate",
-    duration: 500,
-    loop: true,
-    easing: "linear",
+    // direction: "alternate",
+    // duration: 500,
+    direction: "reverse",
+    // loop: true,
+    // easing: "linear",
   };
 
   return animeObject;
@@ -385,10 +350,5 @@ document.addEventListener("DOMContentLoaded", () => {
   const start = document.getElementById("startbutton");
   if (start) {
     start.addEventListener("click", countStart, false);
-  }
-
-  const start2 = document.getElementById("startbutton2");
-  if (start2) {
-    start2.addEventListener("click", countStart2, false);
   }
 });
