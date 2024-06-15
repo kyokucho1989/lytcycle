@@ -231,11 +231,15 @@ console.log(operator1.currentLocation);
 function countStart() {
   let endTime = 90;
   let t = 0;
-  let object1, object2;
+  let object1, object2, object3;
+  let totalCount = 0;
 
   let tl = anime.timeline({
     easing: "easeOutExpo",
   });
+  object3 = getCountObject(totalCount);
+  tl.add(object3, t * 100);
+
   let machine = nodesData1.find((object) => object.type == "machine");
 
   while (t < endTime) {
@@ -292,6 +296,10 @@ function countStart() {
         case "goal":
           console.log(`goal :t=${t}`);
           operator1.hasMaterial = false;
+          totalCount = totalCount + 1;
+
+          object3 = getCountObject(totalCount);
+          tl.add(object3, t * 100);
           break;
       }
 
@@ -314,8 +322,41 @@ function countStart() {
     }
     t = t + 1;
   }
+
+  // var myObject = {
+  //   prop1: 0,
+  //   prop2: "0%",
+  // };
+  // var JSobjectProp = anime({
+  //   targets: myObject,
+  //   prop1: 50,
+  //   prop2: "100%",
+  //   easing: "linear",
+  //   round: 1,
+  //   update: function () {
+  //     var el = document.querySelector("#JSobjectProp pre");
+  //     el.innerHTML = JSON.stringify(myObject);
+  //   },
+  // });
 }
 
+function getCountObject(countSize) {
+  let count = {
+    totalCount: countSize,
+  };
+  let JSobjectProp = anime({
+    targets: count,
+    totalCount: countSize,
+    easing: "linear",
+    round: 1,
+    update: function () {
+      var el = document.querySelector("#JSobjectProp pre");
+      el.innerHTML = JSON.stringify(count);
+    },
+  });
+
+  return JSobjectProp;
+}
 function getAnimeObject(rootName) {
   let path = anime.path(`#svg01 line#${rootName}`);
   let animeObject = {
