@@ -1,24 +1,13 @@
-# README
+# lytcycle
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## アプリ概要
 
-Things you may want to cover:
+lytcycle （ライトサイクル）は、製造業向けの簡易な生産ラインシミュレータです
 
-* Ruby version
+## 課題
 
-* System dependencies
+- 生産ラインのボトルネックを可視化したいけど、あまり費用をかけられない
 
-* Configuration
+## 解決策
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+- 簡素な2Dシミュレーションのため、開発コストがかかっておらず無料で導入可能
