@@ -387,9 +387,50 @@ function getMachineAnimeObject() {
   return animeObject;
 }
 
+function loadInitialData() {
+  let data = sessionStorage.getItem("key");
+  console.log(JSON.parse(data));
+}
+
+function saveInitialData() {
+  let content = document.getElementById("name").value;
+  let simurateObjects = {};
+  simurateObjects["key"] = content;
+  let saveData = JSON.stringify(simurateObjects);
+  document.getElementById("simurate-content").innerText = saveData;
+  sessionStorage.setItem("key", saveData);
+  alert("保存しました");
+}
+
+function clearInitialData() {
+  sessionStorage.clear();
+  alert("セッションデータを削除しました");
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const start = document.getElementById("startbutton");
   if (start) {
     start.addEventListener("click", countStart, false);
+  }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const start = document.getElementById("loadbutton");
+  if (start) {
+    start.addEventListener("click", loadInitialData, false);
+  }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const start = document.getElementById("savebutton");
+  if (start) {
+    start.addEventListener("click", saveInitialData, false);
+  }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const start = document.getElementById("clearbutton");
+  if (start) {
+    start.addEventListener("click", clearInitialData, false);
   }
 });
