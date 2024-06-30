@@ -434,3 +434,8 @@ document.addEventListener("DOMContentLoaded", () => {
     start.addEventListener("click", clearInitialData, false);
   }
 });
+
+function sum(a, b) {
+  return a + b;
+}
+module.exports = sum;
