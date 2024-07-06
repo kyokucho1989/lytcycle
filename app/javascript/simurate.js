@@ -154,17 +154,17 @@ class Operator {
   }
 }
 
-class Location {
-  constructor(parameters) {
-    this.name = parameters.name;
-    this.id = parameters.id;
-    this.processingTime = parameters.processingTime ?? 1;
-    this.storageSize = parameters.storageSize ?? 0;
-    this.isProcessing = false;
-    this.processingEndTime = 0;
-    this.type = parameters.type ?? "machine";
-  }
-}
+// class Location {
+//   constructor(parameters) {
+//     this.name = parameters.name;
+//     this.id = parameters.id;
+//     this.processingTime = parameters.processingTime ?? 1;
+//     this.storageSize = parameters.storageSize ?? 0;
+//     this.isProcessing = false;
+//     this.processingEndTime = 0;
+//     this.type = parameters.type ?? "machine";
+//   }
+// }
 
 class Controller {
   constructor() {
@@ -318,7 +318,6 @@ function countStart() {
         // console.log("加工終了");
         machine.isProcessing = false;
       }
-    } else {
     }
     t = t + 1;
   }
