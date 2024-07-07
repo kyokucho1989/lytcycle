@@ -7,9 +7,9 @@
 name: "Ruby on Rails CI"
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -51,10 +51,10 @@ jobs:
           bundler-cache: true
       # Add or replace any other lints here
       # - name: Security audit dependencies
-        # run: bin/bundler-audit --update
+      # run: bin/bundler-audit --update
       # - name: Security audit application code
-        # run: bin/brakeman -q -w2
+      # run: bin/brakeman -q -w2
       - name: Rubocop
         run: bundle exec rubocop
       - name: ESlint
-        run: eslint app
+        run: npm run lint
