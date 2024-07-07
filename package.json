@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "jest",
-    "lint": "eslint"
+    "lint": "eslint app"
   },
   "author": "",
   "license": "ISC",
