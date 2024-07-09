@@ -406,6 +406,12 @@ function clearInitialData() {
   alert("セッションデータを削除しました");
 }
 
+function toggleUserMenu() {
+  // sessionStorage.clear();
+  let userMenu = document.getElementById("userMenu");
+  userMenu.classList.toggle("hidden");
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const start = document.getElementById("startbutton");
   if (start) {
@@ -431,6 +437,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const start = document.getElementById("clearbutton");
   if (start) {
     start.addEventListener("click", clearInitialData, false);
+  }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const userMenu = document.getElementById("user-menu-button");
+  if (userMenu) {
+    userMenu.addEventListener("click", toggleUserMenu, false);
   }
 });
 
