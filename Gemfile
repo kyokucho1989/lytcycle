@@ -74,3 +74,5 @@ end
 gem "dockerfile-rails", ">= 1.6", :group => :development
 
 gem 'rubocop', require: false
+
+gem "tailwindcss-rails", "~> 2.6"
