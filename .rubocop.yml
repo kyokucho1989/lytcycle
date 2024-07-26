@@ -13,3 +13,6 @@ AllCops:
     - storage/**/*
     - tmp/**/*
     - bin/**/*
+
+Documentation:
+  Enabled: false
