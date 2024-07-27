@@ -36,6 +36,12 @@ jobs:
       - name: Set up database schema
         run: bin/rails db:schema:load
 
+      - name: Test model test
+        run: bin/rails test test/models
+
+      - name: Test system test
+        run: bin/rails test test/system
+
   lint:
     runs-on: ubuntu-latest
     steps:
