@@ -1,14 +1,14 @@
 import anime from "animejs";
 import * as d3 from "d3";
 
-const width = 640;
-const height = 800;
+// const width = 340;
+// const height = 800;
 
-const svg = d3
-  .select("body")
-  .append("svg")
-  .attr("width", width)
-  .attr("height", height);
+// const svg = d3
+//   .select("body")
+//   .append("svg")
+//   .attr("width", width)
+//   .attr("height", height);
 
 let nodesData1 = [
   {
@@ -57,7 +57,7 @@ let linksData = [
 ];
 
 var link = d3
-  .select("svg")
+  .select("#svg01")
   .selectAll("line")
   .data(linksData)
   .enter()
@@ -68,20 +68,20 @@ var link = d3
     return d.id;
   });
 
-svg
-  .insert("g")
-  .selectAll("line")
-  .data(linksData)
-  .enter()
-  .append("line")
-  .attr("stroke-width", 1)
-  .attr("stroke", "black")
-  .attr("id", function (d) {
-    return d.id;
-  });
+// svg
+//   .insert("g")
+//   .selectAll("line")
+//   .data(linksData)
+//   .enter()
+//   .append("line")
+//   .attr("stroke-width", 1)
+//   .attr("stroke", "black")
+//   .attr("id", function (d) {
+//     return d.id;
+//   });
 
 var node = d3
-  .select("svg")
+  .select("#svg01")
   .selectAll("circle")
   .data(nodesData1)
   .enter()
@@ -95,35 +95,37 @@ var node = d3
     return d.id;
   });
 
-// シミュレーション描画
-let simulation = d3
-  .forceSimulation()
-  .force("link", d3.forceLink().strength(0).iterations(1))
-  .force("charge", d3.forceManyBody().strength(0))
-  .force(
-    "x",
-    d3
-      .forceX()
-      .strength(-0.01)
-      .x(100 / 2)
-  )
-  .force(
-    "y",
-    d3
-      .forceY()
-      .strength(-0.001)
-      .y(100 / 2)
-  );
+const simurateSvg = document.getElementById("svg01");
+if (simurateSvg) {
+  // シミュレーション描画
+  let simulation = d3
+    .forceSimulation()
+    .force("link", d3.forceLink().strength(0).iterations(1))
+    .force("charge", d3.forceManyBody().strength(0))
+    .force(
+      "x",
+      d3
+        .forceX()
+        .strength(-0.01)
+        .x(100 / 2)
+    )
+    .force(
+      "y",
+      d3
+        .forceY()
+        .strength(-0.001)
+        .y(100 / 2)
+    );
 
-simulation.nodes(nodesData1).on("tick", ticked);
+  simulation.nodes(nodesData1).on("tick", ticked);
 
-simulation
-  .force("link")
-  .links(linksData)
-  .id(function (d) {
-    return d.index;
-  });
-
+  simulation
+    .force("link")
+    .links(linksData)
+    .id(function (d) {
+      return d.index;
+    });
+}
 function ticked() {
   link
     .attr("x1", (d) => d.source.x)
