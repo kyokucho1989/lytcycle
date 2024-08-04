@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_07_26_214216) do
+ActiveRecord::Schema[7.0].define(version: 2024_08_03_194240) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "simulations", force: :cascade do |t|
+    t.bigint "user_id"
+    t.jsonb "routes"
+    t.jsonb "operators"
+    t.jsonb "facilities"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_simulations_on_user_id"
+  end
 
   create_table "simurates", force: :cascade do |t|
     t.string "title"
