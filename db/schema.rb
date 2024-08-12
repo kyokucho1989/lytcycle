@@ -16,6 +16,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_03_194240) do
 
   create_table "simulations", force: :cascade do |t|
     t.bigint "user_id"
+    t.string "title"
+    t.string "bottleneck_process"
+    t.float "waiting_time"
     t.jsonb "routes"
     t.jsonb "operators"
     t.jsonb "facilities"
