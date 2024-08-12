@@ -1,2 +1,0 @@
-class SimulationController < ApplicationController
-end

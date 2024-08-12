@@ -1,0 +1,23 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Simulationss</h1>
+
+<div id="simurates">
+  <% @simulations.each do |simulation| %>
+    <ul>
+      <li>
+        <%= simulation.title %>
+      </li>
+      <li>
+        <%= simulation.bottleneck_process %>
+      </li>
+      <li>
+        <%= simulation.waiting_time %>
+      </li>
+      <%= link_to "Show this simurate", simulation %>
+    </ul>
+  <% end %>
+</div>
+
+<%= link_to "New simurate", new_simurate_path %>
+<%= button_tag 'Start', {id: "startbutton", class: "aa"} %>
