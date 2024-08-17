@@ -4,7 +4,7 @@ Rails.application.routes.draw do
     resources :simulations
   end
   resources :simurates
-  get 'demo' , to: 'simulations#new'
+  get 'demo' , to: 'simulations#demo'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
