@@ -5,19 +5,28 @@
 <div id="simurates">
   <% @simulations.each do |simulation| %>
     <ul>
+    <li>
+    <%= simulation.id %>
+  </li>
       <li>
         <%= simulation.title %>
       </li>
       <li>
-        <%= simulation.bottleneck_process %>
+        <%= simulation.facilities %>
       </li>
       <li>
-        <%= simulation.waiting_time %>
+        <%= simulation.operators %>
       </li>
-      <%= link_to "Show this simurate", simulation %>
+      <li>
+      <%= simulation.routes %>
+    </li>
+    <%= link_to edit_user_simulation_path(current_user, simulation) do %>
+      編集
+    <% end %>
+    <%= link_to user_simulation_path(current_user, simulation), data: { turbo_method: :delete } do %>
+      削除
+    <% end %>
     </ul>
   <% end %>
 </div>
 
-<%= link_to "New simurate", new_simurate_path %>
-<%= button_tag 'Start', {id: "startbutton", class: "aa"} %>
