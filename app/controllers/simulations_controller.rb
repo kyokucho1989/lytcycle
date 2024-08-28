@@ -11,13 +11,23 @@ class SimulationsController < ApplicationController
     @simulation = Simulation.new
   end
 
-  def edit; end
+  def edit
+    respond_to do |format|
+      format.html
+      format.json { render json: @simulation }
+    end
+  end
 
   def new
     @simulation = Simulation.new
   end
 
-  def show; end
+  def show
+    respond_to do |format|
+      format.html
+      format.json { render json: @simulation }
+    end
+  end
 
   def create
     @simulation = Simulation.new(simulation_params)

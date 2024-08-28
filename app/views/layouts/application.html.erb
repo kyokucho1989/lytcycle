@@ -25,7 +25,7 @@
             <div class="flex space-x-4">
               <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
               <% if user_signed_in? %>
-                <%= link_to "シミュレーション一覧", user_simulations_path ,class: "nav-link2 text-white" %>
+                <%= link_to "シミュレーション一覧", user_simulations_path(current_user) ,class: "nav-link2 text-white" %>
                 <%= link_to "アカウント編集", edit_user_registration_path, class:"dropdown-item text-white" %>
                 <%= button_to "ログアウト", destroy_user_session_path, method: :delete, data: { turbo_confirm: "ログアウトしますか？" } %>
                 <%= "【ログイン中のアドレス】#{current_user.email}" %>

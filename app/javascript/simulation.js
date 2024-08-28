@@ -1,9 +1,11 @@
+import * as d3 from "d3";
+
 // データの初期値をロード
 
 let routes;
 let operators;
 let facilities;
-
+let link, node;
 const routesInitial = [
   { source: 0, target: 1, l: 20, id: "root10" },
   { source: 1, target: 2, l: 20, id: "root11" },
@@ -50,8 +52,72 @@ const facilitiesInitial = [
   },
 ];
 
-document.addEventListener("DOMContentLoaded", () => {
+async function drawLink(linksData, nodesData) {
+  link = d3
+    .select("#svg02")
+    .selectAll("line")
+    .data(linksData)
+    .enter()
+    .append("line")
+    .attr("stroke-width", 1)
+    .attr("stroke", "black")
+    .attr("id", function (d) {
+      return d.id;
+    });
+
+  node = d3
+    .select("#svg02")
+    .selectAll("circle")
+    .data(nodesData)
+    .enter()
+    .append("circle")
+    .attr("r", 5)
+    .attr("fill", "red");
+
+  const simurateSvg = document.getElementById("svg02");
+  if (simurateSvg) {
+    // シミュレーション描画
+    let simulation = d3
+      .forceSimulation()
+      .force("link", d3.forceLink().strength(0).iterations(1))
+      .force("charge", d3.forceManyBody().strength(0))
+      .force(
+        "x",
+        d3
+          .forceX()
+          .strength(-0.01)
+          .x(100 / 2)
+      )
+      .force(
+        "y",
+        d3
+          .forceY()
+          .strength(-0.01)
+          .y(100 / 2)
+      );
+    simulation.nodes(nodesData).on("tick", ticked);
+
+    simulation
+      .force("link")
+      .links(linksData)
+      .id(function (d) {
+        return d.index;
+      });
+  }
+}
+function ticked() {
+  link
+    .attr("x1", (d) => d.source.x)
+    .attr("y1", (d) => d.source.y)
+    .attr("x2", (d) => d.target.x)
+    .attr("y2", (d) => d.target.y);
+
+  node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+}
+
+document.addEventListener("turbo:load", async () => {
   let simulationParameters = document.getElementById("simulation-data");
+  console.log("シミュレーション");
   if (simulationParameters) {
     let simulationId = simulationParameters.dataset.id;
     if (simulationId == "") {
@@ -61,18 +127,27 @@ document.addEventListener("DOMContentLoaded", () => {
       facilities = facilitiesInitial;
       console.log("初期値設定終了");
     } else {
-      // データロード
-      routes = simulationParameters.dataset.routes;
-      operators = simulationParameters.dataset.operators;
-      facilities = simulationParameters.dataset.facilities;
-      console.log(simulationParameters.dataset);
+      try {
+        const response = await fetch("edit.json");
+        if (!response.ok) {
+          throw new Error(`レスポンスステータス: ${response.status}`);
+        }
+        const json = await response.json();
+        console.log(json);
+        drawLink(JSON.parse(json.routes), JSON.parse(json.facilities));
+        return json;
+      } catch (error) {
+        console.error(error.message);
+      }
+
       console.log("ロード完了");
     }
+
+    // シミュレーション画面の描画
   }
 
   // データ整形
 });
-
 document.addEventListener("DOMContentLoaded", () => {
   const saveSimulationButton = document.getElementById("savesimulation");
   if (saveSimulationButton) {
