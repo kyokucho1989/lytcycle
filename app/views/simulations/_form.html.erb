@@ -5,7 +5,7 @@ data-operators ="<%= @simulation.operators %>"
 data-facilities ="<%= @simulation.facilities %>">
 フォーム
 <% if user_signed_in? %>
-  <%= form_with(model: @simulation ,url: [current_user , @simulation] ) do |form| %>
+  <%= form_with(model: @simulation ,url: [current_user , @simulation] ,id: "simulationForm") do |form| %>
     <div>
       <%= form.label :title, style: "display: block" %>
       <%= form.text_field :title %>
@@ -15,9 +15,16 @@ data-facilities ="<%= @simulation.facilities %>">
       <%= form.label :routes, style: "display: block" %>
       <%= form.text_area :routes %>
     </div>
-    <%= form.hidden_field :routes, id: 'simulation_parameters_routes' %>
-    <%= form.hidden_field :operators, id: 'simulation_parameters_operators' %>
-    <%= form.hidden_field :facilities, id: 'simulation_parameters_facilities' %>
+
+    <div>
+      <%= form.label :operators, style: "display: block" %>
+      <%= form.text_area :operators %>
+    </div>
+
+    <div>
+      <%= form.label :facilities, style: "display: block" %>
+      <%= form.text_area :facilities %>
+    </div>
 
     <div>
       <%= form.submit "save", id: 'savesimulation' ,class: "bg-blue-500 text-white font-bold py-2 px-4 rounded"%>

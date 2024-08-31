@@ -3,7 +3,7 @@ import * as d3 from "d3";
 // データの初期値をロード
 
 let routes;
-let operators;
+// let operators;
 let facilities;
 let link, node;
 const routesInitial = [
@@ -14,7 +14,7 @@ const routesInitial = [
   { source: 1, target: 0, l: 20, id: "re_root11" },
   { source: 2, target: 1, l: 20, id: "re_root12" },
 ];
-let operatorsInitial = [{ name: "Alice" }];
+// let operatorsInitial = [{ name: "Alice" }];
 const facilitiesInitial = [
   {
     index: 0,
@@ -123,7 +123,7 @@ document.addEventListener("turbo:load", async () => {
     if (simulationId == "") {
       // 初期値設定
       routes = routesInitial;
-      operators = operatorsInitial;
+      // operators = operatorsInitial;
       facilities = facilitiesInitial;
       console.log("初期値設定終了");
     } else {
@@ -134,7 +134,10 @@ document.addEventListener("turbo:load", async () => {
         }
         const json = await response.json();
         console.log(json);
-        drawLink(JSON.parse(json.routes), JSON.parse(json.facilities));
+        routes = JSON.parse(json.routes);
+        facilities = JSON.parse(json.facilities);
+        // operators = JSON.parse(json.operators);
+        drawLink(routes, facilities);
         return json;
       } catch (error) {
         console.error(error.message);
@@ -148,22 +151,35 @@ document.addEventListener("turbo:load", async () => {
 
   // データ整形
 });
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("turbo:load", () => {
   const saveSimulationButton = document.getElementById("savesimulation");
   if (saveSimulationButton) {
-    saveSimulationButton.addEventListener(
-      "click",
-      addSimulationParameters,
-      false
-    );
+    saveSimulationButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      const form = document.getElementById("simulationForm");
+      const formData = new FormData(form);
+      // formData.append("post[js_data]", JSON.stringify(routes));
+
+      fetch(form.action, {
+        method: "POST",
+        headers: {
+          "X-CSRF-Token": document
+            .querySelector("meta[name='csrf-token']")
+            .getAttribute("content"),
+          Accept: "application/json",
+        },
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Success:", data);
+          // 成功時の処理（ページ遷移など）
+          window.location.href = data.location;
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          // エラー時の処理
+        });
+    });
   }
 });
-
-function addSimulationParameters() {
-  document.getElementById("simulation_parameters_routes").value =
-    JSON.stringify(routes);
-  document.getElementById("simulation_parameters_operators").value =
-    JSON.stringify(operators);
-  document.getElementById("simulation_parameters_facilities").value =
-    JSON.stringify(facilities);
-}

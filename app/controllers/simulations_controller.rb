@@ -35,8 +35,10 @@ class SimulationsController < ApplicationController
     respond_to do |format|
       if @simulation.save
         format.html { redirect_to user_simulations_url, notice: 'Simurate was successfully created.' }
+        format.json { render json: { status: :ok , location: user_simulations_url }}
       else
         format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @simulation.errors, status: :unprocessable_entity }
       end
     end
   end
