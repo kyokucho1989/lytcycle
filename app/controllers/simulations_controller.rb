@@ -35,7 +35,7 @@ class SimulationsController < ApplicationController
     respond_to do |format|
       if @simulation.save
         format.html { redirect_to user_simulations_url, notice: 'Simurate was successfully created.' }
-        format.json { render json: { status: :ok , location: user_simulations_url }}
+        format.json { render json: { status: :ok, location: user_simulations_url } }
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @simulation.errors, status: :unprocessable_entity }
@@ -73,6 +73,12 @@ class SimulationsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def simulation_params
+    routes = params.require(:js_routes)
+    facilities = params.require(:js_facilities)
+    operators = params.require(:js_operators)
+    params.require(:simulation)[:facilities] = facilities
+    params.require(:simulation)[:operators] = operators
+    params.require(:simulation)[:routes] = routes
     params.require(:simulation).permit(:user_id, :title, :bottleneck_process, :waiting_time, :routes, :operators,
                                        :facilities)
   end

@@ -3,7 +3,7 @@ import * as d3 from "d3";
 // データの初期値をロード
 
 let routes;
-// let operators;
+let operators;
 let facilities;
 let link, node;
 const routesInitial = [
@@ -14,7 +14,7 @@ const routesInitial = [
   { source: 1, target: 0, l: 20, id: "re_root11" },
   { source: 2, target: 1, l: 20, id: "re_root12" },
 ];
-// let operatorsInitial = [{ name: "Alice" }];
+let operatorsInitial = [{ name: "Alice" }];
 const facilitiesInitial = [
   {
     index: 0,
@@ -123,7 +123,7 @@ document.addEventListener("turbo:load", async () => {
     if (simulationId == "") {
       // 初期値設定
       routes = routesInitial;
-      // operators = operatorsInitial;
+      operators = operatorsInitial;
       facilities = facilitiesInitial;
       console.log("初期値設定終了");
     } else {
@@ -136,7 +136,7 @@ document.addEventListener("turbo:load", async () => {
         console.log(json);
         routes = JSON.parse(json.routes);
         facilities = JSON.parse(json.facilities);
-        // operators = JSON.parse(json.operators);
+        operators = JSON.parse(json.operators);
         drawLink(routes, facilities);
         return json;
       } catch (error) {
@@ -158,7 +158,9 @@ document.addEventListener("turbo:load", () => {
       event.preventDefault();
       const form = document.getElementById("simulationForm");
       const formData = new FormData(form);
-      // formData.append("post[js_data]", JSON.stringify(routes));
+      formData.append("js_routes", JSON.stringify(routes));
+      formData.append("js_operators", JSON.stringify(operators));
+      formData.append("js_facilities", JSON.stringify(facilities));
 
       fetch(form.action, {
         method: "POST",
