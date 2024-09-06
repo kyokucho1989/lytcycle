@@ -45,7 +45,7 @@ class SimulationsController < ApplicationController
     respond_to do |format|
       if @simulation.update(simulation_params)
         format.html { redirect_to user_simulations_url, notice: 'Simurate was successfully updated.' }
-        format.json { render :show, status: :ok, location: @simulation }
+        format.json { render json: { status: :ok, location: user_simulations_url } }
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @simulation.errors, status: :unprocessable_entity }
