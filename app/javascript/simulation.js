@@ -53,6 +53,9 @@ const facilitiesInitial = [
 ];
 
 async function drawLink(linksData, nodesData) {
+  d3.select("#svg02").selectAll("line").remove();
+  d3.select("#svg02").selectAll("circle").remove();
+
   link = d3
     .select("#svg02")
     .selectAll("line")
