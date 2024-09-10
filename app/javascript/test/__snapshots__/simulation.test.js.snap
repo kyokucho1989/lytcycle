@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SVG Snapshot Test 1`] = `"<div id="chart"><svg width="100" height="100"><circle cx="50" cy="50" r="40" fill="blue"></circle></svg></div>"`;
