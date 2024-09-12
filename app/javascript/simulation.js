@@ -52,7 +52,8 @@ const facilitiesInitial = [
   },
 ];
 
-async function drawLink(linksData, nodesData) {
+export async function drawLink(linksData, nodesData) {
+  console.log("draw link");
   d3.select("#svg02").selectAll("line").remove();
   d3.select("#svg02").selectAll("circle").remove();
 
@@ -79,6 +80,7 @@ async function drawLink(linksData, nodesData) {
 
   const simurateSvg = document.getElementById("svg02");
   if (simurateSvg) {
+    console.log("draw link");
     // シミュレーション描画
     let simulation = d3
       .forceSimulation()
@@ -108,7 +110,7 @@ async function drawLink(linksData, nodesData) {
       });
   }
 }
-function ticked() {
+export function ticked() {
   link
     .attr("x1", (d) => d.source.x)
     .attr("y1", (d) => d.source.y)

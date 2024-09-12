@@ -225,10 +225,10 @@ const contoller = new Controller();
 
 contoller.setRoutes(linksData);
 
-console.log(contoller.route);
+// console.log(contoller.route);
 const operator1 = new Operator({ name: "Alice" });
 operator1.currentLocation = nodesData1.find((object) => object.type == "start");
-console.log(operator1.currentLocation);
+// console.log(operator1.currentLocation);
 
 function countStart() {
   let endTime = 90;

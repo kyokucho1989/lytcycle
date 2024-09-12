@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`draw link and circle 1`] = `
+<div>
+  
+    
+  <svg
+    height="800"
+    id="svg02"
+    width="700"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    
+    
+    <line
+      id="root10"
+      stroke="black"
+      stroke-width="1"
+      x1="230"
+      x2="330"
+      y1="310"
+      y2="60"
+    />
+    <line
+      id="root11"
+      stroke="black"
+      stroke-width="1"
+      x1="330"
+      x2="430"
+      y1="60"
+      y2="310"
+    />
+    <line
+      id="root12"
+      stroke="black"
+      stroke-width="1"
+      x1="430"
+      x2="230"
+      y1="310"
+      y2="310"
+    />
+    <line
+      id="re_root10"
+      stroke="black"
+      stroke-width="1"
+      x1="230"
+      x2="430"
+      y1="310"
+      y2="310"
+    />
+    <line
+      id="re_root11"
+      stroke="black"
+      stroke-width="1"
+      x1="330"
+      x2="230"
+      y1="60"
+      y2="310"
+    />
+    <line
+      id="re_root12"
+      stroke="black"
+      stroke-width="1"
+      x1="430"
+      x2="330"
+      y1="310"
+      y2="60"
+    />
+    <circle
+      cx="230"
+      cy="310"
+      fill="red"
+      r="5"
+    />
+    <circle
+      cx="330"
+      cy="60"
+      fill="red"
+      r="5"
+    />
+    <circle
+      cx="430"
+      cy="310"
+      fill="red"
+      r="5"
+    />
+  </svg>
+  
+  
+</div>
+`;
