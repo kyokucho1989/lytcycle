@@ -1,9 +1,5 @@
 // query utilities:
 import {
-  getByLabelText,
-  getByText,
-  getByTestId,
-  queryByTestId,
   // Tip: all queries are also exposed on an object
   // called "queries" which you could import here as well
   waitFor,
@@ -11,27 +7,7 @@ import {
 // adds special assertions like toHaveTextContent
 import "@testing-library/jest-dom";
 
-import * as d3 from "d3";
 import { drawLink } from "../simulation.js";
-
-test("SVG Snapshot Test", () => {
-  document.body.innerHTML = '<div id="chart"></div>';
-
-  const svg = d3
-    .select("#chart")
-    .append("svg")
-    .attr("width", 100)
-    .attr("height", 100);
-
-  svg
-    .append("circle")
-    .attr("cx", 50)
-    .attr("cy", 50)
-    .attr("r", 40)
-    .attr("fill", "blue");
-
-  expect(document.body.innerHTML).toMatchSnapshot();
-});
 
 test("draw link and circle", async () => {
   const routesInitial = [
@@ -80,15 +56,19 @@ test("draw link and circle", async () => {
     },
   ];
 
-  await drawLink(routesInitial, facilitiesInitial);
-
   const div = document.createElement("div");
   div.innerHTML = `
     <svg id="svg02" xmlns="http://www.w3.org/2000/svg" width="700" height="800">
     </svg>
   `;
+  document.body.appendChild(div); // これを追加して、Jest の仮想 DOM に反映
 
-  document.body.innerHTML = '<svg id="svg02"></div>';
+  await drawLink(routesInitial, facilitiesInitial);
 
-  expect(div).toMatchSnapShot();
+  await waitFor(() => {
+    const circle = document.querySelector("circle");
+    expect(circle).toHaveAttribute("cx"); // cxが設定されていることを確認
+  });
+
+  expect(div).toMatchSnapshot();
 });
