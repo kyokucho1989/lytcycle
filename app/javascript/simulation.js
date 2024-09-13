@@ -52,6 +52,8 @@ const facilitiesInitial = [
   },
 ];
 
+let simulation;
+
 export async function drawLink(linksData, nodesData) {
   console.log("draw link");
   d3.select("#svg02").selectAll("line").remove();
@@ -75,14 +77,19 @@ export async function drawLink(linksData, nodesData) {
     .data(nodesData)
     .enter()
     .append("circle")
-    .attr("r", 5)
-    .attr("fill", "red");
+    .attr("r", function (d) {
+      return d.r;
+    })
+    .attr("stroke", "black")
+    .attr("fill", "LightSalmon")
+    .attr("id", function (d) {
+      return d.id;
+    });
 
   const simurateSvg = document.getElementById("svg02");
   if (simurateSvg) {
-    console.log("draw link");
     // シミュレーション描画
-    let simulation = d3
+    simulation = d3
       .forceSimulation()
       .force("link", d3.forceLink().strength(0).iterations(1))
       .force("charge", d3.forceManyBody().strength(0))
@@ -90,17 +97,25 @@ export async function drawLink(linksData, nodesData) {
         "x",
         d3
           .forceX()
-          .strength(0)
-          .x(100 / 2)
+          .strength(0.01)
+          .x(400 / 2)
       )
       .force(
         "y",
         d3
           .forceY()
-          .strength(0)
+          .strength(0.01)
           .y(100 / 2)
       );
+
     simulation.nodes(nodesData).on("tick", ticked);
+    node.call(
+      d3
+        .drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended)
+    );
 
     simulation
       .force("link")
@@ -110,7 +125,26 @@ export async function drawLink(linksData, nodesData) {
       });
   }
 }
-export function ticked() {
+
+function dragstarted(event) {
+  if (!event.active) simulation.alphaTarget(0.3).restart();
+  event.subject.fx = event.subject.x;
+  event.subject.fy = event.subject.y;
+}
+
+// Update the subject (dragged node) position during drag.
+function dragged(event) {
+  event.subject.fx = event.x;
+  event.subject.fy = event.y;
+}
+
+function dragended(event) {
+  if (!event.active) simulation.alphaTarget(0);
+  event.subject.fx = null;
+  event.subject.fy = null;
+}
+
+function ticked() {
   link
     .attr("x1", (d) => d.source.x)
     .attr("y1", (d) => d.source.y)
@@ -142,6 +176,17 @@ document.addEventListener("turbo:load", async () => {
         routes = JSON.parse(json.routes);
         facilities = JSON.parse(json.facilities);
         operators = JSON.parse(json.operators);
+
+        // routesのsourceとtargetをインデックスに修正
+        routes.forEach((route) => {
+          if (typeof route.source === "object") {
+            route.source = route.source.index;
+          }
+          if (typeof route.target === "object") {
+            route.target = route.target.index;
+          }
+        });
+
         drawLink(routes, facilities);
         return json;
       } catch (error) {
