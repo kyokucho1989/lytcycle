@@ -109,13 +109,15 @@ export async function drawLink(linksData, nodesData) {
       );
 
     simulation.nodes(nodesData).on("tick", ticked);
-    node.call(
-      d3
-        .drag()
-        .on("start", dragstarted)
-        .on("drag", dragged)
-        .on("end", dragended)
-    );
+    node
+      .call(
+        d3
+          .drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended)
+      )
+      .on("click", nodeClicked);
 
     simulation
       .force("link")
@@ -124,6 +126,55 @@ export async function drawLink(linksData, nodesData) {
         return d.index;
       });
   }
+}
+//
+// const showButton = document.getElementById("showDialog");
+const favDialog = document.getElementById("favDialog");
+const outputBox = document.querySelector("output");
+const selectEl = favDialog.querySelector("select");
+const confirmBtn = favDialog.querySelector("#confirmBtn");
+
+// // "Show the dialog" ボタンで <dialog> をモーダルに開く
+// showButton.addEventListener("click", () => {
+//   favDialog.showModal();
+// });
+
+// "Favorite animal" 入力で、送信ボタンの値を設定する
+selectEl.addEventListener("change", (e) => {
+  confirmBtn.value = selectEl.value;
+});
+
+// "Cancel" ボタンで [formmethod="dialog"] による送信を行わずにダイアログを閉じ、close イベントを発行する
+favDialog.addEventListener("close", (e) => {
+  console.log(this);
+  outputBox.value =
+    favDialog.returnValue === "default"
+      ? "No return value."
+      : `ReturnValue: ${favDialog.returnValue}.`; // 空文字列ではなく、既定値かどうかを調べる必要がある
+});
+
+// ［確認］ボタンが既定でフォームを送信しないようにし、`close()` メソッドでダイアログを閉じ、"close" イベントを発生させる
+confirmBtn.addEventListener("click", (event) => {
+  event.preventDefault(); // この偽フォームを送信しない
+  favDialog.close(selectEl.value); // ここで選択ボックスの値を送る必要がある
+});
+
+//
+function nodeClicked() {
+  // alert("click");
+  // console.log(this);
+
+  let facilityForEdit = facilities.find((facility) => facility.id == this.id);
+  console.log(facilityForEdit);
+  setFacilityDataToModal(facilityForEdit);
+  favDialog.showModal();
+}
+
+function setFacilityDataToModal(facility) {
+  const name = document.getElementById("name");
+  name.value = facility.name;
+  console.log(outputBox);
+  console.log(facility);
 }
 
 function dragstarted(event) {

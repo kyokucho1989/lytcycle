@@ -34,6 +34,35 @@ data-facilities ="<%= @simulation.facilities %>">
   <div id="JSobjectProp">
     <pre class="count">{"パラメータ":0}</pre>
   </div>
+  <!-- フォームを含むモーダルダイアログ -->
+    <dialog id="favDialog">
+    パラメータ
+      <form>
+        <div>
+          <label>設備名</label>
+          <input type="text" id="name" name="name" maxlength="8" size="15" />
+        </div>
+
+
+            <select>
+              <option value="default">Choose…</option>
+              <option>Brine shrimp</option>
+              <option>Red panda</option>
+              <option>Spider monkey</option>
+            </select>
+          </label>
+        </p>
+        <div>
+          <button value="cancel" formmethod="dialog">取り消し</button>
+          <button id="confirmBtn" value="default">保存</button>
+        </div>
+      </form>
+    </dialog>
+    <p>
+      <button id="showDialog">Show the dialog</button>
+    </p>
+<output></output>
+
   <div class="svg-wrapper">
 
     <svg id="svg02" xmlns="http://www.w3.org/2000/svg" width="700" height="800">
