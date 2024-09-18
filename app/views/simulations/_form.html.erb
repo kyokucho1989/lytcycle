@@ -35,23 +35,18 @@ data-facilities ="<%= @simulation.facilities %>">
     <pre class="count">{"パラメータ":0}</pre>
   </div>
   <!-- フォームを含むモーダルダイアログ -->
-    <dialog id="favDialog">
+    <dialog id="facilityDialog">
     パラメータ
+    <div id="hidden-id" hidden></div>
       <form>
         <div>
           <label>設備名</label>
-          <input type="text" id="name" name="name" maxlength="8" size="15" />
+          <input type="text" id="name" name="name" maxlength="16" size="15" />
         </div>
-
-
-            <select>
-              <option value="default">Choose…</option>
-              <option>Brine shrimp</option>
-              <option>Red panda</option>
-              <option>Spider monkey</option>
-            </select>
-          </label>
-        </p>
+        <div>
+          <label>加工時間</label>
+          <input type="number" id="processingTime" name="name" min="0" max="400" />
+        </div>
         <div>
           <button value="cancel" formmethod="dialog">取り消し</button>
           <button id="confirmBtn" value="default">保存</button>
