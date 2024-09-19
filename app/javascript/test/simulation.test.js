@@ -8,18 +8,10 @@ import {
 import "@testing-library/jest-dom";
 
 import { drawLink } from "../simulation.js";
+let facilitiesInitial, routesInitial;
 
-test("draw link and circle", async () => {
-  const routesInitial = [
-    { source: 0, target: 1, l: 20, id: "root10" },
-    { source: 1, target: 2, l: 20, id: "root11" },
-    { source: 2, target: 0, l: 20, id: "root12" },
-    { source: 0, target: 2, l: 20, id: "re_root10" },
-    { source: 1, target: 0, l: 20, id: "re_root11" },
-    { source: 2, target: 1, l: 20, id: "re_root12" },
-  ];
-
-  const facilitiesInitial = [
+beforeEach(() => {
+  facilitiesInitial = [
     {
       index: 0,
       x: 230,
@@ -56,6 +48,17 @@ test("draw link and circle", async () => {
     },
   ];
 
+  routesInitial = [
+    { source: 0, target: 1, l: 20, id: "root10" },
+    { source: 1, target: 2, l: 20, id: "root11" },
+    { source: 2, target: 0, l: 20, id: "root12" },
+    { source: 0, target: 2, l: 20, id: "re_root10" },
+    { source: 1, target: 0, l: 20, id: "re_root11" },
+    { source: 2, target: 1, l: 20, id: "re_root12" },
+  ];
+});
+
+test("draw link and circle", async () => {
   const div = document.createElement("div");
   div.innerHTML = `
     <svg id="svg02" xmlns="http://www.w3.org/2000/svg" width="700" height="800">
