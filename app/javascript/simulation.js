@@ -109,13 +109,15 @@ export async function drawLink(linksData, nodesData) {
       );
 
     simulation.nodes(nodesData).on("tick", ticked);
-    node.call(
-      d3
-        .drag()
-        .on("start", dragstarted)
-        .on("drag", dragged)
-        .on("end", dragended)
-    );
+    node
+      .call(
+        d3
+          .drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended)
+      )
+      .on("click", nodeClicked);
 
     simulation
       .force("link")
@@ -124,6 +126,44 @@ export async function drawLink(linksData, nodesData) {
         return d.index;
       });
   }
+}
+
+let facilityDialog, confirmBtn;
+document.addEventListener("turbo:load", async () => {
+  facilityDialog = document.getElementById("facilityDialog");
+  confirmBtn = document.getElementById("confirmBtn");
+
+  // ［確認］ボタンが既定でフォームを送信しないようにし、`close()` メソッドでダイアログを閉じ、"close" イベントを発生させる
+  confirmBtn.addEventListener("click", (event) => {
+    event.preventDefault(); // この偽フォームを送信しない
+    let id = document.getElementById("hidden-id");
+    let name = document.getElementById("name");
+    let processingTime = document.getElementById("processingTime");
+
+    let selectedFacility = facilities.find(
+      (facility) => facility.id == id.value
+    );
+    selectedFacility.name = name.value;
+    selectedFacility.processingTime = processingTime.value;
+
+    facilityDialog.close();
+  });
+});
+function nodeClicked() {
+  let facilityForEdit = facilities.find((facility) => facility.id == this.id);
+  console.log(facilityForEdit);
+  setFacilityDataToModal(facilityForEdit);
+  facilityDialog.showModal();
+}
+
+function setFacilityDataToModal(facility) {
+  let id = document.getElementById("hidden-id");
+  let name = document.getElementById("name");
+  let processingTime = document.getElementById("processingTime");
+
+  id.value = facility.id;
+  name.value = facility.name;
+  processingTime.value = facility.processingTime;
 }
 
 function dragstarted(event) {
