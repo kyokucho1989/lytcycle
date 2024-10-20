@@ -26,13 +26,19 @@ jobs:
       RAILS_ENV: test
       DATABASE_URL: "postgres://rails:password@localhost:5432/rails_test"
     steps:
-      - name: Checkout code
+      - name: Checkout codes
         uses: actions/checkout@v4
       # Add or replace dependency steps here
+      - browser-tools/install-chrome:
+        replace-existing: true
+      - browser-tools/install-chromedriver
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@55283cc23133118229fd3f97f9336ee23a179fcf # v1.146.0
         with:
           bundler-cache: true
+      - name: Build TailwindCSS
+        run: bin/rails tailwindcss:build
+
       - name: Set up database schema
         run: bin/rails db:schema:load
 
@@ -41,6 +47,9 @@ jobs:
 
       - name: Test system test
         run: bin/rails test test/system
+
+      - name: Test system test by RSpec
+        run: bundle exec rspec spec/system
 
   lint:
     runs-on: ubuntu-latest
