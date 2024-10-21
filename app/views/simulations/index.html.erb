@@ -1,7 +1,8 @@
 <p style="color: green"><%= notice %></p>
 
-<h1>Simulationss</h1>
+<h1>Simulation一覧</h1>
 
+ <%= link_to "シミュレーション新規作成", new_user_simulation_path(current_user) %>
 <div id="simurates">
   <% @simulations.each do |simulation| %>
     <ul>

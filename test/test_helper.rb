@@ -10,4 +10,8 @@ class ActiveSupport::TestCase
   fixtures :all
 
   # Add more helper methods to be used by all tests here...
+  include Warden::Test::Helpers
+  include Devise::Test::IntegrationHelpers
+
+  Capybara.javascript_driver = :selenium
 end
