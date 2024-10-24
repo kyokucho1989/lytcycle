@@ -1,15 +1,6 @@
 import anime from "animejs";
 import * as d3 from "d3";
 
-// const width = 340;
-// const height = 800;
-
-// const svg = d3
-//   .select("body")
-//   .append("svg")
-//   .attr("width", width)
-//   .attr("height", height);
-
 let nodesData1 = [
   {
     index: 0,

@@ -1,58 +1,8 @@
 import * as d3 from "d3";
-
+import { routes, operators, facilities } from "src/set_simulation_params";
 // データの初期値をロード
 
-let routes;
-let operators;
-let facilities;
-let link, node;
-const routesInitial = [
-  { source: 0, target: 1, l: 20, id: "root10" },
-  { source: 1, target: 2, l: 20, id: "root11" },
-  { source: 2, target: 0, l: 20, id: "root12" },
-  { source: 0, target: 2, l: 20, id: "re_root10" },
-  { source: 1, target: 0, l: 20, id: "re_root11" },
-  { source: 2, target: 1, l: 20, id: "re_root12" },
-];
-let operatorsInitial = [{ name: "Alice" }];
-const facilitiesInitial = [
-  {
-    index: 0,
-    x: 230,
-    y: 310,
-    r: 10,
-    id: "n0",
-    processingTime: 1,
-    type: "start",
-    name: "startPoint",
-  },
-  {
-    index: 1,
-    x: 330,
-    y: 60,
-    r: 15,
-    id: "n1",
-    processingTime: 15,
-    type: "machine",
-    name: "machine-no-1",
-    isProcessing: false,
-    hasMaterial: false,
-    storageSize: 0,
-    processingEndTime: 0,
-  },
-  {
-    index: 2,
-    x: 430,
-    y: 310,
-    r: 10,
-    id: "n2",
-    processingTime: 1,
-    type: "goal",
-    name: "goalPoint",
-  },
-];
-
-let simulation;
+export let link, node, simulation;
 
 export async function drawLink(linksData, nodesData) {
   console.log("draw link");
@@ -132,22 +82,23 @@ let facilityDialog, confirmBtn;
 document.addEventListener("turbo:load", async () => {
   facilityDialog = document.getElementById("facilityDialog");
   confirmBtn = document.getElementById("confirmBtn");
+  if (confirmBtn) {
+    // ［確認］ボタンが既定でフォームを送信しないようにし、`close()` メソッドでダイアログを閉じ、"close" イベントを発生させる
+    confirmBtn.addEventListener("click", (event) => {
+      event.preventDefault(); // この偽フォームを送信しない
+      let id = document.getElementById("hidden-id");
+      let name = document.getElementById("name");
+      let processingTime = document.getElementById("processingTime");
 
-  // ［確認］ボタンが既定でフォームを送信しないようにし、`close()` メソッドでダイアログを閉じ、"close" イベントを発生させる
-  confirmBtn.addEventListener("click", (event) => {
-    event.preventDefault(); // この偽フォームを送信しない
-    let id = document.getElementById("hidden-id");
-    let name = document.getElementById("name");
-    let processingTime = document.getElementById("processingTime");
+      let selectedFacility = facilities.find(
+        (facility) => facility.id == id.value
+      );
+      selectedFacility.name = name.value;
+      selectedFacility.processingTime = processingTime.value;
 
-    let selectedFacility = facilities.find(
-      (facility) => facility.id == id.value
-    );
-    selectedFacility.name = name.value;
-    selectedFacility.processingTime = processingTime.value;
-
-    facilityDialog.close();
-  });
+      facilityDialog.close();
+    });
+  }
 });
 function nodeClicked() {
   let facilityForEdit = facilities.find((facility) => facility.id == this.id);
@@ -194,53 +145,6 @@ function ticked() {
   node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
 }
 
-document.addEventListener("turbo:load", async () => {
-  let simulationParameters = document.getElementById("simulation-data");
-  console.log("シミュレーション");
-  if (simulationParameters) {
-    let simulationId = simulationParameters.dataset.id;
-    if (simulationId == "") {
-      // 初期値設定
-      routes = routesInitial;
-      operators = operatorsInitial;
-      facilities = facilitiesInitial;
-      console.log("初期値設定終了");
-    } else {
-      try {
-        const response = await fetch("edit.json");
-        if (!response.ok) {
-          throw new Error(`レスポンスステータス: ${response.status}`);
-        }
-        const json = await response.json();
-        console.log(json);
-        routes = JSON.parse(json.routes);
-        facilities = JSON.parse(json.facilities);
-        operators = JSON.parse(json.operators);
-
-        // routesのsourceとtargetをインデックスに修正
-        routes.forEach((route) => {
-          if (typeof route.source === "object") {
-            route.source = route.source.index;
-          }
-          if (typeof route.target === "object") {
-            route.target = route.target.index;
-          }
-        });
-
-        drawLink(routes, facilities);
-        return json;
-      } catch (error) {
-        console.error(error.message);
-      }
-
-      console.log("ロード完了");
-    }
-
-    // シミュレーション画面の描画
-  }
-
-  // データ整形
-});
 document.addEventListener("turbo:load", () => {
   const saveSimulationButton = document.getElementById("savesimulation");
   if (saveSimulationButton) {
