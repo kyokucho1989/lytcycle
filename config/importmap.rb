@@ -1,13 +1,13 @@
 # Pin npm packages by running ./bin/importmap
 
-pin "application"
+pin "application", preload: true
 pin "@hotwired/turbo-rails", to: "turbo.min.js"
 pin "@hotwired/stimulus", to: "stimulus.min.js"
 pin "@hotwired/stimulus-loading", to: "stimulus-loading.js"
 pin_all_from "app/javascript/controllers", under: "controllers"
 pin "animejs" # @3.2.2
-pin "simurate"
-pin "simulation"
+pin_all_from "app/javascript/src", under: "src"
+
 pin "d3" # @7.9.0
 pin "d3-array" # @3.2.4
 pin "d3-axis" # @3.0.0
