@@ -78,25 +78,30 @@ export async function drawLink(linksData, nodesData) {
   }
 }
 
+export function setObjectparams(e, params, facilities, facilityDialog) {
+  e.preventDefault(); // この偽フォームを送信しない
+  let id = params.id;
+  let name = params.name;
+  let processingTime = params.processingTime;
+  let selectedFacility = facilities.find((facility) => facility.id == id.value);
+  selectedFacility.name = name.value;
+  selectedFacility.processingTime = processingTime.value;
+  facilityDialog.close;
+}
+
 let facilityDialog, confirmBtn;
 document.addEventListener("turbo:load", async () => {
   facilityDialog = document.getElementById("facilityDialog");
   confirmBtn = document.getElementById("confirmBtn");
   if (confirmBtn) {
     // ［確認］ボタンが既定でフォームを送信しないようにし、`close()` メソッドでダイアログを閉じ、"close" イベントを発生させる
-    confirmBtn.addEventListener("click", (event) => {
-      event.preventDefault(); // この偽フォームを送信しない
-      let id = document.getElementById("hidden-id");
-      let name = document.getElementById("name");
-      let processingTime = document.getElementById("processingTime");
+    confirmBtn.addEventListener("click", (e) => {
+      let params;
+      params.id = document.getElementById("hidden-id");
+      params.name = document.getElementById("name");
+      params.processingTime = document.getElementById("processingTime");
 
-      let selectedFacility = facilities.find(
-        (facility) => facility.id == id.value
-      );
-      selectedFacility.name = name.value;
-      selectedFacility.processingTime = processingTime.value;
-
-      facilityDialog.close();
+      setObjectparams(e, params, facilities, facilityDialog);
     });
   }
 });
@@ -107,7 +112,7 @@ function nodeClicked() {
   facilityDialog.showModal();
 }
 
-function setFacilityDataToModal(facility) {
+export function setFacilityDataToModal(facility) {
   let id = document.getElementById("hidden-id");
   let name = document.getElementById("name");
   let processingTime = document.getElementById("processingTime");
