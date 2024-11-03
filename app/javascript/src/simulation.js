@@ -5,7 +5,6 @@ import { routes, operators, facilities } from "src/set_simulation_params";
 export let link, node, simulation;
 
 export async function drawLink(linksData, nodesData) {
-  console.log("draw link");
   d3.select("#svg02").selectAll("line").remove();
   d3.select("#svg02").selectAll("circle").remove();
 

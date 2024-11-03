@@ -79,3 +79,4 @@ gem "tailwindcss-rails", "~> 2.6"
 
 gem 'devise'
 gem 'jquery-rails'
+gem 'cssbundling-rails'
