@@ -51,7 +51,6 @@ const facilitiesInitial = [
 
 document.addEventListener("turbo:load", async () => {
   let simulationParameters = document.getElementById("simulation-data");
-  console.log("シミュレーション");
   if (simulationParameters) {
     let simulationId = simulationParameters.dataset.id;
     if (simulationId == "") {
