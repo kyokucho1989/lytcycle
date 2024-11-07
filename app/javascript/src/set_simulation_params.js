@@ -67,9 +67,9 @@ document.addEventListener("turbo:load", async () => {
           throw new Error(`レスポンスステータス: ${response.status}`);
         }
         const json = await response.json();
-        routes = JSON.parse(json.routes);
-        facilities = JSON.parse(json.facilities);
-        operators = JSON.parse(json.operators);
+        routes = JSON.parse(JSON.stringify(json.routes));
+        facilities = JSON.parse(JSON.stringify(json.facilities));
+        operators = JSON.parse(JSON.stringify(json.operators));
 
         // routesのsourceとtargetをインデックスに修正
         routes.forEach((route) => {

@@ -86,7 +86,7 @@ export function setObjectparams(e, params, facilities, facilityDialog) {
   let selectedFacility = facilities.find((facility) => facility.id == id.value);
   selectedFacility.name = name.value;
   selectedFacility.processingTime = processingTime.value;
-  facilityDialog.close;
+  facilityDialog.close();
 }
 
 let facilityDialog, confirmBtn;
@@ -96,7 +96,7 @@ document.addEventListener("turbo:load", async () => {
   if (confirmBtn) {
     // ［確認］ボタンが既定でフォームを送信しないようにし、`close()` メソッドでダイアログを閉じ、"close" イベントを発生させる
     confirmBtn.addEventListener("click", (e) => {
-      let params;
+      let params = {};
       params.id = document.getElementById("hidden-id");
       params.name = document.getElementById("name");
       params.processingTime = document.getElementById("processingTime");
