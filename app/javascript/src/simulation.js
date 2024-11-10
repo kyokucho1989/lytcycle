@@ -77,15 +77,15 @@ export async function drawLink(linksData, nodesData) {
   }
 }
 
-export function setObjectparams(e, params, facilities, facilityDialog) {
+export function setObjectparams(e, params, objects) {
   e.preventDefault(); // この偽フォームを送信しない
   let id = params.id;
-  let name = params.name;
-  let processingTime = params.processingTime;
-  let selectedFacility = facilities.find((facility) => facility.id == id.value);
-  selectedFacility.name = name.value;
-  selectedFacility.processingTime = processingTime.value;
-  facilityDialog.close();
+  let selectedObject = objects.find((object) => object.id == id);
+  for (const [key, value] of Object.entries(params)) {
+    if (key != "id") {
+      selectedObject[key] = value;
+    }
+  }
 }
 
 document.addEventListener("turbo:render", async () => {
@@ -98,23 +98,32 @@ document.addEventListener("turbo:render", async () => {
     confirmBtn.addEventListener("click", (e) => {
       // e.preventDefault();
       let params = {};
-      params.id = document.getElementById("hidden-id");
-      params.name = document.getElementById("name");
-      params.processingTime = document.getElementById("processingTime");
+      params.id = document.getElementById("hidden-id").value;
+      params.name = document.getElementById("name").value;
+      params.processingTime = document.getElementById("processingTime").value;
 
-      setObjectparams(e, params, facilities, facilityDialog);
+      setObjectparams(e, params, facilities);
+      facilityDialog.close();
     });
   }
 
   if (routeConfirmBtn) {
     // ［確認］ボタンが既定でフォームを送信しないようにし、`close()` メソッドでダイアログを閉じ、"close" イベントを発生させる
     routeConfirmBtn.addEventListener("click", (e) => {
-      let params2;
-      params2.id = document.getElementById("hidden-id");
-      params2.routeLength = document.getElementById("route-length");
-      params2.processingTime = document.getElementById("processingTime");
+      let params = {};
+      params.id = document.getElementById("route-hidden-id").value;
+      params.routeLength = document.getElementById("route-length").value;
 
-      setObjectparams(e, params2, routes, routeDialog);
+      setObjectparams(e, params, routes);
+      let selectedRoute = routes.find((route) => route.id == params.id);
+      let pairRoute = routes.find(
+        (route) =>
+          route.target == selectedRoute.source &&
+          route.source == selectedRoute.target
+      );
+      params.id = pairRoute.id;
+      setObjectparams(e, params, routes);
+      routeDialog.close();
     });
   }
 });
@@ -127,8 +136,8 @@ function nodeClicked() {
 function linkClicked() {
   let routeForEdit = routes.find((route) => route.id == this.id);
   console.log(routeForEdit);
-  // setFacilityDataToModal(facilityForEdit);
-  // facilityDialog.showModal();
+  setRouteDataToModal(routeForEdit);
+  routeDialog.showModal();
 }
 
 export function setFacilityDataToModal(facility) {
@@ -139,6 +148,14 @@ export function setFacilityDataToModal(facility) {
   id.value = facility.id;
   name.value = facility.name;
   processingTime.value = facility.processingTime;
+}
+
+export function setRouteDataToModal(route) {
+  let id = document.getElementById("route-hidden-id");
+  let length = document.getElementById("route-length");
+
+  id.value = route.id;
+  length.value = route.routeLength;
 }
 
 function dragstarted(event) {

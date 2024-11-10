@@ -80,12 +80,11 @@ test("button click and set params", async () => {
   const button = screen.getByText("保存");
   button.addEventListener("click", (e) => {
     let params = {};
-    params.id = document.getElementById("hidden-id");
-    params.name = document.getElementById("name");
-    params.processingTime = document.getElementById("processingTime");
-    let facilityDialog = document.getElementById("facilityDialog");
+    params.id = document.getElementById("hidden-id").value;
+    params.name = document.getElementById("name").value;
+    params.processingTime = document.getElementById("processingTime").value;
 
-    setObjectparams(e, params, facilities, facilityDialog);
+    setObjectparams(e, params, facilities);
   });
   await fireEvent.click(button);
 
