@@ -70,6 +70,7 @@ group :test do
   gem "rspec-rails"
   gem "selenium-webdriver"
 end
+gem 'cssbundling-rails'
 
 gem "dockerfile-rails", ">= 1.6", :group => :development
 

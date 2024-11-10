@@ -53,6 +53,20 @@ data-facilities ="<%= @simulation.facilities %>">
         </div>
       </form>
     </dialog>
+    <dialog id="route-dialog">
+    パラメータ
+    <div id="route-hidden-id" hidden></div>
+      <form>
+        <div>
+          <label for="route-length">距離</label>
+          <input type="number" id="route-length" name="root-length" min="1" max="50" />
+        </div>
+        <div>
+          <button value="cancel" formmethod="dialog">取り消し</button>
+          <button id="route-confirm-btn" value="default">保存</button>
+        </div>
+      </form>
+    </dialog>
     <p>
       <button id="showDialog">Show the dialog</button>
     </p>

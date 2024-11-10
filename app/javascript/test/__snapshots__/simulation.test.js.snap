@@ -15,7 +15,7 @@ exports[`draw link and circle 1`] = `
     <line
       id="root10"
       stroke="black"
-      stroke-width="1"
+      stroke-width="8"
       x1="229.82409730022795"
       x2="329.2377549676545"
       y1="308.47550993530893"
@@ -24,7 +24,7 @@ exports[`draw link and circle 1`] = `
     <line
       id="root11"
       stroke="black"
-      stroke-width="1"
+      stroke-width="8"
       x1="329.2377549676545"
       x2="428.651412635081"
       y1="59.94136576674265"
@@ -33,7 +33,7 @@ exports[`draw link and circle 1`] = `
     <line
       id="root12"
       stroke="black"
-      stroke-width="1"
+      stroke-width="8"
       x1="428.651412635081"
       x2="229.82409730022795"
       y1="308.47550993530893"
@@ -42,7 +42,7 @@ exports[`draw link and circle 1`] = `
     <line
       id="re_root10"
       stroke="black"
-      stroke-width="1"
+      stroke-width="8"
       x1="229.82409730022795"
       x2="428.651412635081"
       y1="308.47550993530893"
@@ -51,7 +51,7 @@ exports[`draw link and circle 1`] = `
     <line
       id="re_root11"
       stroke="black"
-      stroke-width="1"
+      stroke-width="8"
       x1="329.2377549676545"
       x2="229.82409730022795"
       y1="59.94136576674265"
@@ -60,7 +60,7 @@ exports[`draw link and circle 1`] = `
     <line
       id="re_root12"
       stroke="black"
-      stroke-width="1"
+      stroke-width="8"
       x1="428.651412635081"
       x2="329.2377549676545"
       y1="308.47550993530893"

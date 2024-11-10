@@ -9,7 +9,8 @@
   },
   "scripts": {
     "test": "jest",
-    "lint": "eslint app"
+    "lint": "eslint app",
+    "build:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify"
   },
   "author": "",
   "license": "ISC",
@@ -25,6 +26,9 @@
   },
   "dependencies": {
     "animejs": "^3.2.2",
-    "d3": "^7.9.0"
+    "autoprefixer": "^10.4.20",
+    "d3": "^7.9.0",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.14"
   }
 }

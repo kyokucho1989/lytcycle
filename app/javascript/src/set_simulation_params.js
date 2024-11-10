@@ -4,12 +4,12 @@ export let routes, operators, facilities;
 import { drawLink } from "src/simulation";
 
 const routesInitial = [
-  { source: 0, target: 1, l: 20, id: "root10" },
-  { source: 1, target: 2, l: 20, id: "root11" },
-  { source: 2, target: 0, l: 20, id: "root12" },
-  { source: 0, target: 2, l: 20, id: "re_root10" },
-  { source: 1, target: 0, l: 20, id: "re_root11" },
-  { source: 2, target: 1, l: 20, id: "re_root12" },
+  { source: 0, target: 1, routeLength: 20, id: "root10" },
+  { source: 1, target: 2, routeLength: 20, id: "root11" },
+  { source: 2, target: 0, routeLength: 20, id: "root12" },
+  { source: 0, target: 2, routeLength: 20, id: "re_root10" },
+  { source: 1, target: 0, routeLength: 20, id: "re_root11" },
+  { source: 2, target: 1, routeLength: 20, id: "re_root12" },
 ];
 const operatorsInitial = [{ name: "Alice" }];
 const facilitiesInitial = [
@@ -51,7 +51,6 @@ const facilitiesInitial = [
 
 document.addEventListener("turbo:load", async () => {
   let simulationParameters = document.getElementById("simulation-data");
-  console.log("シミュレーション");
   if (simulationParameters) {
     let simulationId = simulationParameters.dataset.id;
     if (simulationId == "") {

@@ -3,9 +3,8 @@ import { routes, operators, facilities } from "src/set_simulation_params";
 // データの初期値をロード
 
 export let link, node, simulation;
-
+let facilityDialog, confirmBtn, routeDialog, routeConfirmBtn;
 export async function drawLink(linksData, nodesData) {
-  console.log("draw link");
   d3.select("#svg02").selectAll("line").remove();
   d3.select("#svg02").selectAll("circle").remove();
 
@@ -15,7 +14,7 @@ export async function drawLink(linksData, nodesData) {
     .data(linksData)
     .enter()
     .append("line")
-    .attr("stroke-width", 1)
+    .attr("stroke-width", 8)
     .attr("stroke", "black")
     .attr("id", function (d) {
       return d.id;
@@ -68,7 +67,7 @@ export async function drawLink(linksData, nodesData) {
           .on("end", dragended)
       )
       .on("click", nodeClicked);
-
+    link.on("click", linkClicked);
     simulation
       .force("link")
       .links(linksData)
@@ -78,38 +77,67 @@ export async function drawLink(linksData, nodesData) {
   }
 }
 
-export function setObjectparams(e, params, facilities, facilityDialog) {
+export function setObjectparams(e, params, objects) {
   e.preventDefault(); // この偽フォームを送信しない
   let id = params.id;
-  let name = params.name;
-  let processingTime = params.processingTime;
-  let selectedFacility = facilities.find((facility) => facility.id == id.value);
-  selectedFacility.name = name.value;
-  selectedFacility.processingTime = processingTime.value;
-  facilityDialog.close;
+  let selectedObject = objects.find((object) => object.id == id);
+  for (const [key, value] of Object.entries(params)) {
+    if (key != "id") {
+      selectedObject[key] = value;
+    }
+  }
 }
 
-let facilityDialog, confirmBtn;
-document.addEventListener("turbo:load", async () => {
+document.addEventListener("turbo:render", async () => {
   facilityDialog = document.getElementById("facilityDialog");
   confirmBtn = document.getElementById("confirmBtn");
+  routeDialog = document.getElementById("route-dialog");
+  routeConfirmBtn = document.getElementById("route-confirm-btn");
   if (confirmBtn) {
     // ［確認］ボタンが既定でフォームを送信しないようにし、`close()` メソッドでダイアログを閉じ、"close" イベントを発生させる
     confirmBtn.addEventListener("click", (e) => {
-      let params;
-      params.id = document.getElementById("hidden-id");
-      params.name = document.getElementById("name");
-      params.processingTime = document.getElementById("processingTime");
+      // e.preventDefault();
+      let params = {};
+      params.id = document.getElementById("hidden-id").value;
+      params.name = document.getElementById("name").value;
+      params.processingTime = document.getElementById("processingTime").value;
 
-      setObjectparams(e, params, facilities, facilityDialog);
+      setObjectparams(e, params, facilities);
+      facilityDialog.close();
+    });
+  }
+
+  if (routeConfirmBtn) {
+    // ［確認］ボタンが既定でフォームを送信しないようにし、`close()` メソッドでダイアログを閉じ、"close" イベントを発生させる
+    routeConfirmBtn.addEventListener("click", (e) => {
+      let params = {};
+      params.id = document.getElementById("route-hidden-id").value;
+      params.routeLength = document.getElementById("route-length").value;
+
+      setObjectparams(e, params, routes);
+      let selectedRoute = routes.find((route) => route.id == params.id);
+      let pairRoute = routes.find(
+        (route) =>
+          route.target == selectedRoute.source &&
+          route.source == selectedRoute.target
+      );
+      params.id = pairRoute.id;
+      setObjectparams(e, params, routes);
+      routeDialog.close();
     });
   }
 });
 function nodeClicked() {
   let facilityForEdit = facilities.find((facility) => facility.id == this.id);
-  console.log(facilityForEdit);
   setFacilityDataToModal(facilityForEdit);
   facilityDialog.showModal();
+}
+
+function linkClicked() {
+  let routeForEdit = routes.find((route) => route.id == this.id);
+  console.log(routeForEdit);
+  setRouteDataToModal(routeForEdit);
+  routeDialog.showModal();
 }
 
 export function setFacilityDataToModal(facility) {
@@ -120,6 +148,14 @@ export function setFacilityDataToModal(facility) {
   id.value = facility.id;
   name.value = facility.name;
   processingTime.value = facility.processingTime;
+}
+
+export function setRouteDataToModal(route) {
+  let id = document.getElementById("route-hidden-id");
+  let length = document.getElementById("route-length");
+
+  id.value = route.id;
+  length.value = route.routeLength;
 }
 
 function dragstarted(event) {
