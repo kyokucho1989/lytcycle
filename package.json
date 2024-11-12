@@ -30,5 +30,6 @@
     "d3": "^7.9.0",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14"
-  }
+  },
+  "packageManager": "yarn@1.22.19"
 }
