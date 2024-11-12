@@ -1,13 +1,16 @@
-# fly.toml app configuration file generated for lytcycle on 2024-09-15T06:58:13+09:00
+# fly.toml app configuration file generated for lytcycle-wild-sun-9576 on 2024-11-13T04:59:32+09:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'lytcycle'
-primary_region = 'hkg'
+app = 'lytcycle-wild-sun-9576'
+primary_region = 'nrt'
 console_command = '/rails/bin/rails console'
 
 [build]
+
+[deploy]
+  release_command = './bin/rails db:prepare'
 
 [http_service]
   internal_port = 3000
@@ -21,3 +24,7 @@ console_command = '/rails/bin/rails console'
   memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
+
+[[statics]]
+  guest_path = '/rails/public'
+  url_prefix = '/'
