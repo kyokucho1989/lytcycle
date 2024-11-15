@@ -1,1 +1,24 @@
-show
+<h1>Simulation詳細</h1>
+<div>
+  <ul>
+    <li>
+      タイトル：<%= @simulation.title %>
+    </li>
+    <li>
+      待ち時間：<%= @simulation.waiting_time %>
+    </li>
+    <li>
+    ネック工程：<%= @simulation.bottleneck_process %>
+    </li>
+    <li>
+    サイクルタイム：<%= @simulation.cycle_time %>
+    </li>
+  </ul>
+  <%= link_to edit_user_simulation_path(current_user, @simulation) do %>
+    編集
+  <% end %>
+  <%= link_to user_simulations_path(current_user) do %>
+    一覧ページへ
+  <% end %>
+</div>
+

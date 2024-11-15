@@ -433,7 +433,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("turbo:load", () => {
   const userMenu = document.getElementById("user-menu-button");
   if (userMenu) {
     userMenu.addEventListener("click", toggleUserMenu, false);

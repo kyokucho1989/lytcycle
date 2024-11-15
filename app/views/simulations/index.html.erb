@@ -21,6 +21,9 @@
       <li>
       <%= simulation.routes %>
     </li>
+    <%= link_to user_simulation_path(current_user, simulation) do %>
+      詳細
+    <% end %>
     <%= link_to edit_user_simulation_path(current_user, simulation) do %>
       編集
     <% end %>
