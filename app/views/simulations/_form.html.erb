@@ -72,6 +72,13 @@ data-facilities ="<%= @simulation.facilities %>">
     </p>
 <output></output>
 
+<div data-controller="simulationmode">
+  <button data-simulationmode-target="editbutton" data-action="simulationmode#edit"> 編集へ </button>
+  <button data-simulationmode-target="simulatebutton" data-action="simulationmode#simulate"> 実行へ </button>
+  <div data-simulationmode-target="edit">編集モード</div>
+  <div data-simulationmode-target="simulate">実行モード</div>
+</div>
+
   <div class="svg-wrapper">
 
     <svg id="svg02" xmlns="http://www.w3.org/2000/svg" width="700" height="800">
