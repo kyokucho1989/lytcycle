@@ -74,7 +74,11 @@ data-facilities ="<%= @simulation.facilities %>">
 
 <div data-controller="simulationmode">
   <button data-simulationmode-target="editbutton" data-action="simulationmode#edit"> 編集へ </button>
-  <button data-simulationmode-target="simulatebutton" data-action="simulationmode#simulate"> 実行へ </button>
+  <button data-simulationmode-target="simulatebutton" data-action="simulationmode#checkSimulate"> 実行へ </button>
+  <label>
+  <input type="checkbox" data-simulationmode-target="toggle" data-action="simulationmode#toggleReadyForExecution">
+  実行可能状態にする
+  </label>
   <div data-simulationmode-target="edit">編集モード</div>
   <div data-simulationmode-target="simulate">実行モード</div>
 </div>
