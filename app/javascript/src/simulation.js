@@ -86,6 +86,7 @@ export function changeActiveObject() {
   d3.select("#svg02").selectAll("line").on("click", linkClicked);
   d3.select("#svg02").selectAll("circle").on("click", nodeClicked);
 }
+
 export function setObjectparams(e, params, objects) {
   e.preventDefault(); // この偽フォームを送信しない
   let id = params.id;
