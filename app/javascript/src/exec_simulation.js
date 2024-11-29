@@ -2,7 +2,6 @@ import anime from "animejs";
 // import * as d3 from "d3";
 // import { routes, operators, facilities } from "src/set_simulation_params";
 // データの初期値をロード
-
 let linksData = [
   { source: 0, target: 1, l: 20, id: "root10" },
   { source: 1, target: 2, l: 20, id: "root11" },
@@ -92,7 +91,7 @@ class Controller {
       // break;
       case "goal":
         selectedRoot = roots.find(
-          (element) => element.source.index == currentLocation.index
+          (element) => element.source == currentLocation.index
         );
         destination = selectedRoot.target;
         break;
@@ -100,14 +99,14 @@ class Controller {
         if (operator.hasMaterial) {
           console.log("持ってる");
           selectedRoot = roots.find(
-            (element) => element.source.index == currentLocation.index
+            (element) => element.source.id == currentLocation.id
           );
           destination = selectedRoot.target;
         } else {
           console.log("もってない");
           selectedRoot = roots.find(
             (element) =>
-              element.source.index == currentLocation.index &&
+              element.source.id == currentLocation.id &&
               element.id.includes("re")
           );
           destination = selectedRoot.target;
@@ -242,7 +241,7 @@ function getCountObject(countSize) {
 }
 
 function getAnimeObject(rootName) {
-  let path = anime.path(`#svg01 line#${rootName}`);
+  let path = anime.path(`#svg02 line#${rootName}`);
   let animeObject = {
     targets: "#ob1",
     translateX: path("x"),
@@ -274,7 +273,6 @@ function getMachineAnimeObject() {
 document.addEventListener("turbo:load", () => {
   const start = document.getElementById("startSimulation2");
   if (start) {
-    alert("e");
     start.addEventListener("click", countStart, false);
   }
 });
