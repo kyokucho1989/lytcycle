@@ -1,52 +1,53 @@
 import anime from "animejs";
 // import * as d3 from "d3";
+import { routes, facilities } from "src/set_simulation_params";
 // import { routes, operators, facilities } from "src/set_simulation_params";
 // データの初期値をロード
-let linksData = [
-  { source: 0, target: 1, l: 20, id: "root10" },
-  { source: 1, target: 2, l: 20, id: "root11" },
-  { source: 2, target: 0, l: 20, id: "root12" },
-  { source: 0, target: 2, l: 20, id: "re_root10" },
-  { source: 1, target: 0, l: 20, id: "re_root11" },
-  { source: 2, target: 1, l: 20, id: "re_root12" },
-];
+// let linksData = [
+//   { source: 0, target: 1, l: 20, id: "root10" },
+//   { source: 1, target: 2, l: 20, id: "root11" },
+//   { source: 2, target: 0, l: 20, id: "root12" },
+//   { source: 0, target: 2, l: 20, id: "re_root10" },
+//   { source: 1, target: 0, l: 20, id: "re_root11" },
+//   { source: 2, target: 1, l: 20, id: "re_root12" },
+// ];
 
-let nodesData1 = [
-  {
-    index: 0,
-    x: 230,
-    y: 310,
-    r: 10,
-    id: "n0",
-    processingTime: 1,
-    type: "start",
-    name: "startPoint",
-  },
-  {
-    index: 1,
-    x: 330,
-    y: 60,
-    r: 15,
-    id: "n1",
-    processingTime: 15,
-    type: "machine",
-    name: "machine-no-1",
-    isProcessing: false,
-    hasMaterial: false,
-    storageSize: 0,
-    processingEndTime: 0,
-  },
-  {
-    index: 2,
-    x: 430,
-    y: 310,
-    r: 10,
-    id: "n2",
-    processingTime: 1,
-    type: "goal",
-    name: "goalPoint",
-  },
-];
+// let nodesData1 = [
+//   {
+//     index: 0,
+//     x: 230,
+//     y: 310,
+//     r: 10,
+//     id: "n0",
+//     processingTime: 1,
+//     type: "start",
+//     name: "startPoint",
+//   },
+//   {
+//     index: 1,
+//     x: 330,
+//     y: 60,
+//     r: 15,
+//     id: "n1",
+//     processingTime: 15,
+//     type: "machine",
+//     name: "machine-no-1",
+//     isProcessing: false,
+//     hasMaterial: false,
+//     storageSize: 0,
+//     processingEndTime: 0,
+//   },
+//   {
+//     index: 2,
+//     x: 430,
+//     y: 310,
+//     r: 10,
+//     id: "n2",
+//     processingTime: 1,
+//     type: "goal",
+//     name: "goalPoint",
+//   },
+// ];
 
 class Operator {
   constructor(parameters) {
@@ -86,12 +87,12 @@ class Controller {
     roots = this.route;
     currentLocation = operator.currentLocation;
     console.log(currentLocation);
-    switch (operator1.currentLocation.type) {
+    switch (operator.currentLocation.type) {
       case "start":
       // break;
       case "goal":
         selectedRoot = roots.find(
-          (element) => element.source == currentLocation.index
+          (element) => element.source.index == currentLocation.index
         );
         destination = selectedRoot.target;
         break;
@@ -119,15 +120,18 @@ class Controller {
   }
 }
 
-const contoller = new Controller();
-
-contoller.setRoutes(linksData);
-
-const operator1 = new Operator({ name: "Alice" });
-operator1.currentLocation = nodesData1.find((object) => object.type == "start");
-// console.log(operator1.currentLocation);
-
 function countStart() {
+  let linksData = routes;
+  let nodesData1 = facilities;
+
+  const contoller = new Controller();
+
+  contoller.setRoutes(linksData);
+
+  const operator1 = new Operator({ name: "Alice" });
+  operator1.currentLocation = nodesData1.find(
+    (object) => object.type == "start"
+  );
   let endTime = 90;
   let t = 0;
   let object1, object2, object3;
