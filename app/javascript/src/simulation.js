@@ -77,6 +77,16 @@ export async function drawLink(linksData, nodesData) {
   }
 }
 
+export function changeInactiveObject() {
+  d3.select("#svg02").selectAll("line").on("click", null);
+  d3.select("#svg02").selectAll("circle").on("click", null);
+}
+
+export function changeActiveObject() {
+  d3.select("#svg02").selectAll("line").on("click", linkClicked);
+  d3.select("#svg02").selectAll("circle").on("click", nodeClicked);
+}
+
 export function setObjectparams(e, params, objects) {
   e.preventDefault(); // この偽フォームを送信しない
   let id = params.id;
@@ -88,7 +98,7 @@ export function setObjectparams(e, params, objects) {
   }
 }
 
-document.addEventListener("turbo:render", async () => {
+document.addEventListener("turbo:load", async () => {
   facilityDialog = document.getElementById("facilityDialog");
   confirmBtn = document.getElementById("confirmBtn");
   routeDialog = document.getElementById("route-dialog");

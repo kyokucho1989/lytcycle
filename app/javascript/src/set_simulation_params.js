@@ -1,6 +1,7 @@
 // import * as d3 from "d3";
 // import { routesInitial, operatorsInitial, simulation } from "./simulation.js";
 export let routes, operators, facilities;
+// export const parametersetEvent
 import { drawLink } from "src/simulation";
 
 const routesInitial = [
