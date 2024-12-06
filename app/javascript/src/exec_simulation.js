@@ -1,53 +1,27 @@
 import anime from "animejs";
-// import * as d3 from "d3";
 import { routes, facilities } from "src/set_simulation_params";
 // import { routes, operators, facilities } from "src/set_simulation_params";
-// データの初期値をロード
-// let linksData = [
-//   { source: 0, target: 1, l: 20, id: "root10" },
-//   { source: 1, target: 2, l: 20, id: "root11" },
-//   { source: 2, target: 0, l: 20, id: "root12" },
-//   { source: 0, target: 2, l: 20, id: "re_root10" },
-//   { source: 1, target: 0, l: 20, id: "re_root11" },
-//   { source: 2, target: 1, l: 20, id: "re_root12" },
-// ];
 
-// let nodesData1 = [
-//   {
-//     index: 0,
-//     x: 230,
-//     y: 310,
-//     r: 10,
-//     id: "n0",
-//     processingTime: 1,
-//     type: "start",
-//     name: "startPoint",
-//   },
-//   {
-//     index: 1,
-//     x: 330,
-//     y: 60,
-//     r: 15,
-//     id: "n1",
-//     processingTime: 15,
-//     type: "machine",
-//     name: "machine-no-1",
-//     isProcessing: false,
-//     hasMaterial: false,
-//     storageSize: 0,
-//     processingEndTime: 0,
-//   },
-//   {
-//     index: 2,
-//     x: 430,
-//     y: 310,
-//     r: 10,
-//     id: "n2",
-//     processingTime: 1,
-//     type: "goal",
-//     name: "goalPoint",
-//   },
-// ];
+class Location {
+  constructor(parameters) {
+    this.name = parameters.name;
+    this.id = parameters.id;
+    this.processingTime = parameters.processingTime ?? 1;
+    this.storageSize = parameters.storageSize ?? 0;
+    this.isProcessing = false;
+    this.processingEndTime = 0;
+    this.type = parameters.type ?? "machine";
+    this.history = [];
+  }
+
+  addStateToHistory(t, state) {
+    this.history.push({ t: t, state: state });
+  }
+
+  addCountToHistory(t, count) {
+    this.history.push({ t: t, productionCount: count });
+  }
+}
 
 class Operator {
   constructor(parameters) {
@@ -125,14 +99,19 @@ function countStart() {
   let nodesData1 = facilities;
 
   const contoller = new Controller();
+  let locations = [];
 
+  nodesData1.forEach((facility) => {
+    locations.push(new Location(facility));
+  });
   contoller.setRoutes(linksData);
-
+  // let startPoint = locations.find((object) => object.type == "start");
+  let goalPoint = locations.find((object) => object.type == "goal");
   const operator1 = new Operator({ name: "Alice" });
   operator1.currentLocation = nodesData1.find(
     (object) => object.type == "start"
   );
-  let endTime = 90;
+  let endTime = 200;
   let t = 0;
   let object1, object2, object3;
   let totalCount = 0;
@@ -143,8 +122,8 @@ function countStart() {
   object3 = getCountObject(totalCount);
   tl.add(object3, t * 100);
 
-  let machine = nodesData1.find((object) => object.type == "machine");
-
+  // let machine = nodesData1.find((object) => object.type == "machine");
+  let machine;
   while (t < endTime) {
     // console.log(`:t= ${t}`);
     if (operator1.isMoving) {
@@ -161,6 +140,9 @@ function countStart() {
       switch (operator1.currentLocation.type) {
         case "machine":
           console.log(`加工地点 :t=${t}`);
+          machine = locations.find(
+            (elemnt) => elemnt.id == operator1.currentLocation.id
+          );
           if (!machine.isProcessing || machine.processingEndTime < t) {
             if (!machine.hasMaterial) {
               operator1.hasMaterial = false;
@@ -200,7 +182,8 @@ function countStart() {
           console.log(`goal :t=${t}`);
           operator1.hasMaterial = false;
           totalCount = totalCount + 1;
-
+          goalPoint.storageSize++;
+          goalPoint.addCountToHistory(t, goalPoint.storageSize);
           object3 = getCountObject(totalCount);
           tl.add(object3, t * 100);
           break;
@@ -215,15 +198,44 @@ function countStart() {
         operator1.isMoving = true;
       }
     }
-    if (machine.isProcessing) {
-      // console.log(`加工終了時間:t= ${location1.processingEndTime}`);
-      if (machine.processingEndTime == t) {
-        // console.log("加工終了");
-        machine.isProcessing = false;
+
+    locations.forEach((machine) => {
+      if (machine.isProcessing) {
+        // console.log(`加工終了時間:t= ${location1.processingEndTime}`);
+        if (machine.processingEndTime == t) {
+          // console.log("加工終了");
+          machine.isProcessing = false;
+        }
       }
-    }
+    });
     t = t + 1;
   }
+
+  // 結果出力
+
+  let cycleTime = calculateCycleTime(goalPoint);
+  document.getElementById("simulation_cycle_time").value = cycleTime;
+  document.getElementById("simulation_bottleneck_process").value = 13;
+  document.getElementById("simulation_waiting_time").value = 13;
+}
+
+function calculateCycleTime(goalPoint) {
+  let history = goalPoint.history;
+  let timeSet = history.map((element) => element.t);
+  // let formattedTimeSet = timeSet.slice(1);
+  let slicedSet = timeSet.slice(1);
+  let deferenceArray = [];
+  deferenceArray = slicedSet.map((element, index) => {
+    let answer = element - timeSet[index];
+    return answer;
+  });
+  let init = 0;
+  let totalTime = deferenceArray.reduce(
+    (sum, currentValue) => sum + currentValue,
+    init
+  );
+  let cycleTime = totalTime / deferenceArray.length;
+  return cycleTime;
 }
 
 function getCountObject(countSize) {

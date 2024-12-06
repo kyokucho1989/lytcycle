@@ -27,6 +27,21 @@ data-facilities ="<%= @simulation.facilities %>">
     </div>
 
     <div>
+      <%= form.label :cycle_time, style: "display: block" %>
+      <%= form.number_field :cycle_time , size: "10x1", disabled: 'disabled'%>
+    </div>
+
+    <div>
+      <%= form.label :bottleneck_process, style: "display: block" %>
+      <%= form.number_field :bottleneck_process , size: "10x1", disabled: 'disabled'%>
+    </div>
+
+    <div>
+      <%= form.label :waiting_time, style: "display: block" %>
+      <%= form.number_field :waiting_time , size: "10x1", disabled: 'disabled'%>
+    </div>
+
+    <div>
       <%= form.submit "save", id: 'savesimulation' ,class: "bg-blue-500 text-white font-bold py-2 px-4 rounded"%>
     </div>
   <% end %>
