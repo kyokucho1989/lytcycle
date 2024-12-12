@@ -64,7 +64,6 @@ class Controller {
     let selectedRoot, rootName, destination, roots, currentLocation;
     roots = this.route;
     currentLocation = operator.currentLocation;
-    console.log(currentLocation);
     switch (operator.currentLocation.type) {
       case "start":
       // break;
@@ -76,13 +75,13 @@ class Controller {
         break;
       case "machine":
         if (operator.hasMaterial) {
-          console.log("持ってる");
+          // console.log("持ってる");
           selectedRoot = roots.find(
             (element) => element.source.id == currentLocation.id
           );
           destination = selectedRoot.target;
         } else {
-          console.log("もってない");
+          // console.log("もってない");
           selectedRoot = roots.find(
             (element) =>
               element.source.id == currentLocation.id &&
@@ -115,7 +114,7 @@ function countStart() {
   operator1.currentLocation = nodesData1.find(
     (object) => object.type == "start"
   );
-  let endTime = 200;
+  let endTime = 400;
   let t = 0;
   let object1, object2, object3;
   let totalCount = 0;
@@ -126,7 +125,6 @@ function countStart() {
   object3 = getCountObject(totalCount);
   tl.add(object3, t * 100);
 
-  // let machine = nodesData1.find((object) => object.type == "machine");
   let machine;
   while (t < endTime) {
     // console.log(`:t= ${t}`);
@@ -156,7 +154,7 @@ function countStart() {
             machine.isProcessing = true;
             machine.hasMaterial = true;
             operator1.isWaiting = false;
-            machine.processingEndTime = t + 100; //machine.processingTime;
+            machine.processingEndTime = t + machine.processingTime;
             object2 = getMachineAnimeObject();
             tl.add(object2, t * 100)
               .add({
@@ -210,7 +208,6 @@ function countStart() {
 
     locations.forEach((machine) => {
       if (machine.isProcessing) {
-        // console.log(`加工終了時間:t= ${location1.processingEndTime}`);
         if (machine.processingEndTime == t) {
           // console.log("加工終了");
           machine.isProcessing = false;
@@ -223,7 +220,6 @@ function countStart() {
   // 結果出力
 
   let cycleTime = calculateCycleTime(goalPoint);
-  // let waitingTime = calculateWaitingTime(operator1);
   let waitingArray = formatStateHistory(operator1);
   let waitingTime = calculateWaitingTime(waitingArray);
   let bottleneck_process = judgeBottleneckProcess(waitingArray);
@@ -247,7 +243,7 @@ function formatStateHistory(operator) {
   return waitingArray;
 }
 
-function calculateWaitingTime(waitingArray) {
+export function calculateWaitingTime(waitingArray) {
   let waitingTimeArray = waitingArray.map((element) => element[1]);
   const waitingTime = waitingTimeArray.reduce(
     (a, b) => Math.max(a, b),
@@ -257,7 +253,7 @@ function calculateWaitingTime(waitingArray) {
   return waitingTime;
 }
 
-function judgeBottleneckProcess(waitingArray) {
+export function judgeBottleneckProcess(waitingArray) {
   let waitingTimeArray = waitingArray.map((element) => element[1]);
   const waitingTime = waitingTimeArray.reduce(
     (a, b) => Math.max(a, b),
@@ -271,7 +267,7 @@ function judgeBottleneckProcess(waitingArray) {
   return bottleneck_process;
 }
 
-function calculateCycleTime(goalPoint) {
+export function calculateCycleTime(goalPoint) {
   let history = goalPoint.history;
   let timeSet = history.map((element) => element.t);
   let slicedSet;
