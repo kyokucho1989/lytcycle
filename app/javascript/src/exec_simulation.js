@@ -37,7 +37,11 @@ class Operator {
   }
 
   addStateToHistory(t, state) {
-    this.history.push({ t: t, state: state });
+    this.history.push({
+      t: t,
+      state: state,
+      locationId: this.currentLocation.id,
+    });
   }
 }
 
@@ -127,6 +131,7 @@ function countStart() {
   while (t < endTime) {
     // console.log(`:t= ${t}`);
     if (operator1.isMoving) {
+      operator1.addStateToHistory(t, "移動中");
       if (operator1.arrivalTime == t) {
         operator1.isMoving = false;
         operator1.currentLocation = operator1.destination;
@@ -139,18 +144,19 @@ function countStart() {
     } else {
       switch (operator1.currentLocation.type) {
         case "machine":
-          console.log(`加工地点 :t=${t}`);
+          // console.log(`加工地点 :t=${t}`);
           machine = locations.find(
             (elemnt) => elemnt.id == operator1.currentLocation.id
           );
           if (!machine.isProcessing || machine.processingEndTime < t) {
+            operator1.addStateToHistory(t, "脱着中");
             if (!machine.hasMaterial) {
               operator1.hasMaterial = false;
             }
             machine.isProcessing = true;
             machine.hasMaterial = true;
             operator1.isWaiting = false;
-            machine.processingEndTime = t + machine.processingTime;
+            machine.processingEndTime = t + 100; //machine.processingTime;
             object2 = getMachineAnimeObject();
             tl.add(object2, t * 100)
               .add({
@@ -169,17 +175,20 @@ function countStart() {
           } else {
             operator1.isWaiting = true;
             // if ()
-            console.log("待機中");
+            operator1.addStateToHistory(t, "待機中");
+            // console.log("待機中");
           }
           break;
 
         case "start":
           operator1.hasMaterial = true;
-          console.log(`start :t= ${t}`);
+          operator1.addStateToHistory(t, "脱着中");
+          // console.log(`start :t= ${t}`);
           break;
 
         case "goal":
-          console.log(`goal :t=${t}`);
+          // console.log(`goal :t=${t}`);
+          operator1.addStateToHistory(t, "脱着中");
           operator1.hasMaterial = false;
           totalCount = totalCount + 1;
           goalPoint.storageSize++;
@@ -214,16 +223,65 @@ function countStart() {
   // 結果出力
 
   let cycleTime = calculateCycleTime(goalPoint);
+  // let waitingTime = calculateWaitingTime(operator1);
+  let waitingArray = formatStateHistory(operator1);
+  let waitingTime = calculateWaitingTime(waitingArray);
+  let bottleneck_process = judgeBottleneckProcess(waitingArray);
   document.getElementById("simulation_cycle_time").value = cycleTime;
-  document.getElementById("simulation_bottleneck_process").value = 13;
-  document.getElementById("simulation_waiting_time").value = 13;
+  document.getElementById("simulation_bottleneck_process").value =
+    bottleneck_process;
+  document.getElementById("simulation_waiting_time").value = waitingTime;
+}
+
+function formatStateHistory(operator) {
+  let statesEachLocation = Map.groupBy(
+    operator.history,
+    ({ locationId }) => locationId
+  );
+  let array = Array.from(statesEachLocation);
+  let waitingArray = array.map((element) => {
+    let states = element[1];
+    let filterdStates = states.filter((element) => element.state == "待機中");
+    return [element[0], filterdStates.length];
+  });
+  return waitingArray;
+}
+
+function calculateWaitingTime(waitingArray) {
+  let waitingTimeArray = waitingArray.map((element) => element[1]);
+  const waitingTime = waitingTimeArray.reduce(
+    (a, b) => Math.max(a, b),
+    -Infinity
+  );
+
+  return waitingTime;
+}
+
+function judgeBottleneckProcess(waitingArray) {
+  let waitingTimeArray = waitingArray.map((element) => element[1]);
+  const waitingTime = waitingTimeArray.reduce(
+    (a, b) => Math.max(a, b),
+    -Infinity
+  );
+
+  let bottleneck_map = waitingArray.find(
+    (element) => element[1] == waitingTime
+  );
+  let bottleneck_process = bottleneck_map[0];
+  return bottleneck_process;
 }
 
 function calculateCycleTime(goalPoint) {
   let history = goalPoint.history;
   let timeSet = history.map((element) => element.t);
-  // let formattedTimeSet = timeSet.slice(1);
-  let slicedSet = timeSet.slice(1);
+  let slicedSet;
+  let cycleTime;
+  if (timeSet.length == 1) {
+    cycleTime = timeSet;
+    return cycleTime;
+  } else {
+    slicedSet = timeSet.slice(1);
+  }
   let deferenceArray = [];
   deferenceArray = slicedSet.map((element, index) => {
     let answer = element - timeSet[index];
@@ -234,7 +292,7 @@ function calculateCycleTime(goalPoint) {
     (sum, currentValue) => sum + currentValue,
     init
   );
-  let cycleTime = totalTime / deferenceArray.length;
+  cycleTime = totalTime / deferenceArray.length;
   return cycleTime;
 }
 
