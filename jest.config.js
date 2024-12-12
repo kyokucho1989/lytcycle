@@ -7,4 +7,5 @@ module.exports = {
   ],
   moduleDirectories: ["node_modules", "app/javascript"],
   testEnvironment: "jest-environment-jsdom",
+  modulePathIgnorePatterns: ["<rootDir>/vendor"],
 };

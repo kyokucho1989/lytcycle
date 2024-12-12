@@ -62,6 +62,9 @@ jobs:
       - name: Test system test by RSpec
         run: bundle exec rspec
 
+      - name: Test by Jest
+        run: npm test
+
   lint:
     runs-on: ubuntu-latest
     steps:
