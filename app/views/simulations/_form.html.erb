@@ -27,6 +27,21 @@ data-facilities ="<%= @simulation.facilities %>">
     </div>
 
     <div>
+      <%= form.label :cycle_time, style: "display: block" %>
+      <%= form.number_field :cycle_time , size: "10x1", disabled: 'disabled'%>
+    </div>
+
+    <div>
+      <%= form.label :bottleneck_process, style: "display: block" %>
+      <%= form.text_area :bottleneck_process , size: "10x1", disabled: 'disabled'%>
+    </div>
+
+    <div>
+      <%= form.label :waiting_time, style: "display: block" %>
+      <%= form.number_field :waiting_time , size: "10x1", disabled: 'disabled'%>
+    </div>
+
+    <div>
       <%= form.submit "save", id: 'savesimulation' ,class: "bg-blue-500 text-white font-bold py-2 px-4 rounded"%>
     </div>
   <% end %>
@@ -37,7 +52,7 @@ data-facilities ="<%= @simulation.facilities %>">
   <!-- フォームを含むモーダルダイアログ -->
     <dialog id="facilityDialog">
     パラメータ
-    <div id="hidden-id" hidden></div>
+      <div id="hidden-id" hidden></div>
       <form>
         <div>
           <label for="name">設備名</label>
@@ -54,8 +69,8 @@ data-facilities ="<%= @simulation.facilities %>">
       </form>
     </dialog>
     <dialog id="route-dialog">
-    パラメータ
-    <div id="route-hidden-id" hidden></div>
+      パラメータ
+      <div id="route-hidden-id" hidden></div>
       <form>
         <div>
           <label for="route-length">距離</label>
@@ -67,10 +82,23 @@ data-facilities ="<%= @simulation.facilities %>">
         </div>
       </form>
     </dialog>
-    <p>
-      <button id="showDialog">Show the dialog</button>
-    </p>
-<output></output>
+
+<div data-controller="simulationmode">
+  <button data-simulationmode-target="editbutton" data-action="simulationmode#edit"> 編集へ </button>
+  <button data-simulationmode-target="simulatebutton" data-action="simulationmode#checkSimulate"> 実行へ </button>
+  <label>
+  <input type="checkbox" data-simulationmode-target="toggle" data-action="simulationmode#toggleReadyForExecution">
+  実行可能状態にする
+  </label>
+  <div data-simulationmode-target="edit">
+    <h3>編集モード</h3>
+  </div>
+  <div data-simulationmode-target="simulate">
+    <h3>実行モード</h3>
+    <button type="button" id="startSimulation2" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">Button text</button>
+    <%= button_tag 'Start', {id: "startSimulation", class: "bt"} %>
+  </div>
+</div>
 
   <div class="svg-wrapper">
 
