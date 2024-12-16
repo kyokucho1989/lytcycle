@@ -11,20 +11,9 @@ data-facilities ="<%= @simulation.facilities %>">
       <%= form.text_field :title %>
     </div>
 
-    <div>
-      <%= form.label :routes, style: "display: block" %>
-      <%= form.text_area :routes %>
-    </div>
-
-    <div>
-      <%= form.label :operators, style: "display: block" %>
-      <%= form.text_area :operators %>
-    </div>
-
-    <div>
-      <%= form.label :facilities, style: "display: block" %>
-      <%= form.text_area :facilities %>
-    </div>
+      <%= form.hidden_field :routes %>
+      <%= form.hidden_field :operators %>
+      <%= form.hidden_field :facilities %>
 
     <div>
       <%= form.label :cycle_time, style: "display: block" %>
