@@ -6,18 +6,18 @@ export default class extends Controller {
   static targets = ["edit", "simulate", "editbutton", "simulatebutton"];
 
   connect() {
-    this.readyForExecution = false;
-    this.editTarget.hidden = false;
-    this.simulateTarget.hidden = true;
-    this.editbuttonTarget.hidden = true;
-    this.simulatebuttonTarget.hidden = false;
+    // this.readyForExecution = false;
+    // this.editTarget.hidden = false;
+    // this.simulateTarget.hidden = true;
+    // this.editbuttonTarget.hidden = true;
+    // this.simulatebuttonTarget.hidden = false;
   }
 
   edit() {
-    this.editTarget.hidden = false;
-    this.simulateTarget.hidden = true;
-    this.editbuttonTarget.hidden = true;
-    this.simulatebuttonTarget.hidden = false;
+    // this.editTarget.hidden = false;
+    // this.simulateTarget.hidden = true;
+    // this.editbuttonTarget.hidden = true;
+    // this.simulatebuttonTarget.hidden = false;
     changeActiveObject();
   }
 
@@ -26,13 +26,15 @@ export default class extends Controller {
       this.simulate();
     } else {
       alert("実行可能にチェックをしてください");
+      const editRadio = document.getElementById("editMode");
+      editRadio.checked = true;
     }
   }
   simulate() {
-    this.editTarget.hidden = true;
-    this.simulateTarget.hidden = false;
-    this.editbuttonTarget.hidden = false;
-    this.simulatebuttonTarget.hidden = true;
+    // this.editTarget.hidden = true;
+    // this.simulateTarget.hidden = false;
+    // this.editbuttonTarget.hidden = false;
+    // this.simulatebuttonTarget.hidden = true;
     changeInactiveObject();
   }
 
