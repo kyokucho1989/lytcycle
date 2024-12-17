@@ -5,20 +5,61 @@ import { changeActiveObject } from "src/simulation";
 export default class extends Controller {
   static targets = ["edit", "simulate", "editbutton", "simulatebutton"];
 
+  // 状態の定義
+  MAIN_STATES = {
+    EDIT: "edit",
+    RUNNING: "running",
+  };
+
+  SUB_STATES = {
+    SELECT: "select",
+    ADD_MAN: "add-man",
+    ADD_FACILITY: "add-facility",
+    DELETE: "delete",
+    LINK: "link",
+  };
+
   connect() {
+    this.mainState = this.MAIN_STATES.EDIT;
+    this.subState = this.SUB_STATES.SELECT;
     // this.readyForExecution = false;
-    // this.editTarget.hidden = false;
+    this.editTarget.hidden = false;
     // this.simulateTarget.hidden = true;
     // this.editbuttonTarget.hidden = true;
     // this.simulatebuttonTarget.hidden = false;
   }
 
   edit() {
-    // this.editTarget.hidden = false;
-    // this.simulateTarget.hidden = true;
+    this.mainState = this.MAIN_STATES.EDIT;
+    this.subState = this.SUB_STATES.SELECT;
+    console.log(this.mainState, this.subState);
+    this.editTarget.hidden = false;
+    this.simulateTarget.hidden = true;
     // this.editbuttonTarget.hidden = true;
     // this.simulatebuttonTarget.hidden = false;
+    const editSubRadio = document.getElementById("select");
+    editSubRadio.checked = true;
     changeActiveObject();
+  }
+
+  changeModeToAddMan() {
+    this.mainState = this.MAIN_STATES.EDIT;
+    this.subState = this.SUB_STATES.ADD_MAN;
+  }
+
+  changeModeToAddFacility() {
+    this.mainState = this.MAIN_STATES.EDIT;
+    this.subState = this.SUB_STATES.ADD_FACILITY;
+  }
+
+  changeModeToLink() {
+    this.mainState = this.MAIN_STATES.EDIT;
+    this.subState = this.SUB_STATES.LINK;
+  }
+
+  changeModeToDelete() {
+    this.mainState = this.MAIN_STATES.EDIT;
+    this.subState = this.SUB_STATES.DELETE;
   }
 
   checkSimulate() {
@@ -31,8 +72,10 @@ export default class extends Controller {
     }
   }
   simulate() {
-    // this.editTarget.hidden = true;
-    // this.simulateTarget.hidden = false;
+    this.mainState = this.MAIN_STATES.RUNNING;
+    console.log(this.mainState, this.subState);
+    this.editTarget.hidden = true;
+    this.simulateTarget.hidden = false;
     // this.editbuttonTarget.hidden = false;
     // this.simulatebuttonTarget.hidden = true;
     changeInactiveObject();
