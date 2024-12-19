@@ -6,7 +6,7 @@ class Location {
   constructor(parameters) {
     this.name = parameters.name;
     this.id = parameters.id;
-    this.processingTime = parameters.processingTime ?? 1;
+    this.processingTime = parseInt(parameters.processingTime) ?? 1;
     this.storageSize = parameters.storageSize ?? 0;
     this.isProcessing = false;
     this.processingEndTime = 0;
@@ -142,7 +142,7 @@ function countStart() {
     } else {
       switch (operator1.currentLocation.type) {
         case "machine":
-          // console.log(`加工地点 :t=${t}`);
+          console.log(`加工地点 :t=${t}`);
           machine = locations.find(
             (elemnt) => elemnt.id == operator1.currentLocation.id
           );
@@ -174,14 +174,14 @@ function countStart() {
             operator1.isWaiting = true;
             // if ()
             operator1.addStateToHistory(t, "待機中");
-            // console.log("待機中");
+            console.log("待機中");
           }
           break;
 
         case "start":
           operator1.hasMaterial = true;
           operator1.addStateToHistory(t, "脱着中");
-          // console.log(`start :t= ${t}`);
+          console.log(`start :t= ${t}`);
           break;
 
         case "goal":
