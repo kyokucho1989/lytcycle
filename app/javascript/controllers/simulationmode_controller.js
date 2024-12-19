@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
-import { changeInactiveObject } from "src/simulation";
+// import { changeInactiveObject } from "src/simulation";
 import { changeActiveObject } from "src/simulation";
+import { setClickEventToObject } from "src/simulation";
 
 export default class extends Controller {
   static targets = ["edit", "simulate", "editbutton", "simulatebutton"];
@@ -13,7 +14,7 @@ export default class extends Controller {
 
   SUB_STATES = {
     SELECT: "select",
-    ADD_MAN: "add-man",
+    ADD_OPERATOR: "add-operator",
     ADD_FACILITY: "add-facility",
     DELETE: "delete",
     LINK: "link",
@@ -40,26 +41,31 @@ export default class extends Controller {
     const editSubRadio = document.getElementById("select");
     editSubRadio.checked = true;
     changeActiveObject();
+    setClickEventToObject(this);
   }
 
   changeModeToAddMan() {
     this.mainState = this.MAIN_STATES.EDIT;
-    this.subState = this.SUB_STATES.ADD_MAN;
+    this.subState = this.SUB_STATES.ADD_OPERATOR;
+    setClickEventToObject(this);
   }
 
   changeModeToAddFacility() {
     this.mainState = this.MAIN_STATES.EDIT;
     this.subState = this.SUB_STATES.ADD_FACILITY;
+    setClickEventToObject(this);
   }
 
   changeModeToLink() {
     this.mainState = this.MAIN_STATES.EDIT;
     this.subState = this.SUB_STATES.LINK;
+    setClickEventToObject(this);
   }
 
   changeModeToDelete() {
     this.mainState = this.MAIN_STATES.EDIT;
     this.subState = this.SUB_STATES.DELETE;
+    setClickEventToObject(this);
   }
 
   checkSimulate() {
@@ -78,7 +84,7 @@ export default class extends Controller {
     this.simulateTarget.hidden = false;
     // this.editbuttonTarget.hidden = false;
     // this.simulatebuttonTarget.hidden = true;
-    changeInactiveObject();
+    setClickEventToObject(this);
   }
 
   toggleReadyForExecution(event) {

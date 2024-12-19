@@ -87,6 +87,34 @@ export function changeActiveObject() {
   d3.select("#svg02").selectAll("circle").on("click", nodeClicked);
 }
 
+export function setClickEventToObject(object) {
+  if (object.mainState == "running") {
+    console.log("run");
+    changeInactiveObject();
+  } else {
+    switch (object.subState) {
+      case "select":
+        console.log("select");
+        break;
+      case "add-operator":
+        console.log("add-operator");
+        break;
+      case "add-facility":
+        console.log("fac");
+        break;
+      case "delete":
+        console.log("delete");
+        break;
+      case "link":
+        console.log("link");
+        break;
+    }
+  }
+
+  d3.select("#svg02").selectAll("line").on("click", linkClicked);
+  d3.select("#svg02").selectAll("circle").on("click", nodeClicked);
+}
+
 export function setObjectparams(e, params, objects) {
   e.preventDefault(); // この偽フォームを送信しない
   let id = params.id;
@@ -137,6 +165,7 @@ document.addEventListener("turbo:load", async () => {
     });
   }
 });
+
 function nodeClicked() {
   let facilityForEdit = facilities.find((facility) => facility.id == this.id);
   setFacilityDataToModal(facilityForEdit);
