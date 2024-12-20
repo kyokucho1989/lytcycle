@@ -50,6 +50,37 @@ const facilitiesInitial = [
   },
 ];
 
+export function addFacility([x, y]) {
+  let lastIdObject = facilities.find((el) => el.lastId);
+  let lastId;
+  if (lastIdObject === undefined) {
+    lastId = facilities.length;
+    facilities.unshift({ lastId: lastId });
+  } else {
+    lastId = lastIdObject.lastId;
+  }
+
+  lastId = lastId + 1;
+  facilities[0] = { lastId: lastId };
+  let facility = {
+    index: lastId,
+    x: x,
+    y: y,
+    r: 15,
+    id: `n${lastId}`,
+    processingTime: 15,
+    type: "machine",
+    name: `machine-no-${lastId}`,
+    isProcessing: false,
+    hasMaterial: false,
+    storageSize: 0,
+    processingEndTime: 0,
+  };
+
+  facilities.push(facility);
+  drawLink(routes, facilities);
+}
+
 document.addEventListener("turbo:load", async () => {
   let simulationParameters = document.getElementById("simulation-data");
   if (simulationParameters) {
