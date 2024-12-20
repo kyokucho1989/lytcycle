@@ -3,6 +3,7 @@ import { routes, operators, facilities } from "src/set_simulation_params";
 // データの初期値をロード
 
 export let link, node, simulation;
+import { addFacility } from "src/set_simulation_params";
 let facilityDialog, confirmBtn, routeDialog, routeConfirmBtn;
 export async function drawLink(linksData, nodesData) {
   d3.select("#svg02").selectAll("line").remove();
@@ -40,22 +41,10 @@ export async function drawLink(linksData, nodesData) {
     // シミュレーション描画
     simulation = d3
       .forceSimulation()
-      .force("link", d3.forceLink().strength(0).iterations(1))
+      .force("link", d3.forceLink().strength(0))
       .force("charge", d3.forceManyBody().strength(0))
-      .force(
-        "x",
-        d3
-          .forceX()
-          .strength(0.01)
-          .x(400 / 2)
-      )
-      .force(
-        "y",
-        d3
-          .forceY()
-          .strength(0.01)
-          .y(100 / 2)
-      );
+      .force("x", null)
+      .force("y", null);
 
     simulation.nodes(nodesData).on("tick", ticked);
     node
@@ -94,18 +83,22 @@ export function setClickEventToObject(object) {
   } else {
     switch (object.subState) {
       case "select":
+        d3.select("#svg02").on("click", null);
         console.log("select");
         break;
       case "add-operator":
+        d3.select("#svg02").on("click", null);
         console.log("add-operator");
         break;
       case "add-facility":
-        console.log("fac");
+        switchAddFacilityMode();
         break;
       case "delete":
+        d3.select("#svg02").on("click", null);
         console.log("delete");
         break;
       case "link":
+        d3.select("#svg02").on("click", null);
         console.log("link");
         break;
     }
@@ -113,6 +106,15 @@ export function setClickEventToObject(object) {
 
   d3.select("#svg02").selectAll("line").on("click", linkClicked);
   d3.select("#svg02").selectAll("circle").on("click", nodeClicked);
+}
+
+export function switchAddFacilityMode() {
+  const svg = d3.select("#svg02");
+  svg.on("click", null);
+  svg.on("click", function (e) {
+    const [x, y] = d3.pointer(e, this);
+    addFacility([x, y]);
+  });
 }
 
 export function setObjectparams(e, params, objects) {
