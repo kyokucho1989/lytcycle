@@ -3,10 +3,10 @@ import { routes, operators, facilities } from "src/set_simulation_params";
 // データの初期値をロード
 
 export let link, node, simulation;
+export let facilityDialog, confirmBtn, routeDialog, routeConfirmBtn;
 import { addFacility } from "src/set_simulation_params";
 import { changeInactiveObject } from "src/canvas";
 import { linkClicked, nodeClicked } from "src/canvas";
-let facilityDialog, confirmBtn, routeDialog, routeConfirmBtn;
 
 export function setClickEventToObject(object) {
   if (object.mainState == "running") {
@@ -60,13 +60,10 @@ export function setObjectparams(e, params, objects) {
   }
 }
 
-document.addEventListener("turbo:load", async () => {
+export function setParamsToFacilityOnModal() {
   facilityDialog = document.getElementById("facilityDialog");
   confirmBtn = document.getElementById("confirmBtn");
-  routeDialog = document.getElementById("route-dialog");
-  routeConfirmBtn = document.getElementById("route-confirm-btn");
   if (confirmBtn) {
-    // ［確認］ボタンが既定でフォームを送信しないようにし、`close()` メソッドでダイアログを閉じ、"close" イベントを発生させる
     confirmBtn.addEventListener("click", (e) => {
       // e.preventDefault();
       let params = {};
@@ -78,7 +75,11 @@ document.addEventListener("turbo:load", async () => {
       facilityDialog.close();
     });
   }
+}
 
+export function setParamsToRouteOnModal() {
+  routeDialog = document.getElementById("route-dialog");
+  routeConfirmBtn = document.getElementById("route-confirm-btn");
   if (routeConfirmBtn) {
     // ［確認］ボタンが既定でフォームを送信しないようにし、`close()` メソッドでダイアログを閉じ、"close" イベントを発生させる
     routeConfirmBtn.addEventListener("click", (e) => {
@@ -98,6 +99,16 @@ document.addEventListener("turbo:load", async () => {
       routeDialog.close();
     });
   }
+}
+
+document.addEventListener("turbo:load", async () => {
+  await setParamsToFacilityOnModal();
+  await setParamsToRouteOnModal();
+});
+
+document.addEventListener("turbo:load", () => {
+  // シミュレーション保存ボタンを押したときの処理
+  setSimulationSaveEvent();
 });
 
 export function setFacilityDataToModal(facility) {
@@ -118,7 +129,7 @@ export function setRouteDataToModal(route) {
   length.value = route.routeLength;
 }
 
-document.addEventListener("turbo:load", () => {
+export async function setSimulationSaveEvent() {
   const saveSimulationButton = document.getElementById("savesimulation");
   if (saveSimulationButton) {
     saveSimulationButton.addEventListener("click", (event) => {
@@ -151,4 +162,4 @@ document.addEventListener("turbo:load", () => {
         });
     });
   }
-});
+}

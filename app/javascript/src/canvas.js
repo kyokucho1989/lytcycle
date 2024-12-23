@@ -5,7 +5,7 @@ import { routes, facilities } from "src/set_simulation_params";
 export let link, node, simulation;
 import { setFacilityDataToModal } from "src/simulation";
 import { setRouteDataToModal } from "src/simulation";
-let facilityDialog, routeDialog;
+import { facilityDialog, routeDialog } from "src/simulation";
 export async function drawLink(linksData, nodesData) {
   d3.select("#svg02").selectAll("line").remove();
   d3.select("#svg02").selectAll("circle").remove();
@@ -80,7 +80,6 @@ export function linkClicked() {
   console.log(canvasController);
 
   let routeForEdit = routes.find((route) => route.id == this.id);
-  console.log(routeForEdit);
   setRouteDataToModal(routeForEdit);
   routeDialog.showModal();
 }
