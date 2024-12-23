@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
 // import { changeInactiveObject } from "src/simulation";
-import { changeActiveObject } from "src/simulation";
+import { changeActiveObject } from "src/canvas";
 import { setClickEventToObject } from "src/simulation";
 
 export default class extends Controller {
