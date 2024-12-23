@@ -2,7 +2,7 @@
 // import { routesInitial, operatorsInitial, simulation } from "./simulation.js";
 export let routes, operators, facilities;
 // export const parametersetEvent
-import { drawLink } from "src/simulation";
+import { drawLink } from "src/canvas";
 
 const routesInitial = [
   { source: 0, target: 1, routeLength: 20, id: "root10" },

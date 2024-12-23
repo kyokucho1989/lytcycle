@@ -5,3 +5,4 @@ import "src/simulation";
 import "src/simurate";
 import "src/set_simulation_params";
 import "src/exec_simulation";
+import "src/canvas";

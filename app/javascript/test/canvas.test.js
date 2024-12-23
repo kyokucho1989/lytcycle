@@ -7,8 +7,7 @@ import {
 // adds special assertions like toHaveTextContent
 import "@testing-library/jest-dom";
 
-import { drawLink } from "../src/simulation.js";
-// import { facilities } from "../src/set_simulation_params.js";
+import { drawLink } from "../src/canvas.js";
 let facilitiesInitial, routesInitial;
 beforeEach(() => {
   facilitiesInitial = [
