@@ -88,14 +88,6 @@ export function setParamsToRouteOnModal() {
       params.routeLength = document.getElementById("route-length").value;
 
       setObjectparams(e, params, routes);
-      let selectedRoute = routes.find((route) => route.id == params.id);
-      let pairRoute = routes.find(
-        (route) =>
-          route.target == selectedRoute.source &&
-          route.source == selectedRoute.target
-      );
-      params.id = pairRoute.id;
-      setObjectparams(e, params, routes);
       routeDialog.close();
     });
   }
