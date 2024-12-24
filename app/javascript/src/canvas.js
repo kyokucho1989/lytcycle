@@ -7,64 +7,78 @@ import { setFacilityDataToModal } from "src/simulation";
 import { setRouteDataToModal } from "src/simulation";
 import { facilityDialog, routeDialog } from "src/simulation";
 export async function drawLink(linksData, nodesData) {
-  d3.select("#svg02").selectAll("line").remove();
-  d3.select("#svg02").selectAll("circle").remove();
+  return new Promise((resolve) => {
+    d3.select("#svg02").selectAll("line").remove();
+    d3.select("#svg02").selectAll("circle").remove();
 
-  link = d3
-    .select("#svg02")
-    .selectAll("line")
-    .data(linksData)
-    .enter()
-    .append("line")
-    .attr("stroke-width", 8)
-    .attr("stroke", "black")
-    .attr("id", function (d) {
-      return d.id;
-    });
-
-  node = d3
-    .select("#svg02")
-    .selectAll("circle")
-    .data(nodesData)
-    .enter()
-    .append("circle")
-    .attr("r", function (d) {
-      return d.r;
-    })
-    .attr("stroke", "black")
-    .attr("fill", "LightSalmon")
-    .attr("id", function (d) {
-      return d.id;
-    });
-
-  const simurateSvg = document.getElementById("svg02");
-  if (simurateSvg) {
-    // シミュレーション描画
-    simulation = d3
-      .forceSimulation()
-      .force("link", d3.forceLink().strength(0))
-      .force("charge", d3.forceManyBody().strength(0))
-      .force("x", null)
-      .force("y", null);
-
-    simulation.nodes(nodesData).on("tick", ticked);
-    node
-      .call(
-        d3
-          .drag()
-          .on("start", dragstarted)
-          .on("drag", dragged)
-          .on("end", dragended)
-      )
-      .on("click", nodeClicked);
-    link.on("click", linkClicked);
-    simulation
-      .force("link")
-      .links(linksData)
-      .id(function (d) {
-        return d.index;
+    link = d3
+      .select("#svg02")
+      .selectAll("line")
+      .data(linksData)
+      .enter()
+      .append("line")
+      .attr("stroke-width", 8)
+      .attr("stroke", "black")
+      .attr("id", function (d) {
+        return d.id;
       });
-  }
+
+    node = d3
+      .select("#svg02")
+      .selectAll("circle")
+      .data(nodesData)
+      .enter()
+      .append("circle")
+      .attr("r", function (d) {
+        return d.r;
+      })
+      .attr("stroke", "black")
+      .attr("fill", "LightSalmon")
+      .attr("id", function (d) {
+        return d.id;
+      });
+
+    const simurateSvg = document.getElementById("svg02");
+    if (simurateSvg) {
+      // シミュレーション描画
+      simulation = d3
+        .forceSimulation()
+        .force("link", d3.forceLink().strength(0))
+        .force("charge", d3.forceManyBody().strength(0))
+        .force("x", null)
+        .force("y", null);
+
+      simulation.nodes(nodesData).on("tick", ticked);
+      node
+        .call(
+          d3
+            .drag()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended)
+        )
+        .on("click", nodeClicked);
+      link.on("click", linkClicked);
+      simulation
+        .force("link")
+        .links(linksData)
+        .id(function (d) {
+          return d.index;
+        });
+      // シミュレーションが完全に終了したら resolve を呼び出す
+      simulation.on("end", () => {
+        resolve();
+      });
+
+      // 手動でシミュレーション終了
+      setTimeout(() => {
+        simulation.stop();
+        resolve();
+      }, 1000); // 1秒後にシミュレーションを強制終了
+    } else {
+      resolve(); // SVGが存在しない場合もresolveを呼び出す
+    }
+  });
 }
 
 export function nodeClicked() {
