@@ -1,6 +1,6 @@
 import anime from "animejs";
 import { routes, facilities } from "src/set_simulation_params";
-// import { routes, operators, facilities } from "src/set_simulation_params";
+import { drawLink } from "src/canvas";
 
 class Location {
   constructor(parameters) {
@@ -97,9 +97,30 @@ class Controller {
   }
 }
 
-function countStart() {
-  let linksData = routes;
+function generatePairRoutes(routes) {
+  let lastIds = routes.filter((element) => element.lastId);
+  let filterdRoutes = routes.filter((element) => element.routeLength);
+  let routesWithPairs = filterdRoutes;
+
+  let converdRoutes = filterdRoutes.map((element) => {
+    return {
+      ...element,
+      source: element.target,
+      target: element.source,
+      id: `re-${element.id}`,
+    };
+  });
+  routesWithPairs = filterdRoutes.concat(converdRoutes);
+  if (lastIds.length == 0) {
+    return routesWithPairs;
+  } else {
+    return routesWithPairs.unshift(lastIds);
+  }
+}
+async function countStart() {
+  let linksData = generatePairRoutes(routes);
   let nodesData1 = facilities;
+  await drawLink(linksData, nodesData1);
 
   const contoller = new Controller();
   let locations = [];
@@ -320,7 +341,7 @@ function getAnimeObject(rootName) {
     // duration: 500,
     direction: "reverse",
     // loop: true,
-    // easing: "linear",
+    // easing: "easeInOutSine",
   };
 
   return animeObject;
