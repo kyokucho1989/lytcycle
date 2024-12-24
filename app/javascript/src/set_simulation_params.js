@@ -8,9 +8,6 @@ const routesInitial = [
   { source: 0, target: 1, routeLength: 20, id: "root10" },
   { source: 1, target: 2, routeLength: 20, id: "root11" },
   { source: 2, target: 0, routeLength: 20, id: "root12" },
-  { source: 0, target: 2, routeLength: 20, id: "re_root10" },
-  { source: 1, target: 0, routeLength: 20, id: "re_root11" },
-  { source: 2, target: 1, routeLength: 20, id: "re_root12" },
 ];
 const operatorsInitial = [{ name: "Alice" }];
 const facilitiesInitial = [
@@ -91,6 +88,7 @@ document.addEventListener("turbo:load", async () => {
       operators = operatorsInitial;
       facilities = facilitiesInitial;
       console.log("初期値設定終了");
+      drawLink(routes, facilities);
     } else {
       try {
         const response = await fetch("edit.json");
