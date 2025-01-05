@@ -10,12 +10,33 @@ export function findNgRoutesIds(routes) {
   // かならずスタートとゴールまでつながっていること
 }
 
+export function groupBySource(routes) {
+  let groupedRoutes = routes.reduce((a, x) => {
+    console.log(a);
+    console.log(x);
+    if (!a[x["source"]]) {
+      a[x["source"]] = [];
+    }
+    a[x["source"]].push(x);
+    // console.log(a[x["source"]]);
+    return a;
+  }, []);
+  // console.log(groupedRoutes);
+  return groupedRoutes;
+}
+
 /*
 
 const routesInitial = [
   { source: 0, target: 1, routeLength: 20, id: "root10" },
   { source: 1, target: 2, routeLength: 20, id: "root11" },
   { source: 2, target: 0, routeLength: 20, id: "root12" },
+];
+
+const groupBySource = [
+0: [{ source: 0, target: 1, routeLength: 20, id: "root10" }],
+1: [{ source: 1, target: 2, routeLength: 20, id: "root11" }],
+2: [{ source: 2, target: 0, routeLength: 20, id: "root12" }],
 ];
 
 const routesInitial = [
