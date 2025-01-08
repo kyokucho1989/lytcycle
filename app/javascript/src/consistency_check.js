@@ -1,51 +1,68 @@
 // import { routes } from "src/set_simulation_params";
 
-export function findNgRoutesIds(routes, startNode) {
+export function detectGraphIssue(routes) {
   let filterdRoute = routes.filter((el) => !el["lastId"]);
-  let groupRoutes = groupBySource(filterdRoute);
-  const visitedRoutes = new Set();
-  const allRoutes = filterdRoute.map(
-    (route) => `${route.source}->${route.target}`
-  );
+  let groupedRoutes = formatBySource(filterdRoute);
+  let startNode = 0;
+  let InvalidRoutes = findInvalidRoutesIdsByDFS(groupedRoutes, startNode);
+}
+
+export function findInvalidRoutesIdsByDFS(groupedRoutes, startNode) {
+  const visitedRoutes = [];
+  let InvalidPath = [];
+
   let closedLoopDetected = false;
 
   function dfs(node, startNode, path) {
-    if (path.has(node)) {
+    // let currentNode;
+    if (path.includes(node)) {
       if (node === startNode) {
         closedLoopDetected = true;
+        path.length = 0;
         return;
       }
-      throw new Error(`ループ検出: ${node}に戻る不正な閉ループがあります`);
     }
+    if (path.length == 0 && node != startNode) {
+      path.push(startNode);
+    }
+    path.push(node);
 
-    path.add(node);
-
-    const neighbors = groupRoutes[node] || [];
+    // currentNode = node;
+    const neighbors = groupedRoutes[node] || [];
+    let routeKey;
     for (const neighbor of neighbors) {
-      const routeKey = `${node}->${neighbor}`;
-      if (!visitedRoutes.has(routeKey)) {
-        visitedRoutes.add(routeKey);
-        dfs(neighbor, startNode, new Set(path));
+      routeKey = `${node}->${neighbor}`;
+      if (path.includes(neighbor)) {
+        console.log(`閉ループ検出 ${neighbor}:${node}`);
+      }
+      if (!visitedRoutes.includes(routeKey)) {
+        visitedRoutes.push(routeKey);
+        dfs(neighbor, startNode, path);
+      } else if (neighbor != startNode && !InvalidPath.includes(path)) {
+        console.log(
+          `不適切な閉ループ:neighbor ${neighbor}/node:${node}/path:${path}/visitedRoute: ${visitedRoutes}`
+        );
+        InvalidPath.push([...path]);
       }
     }
-    console.log(visitedRoutes);
+    if (neighbors.length == 0) {
+      console.log(`孤立したルートが存在します/path:${path}`);
+      InvalidPath.push([...path]);
+    }
+    path.pop();
   }
 
-  dfs(startNode, startNode, new Set());
-
-  if (visitedRoutes.size !== allRoutes.length) {
-    throw new Error("孤立したルートが存在します");
-  }
+  dfs(startNode, startNode, []);
 
   if (!closedLoopDetected) {
     throw new Error("スタート地点に戻る閉ループが存在しません");
   }
 
-  console.log("すべてのルートが整合しています");
-  return [];
+  // console.log("すべてのルートが整合しています");
+  return InvalidPath;
 }
 
-export function groupBySource(routes) {
+export function formatBySource(routes) {
   let groupedRoutes = routes.reduce((a, x) => {
     if (!a[x["source"]]) {
       a[x["source"]] = [];
@@ -64,7 +81,7 @@ const routesInitial = [
   { source: 2, target: 0, routeLength: 20, id: "root12" },
 ];
 
-const groupBySource = [
+const formatBySource = [
 0: [{ source: 0, target: 1, routeLength: 20, id: "root10" }],
 1: [{ source: 1, target: 2, routeLength: 20, id: "root11" }],
 2: [{ source: 2, target: 0, routeLength: 20, id: "root12" }],
