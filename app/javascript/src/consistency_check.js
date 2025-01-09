@@ -1,10 +1,15 @@
 // import { routes } from "src/set_simulation_params";
 
-export function detectGraphIssue(routes) {
+export function findInvalidRouteIds(routes) {
   let filterdRoute = routes.filter((el) => !el["lastId"]);
   let groupedRoutes = formatBySource(filterdRoute);
   let startNode = 0;
-  let InvalidRoutes = findInvalidRoutesSetByDFS(groupedRoutes, startNode);
+  let InvalidRoutesSet = findInvalidRoutesSetByDFS(groupedRoutes, startNode);
+  const InvalidRoutes = filterdRoute.filter((route) => {
+    InvalidRoutesSet.has(`${route.source}->${route.target}`).map((route) => {
+      route.id;
+    });
+  });
   return InvalidRoutes;
 }
 
