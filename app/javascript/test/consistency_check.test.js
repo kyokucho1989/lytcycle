@@ -9,10 +9,10 @@ import "@testing-library/jest-dom";
 
 import {
   formatBySource,
-  findInvalidRoutesIdsByDFS,
+  findInvalidRoutesSetByDFS,
 } from "../src/consistency_check";
-// import { group } from "d3";
-let routesInitial, routesInitial2, routesInitialIncludeLastID;
+
+let routesInitial;
 beforeEach(() => {
   routesInitial = [
     { source: 0, target: 1, l: 20, id: "root10" },
@@ -48,7 +48,8 @@ test("group correct route", async () => {
   expect(result).toStrictEqual(groupedRoute1);
 });
 
-test("findInvalidRoutesIdsByDFS", async () => {
+test("findInvalidRoutesSetByDFS", async () => {
+  // 正常
   let groupedRoute1 = {
     0: [1, 2, 3],
     1: [4],
@@ -58,7 +59,7 @@ test("findInvalidRoutesIdsByDFS", async () => {
     5: [6],
     6: [0],
   };
-
+  // ゴールにたどりつけないルートあり
   let groupedRoute2 = {
     0: [1, 2, 3],
     1: [4],
@@ -70,6 +71,7 @@ test("findInvalidRoutesIdsByDFS", async () => {
     7: [],
   };
 
+  // ゴール以外で閉ループ
   let groupedRoute3 = {
     0: [1, 3],
     1: [2, 4],
@@ -81,16 +83,36 @@ test("findInvalidRoutesIdsByDFS", async () => {
     7: [],
   };
 
-  // let result1 = findInvalidRoutesIdsByDFS(groupedRoute1, 0);
-  // let result2 = findInvalidRoutesIdsByDFS(groupedRoute2, 0);
-  let result3 = findInvalidRoutesIdsByDFS(groupedRoute3, 0);
-  // expect(result1).toMatchObject({});
-  // expect(result2).toMatchObject(new Set([new Set([0, 2, 7])]));
-  expect(result3).toMatchObject([
-    [2, 7],
-    [3, 5],
-  ]);
+  // スタートからたどれないルート
+  let groupedRoute4 = {
+    0: [1, 3],
+    1: [2, 4],
+    2: [7],
+    3: [5],
+    4: [6],
+    5: [6, 1],
+    6: [0],
+    7: [],
+    8: [6],
+  };
 
-  // let result2 = findInvalidRoutesIdsByDFS(routesInitial2, 0);
-  // expect(result2).toStrictEqual([]);
+  // スタート地点に戻れない
+  let groupedRoute5 = {
+    0: [1],
+    1: [2],
+    2: [3],
+    3: [],
+  };
+
+  let result1 = findInvalidRoutesSetByDFS(groupedRoute1, 0);
+  let result2 = findInvalidRoutesSetByDFS(groupedRoute2, 0);
+  let result3 = findInvalidRoutesSetByDFS(groupedRoute3, 0);
+  let result4 = findInvalidRoutesSetByDFS(groupedRoute4, 0);
+  let result5 = findInvalidRoutesSetByDFS(groupedRoute5, 0);
+
+  expect(result1).toMatchObject({});
+  expect(result2).toMatchObject(new Set(["0->2", "2->7"]));
+  expect(result3).toMatchObject(new Set(["1->2", "2->7", "5->1", "5->0"]));
+  expect(result4).toMatchObject(new Set(["1->2", "2->7", "5->1", "8->6"]));
+  expect(result5).toMatchObject(new Set(["0->1", "1->2", "2->3"]));
 });
