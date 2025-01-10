@@ -12,8 +12,8 @@ RSpec.describe 'Widget', type: :system do
     click_on 'save'
     assert_selector 'h1', text: 'Simulation一覧'
     click_on '編集'
-    expect(page).to have_css 'circle#n0'
-    expect(page).to have_css 'circle#n0'
-    expect(page).to have_css 'circle#n2'
+    expect(page).to have_css 'circle#start'
+    expect(page).to have_css 'circle#\\31'
+    expect(page).to have_css 'circle#goal'
   end
 end

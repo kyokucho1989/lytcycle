@@ -179,13 +179,13 @@ async function countStart() {
             object2 = getMachineAnimeObject();
             tl.add(object2, t * 100)
               .add({
-                targets: "circle#n1",
+                targets: "circle#\\31",
                 easing: "steps(1)",
                 fill: "#00f",
                 duration: 3000,
               })
               .add({
-                targets: "circle#n1",
+                targets: "circle#\\31",
                 easing: "steps(1)",
                 fill: "#000",
                 duration: 100,

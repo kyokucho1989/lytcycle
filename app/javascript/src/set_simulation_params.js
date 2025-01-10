@@ -5,28 +5,35 @@ export let routes, operators, facilities;
 import { drawLink } from "src/canvas";
 
 const routesInitial = [
-  { source: 0, target: 1, routeLength: 20, id: "root10" },
-  { source: 1, target: 2, routeLength: 20, id: "root11" },
-  { source: 2, target: 0, routeLength: 20, id: "root12" },
+  { source: "start", target: 1, routeLength: 20, id: "root10" },
+  { source: 1, target: "goal", routeLength: 20, id: "root1-1" },
+  { source: "goal", target: "start", routeLength: 20, id: "root-10" },
 ];
 const operatorsInitial = [{ name: "Alice" }];
 const facilitiesInitial = [
   {
-    index: 0,
+    x: 430,
+    y: 310,
+    r: 10,
+    id: "goal",
+    processingTime: 1,
+    type: "goal",
+    name: "goalPoint",
+  },
+  {
     x: 230,
     y: 310,
     r: 10,
-    id: "n0",
+    id: "start",
     processingTime: 1,
     type: "start",
     name: "startPoint",
   },
   {
-    index: 1,
     x: 330,
     y: 60,
     r: 15,
-    id: "n1",
+    id: 1,
     processingTime: 15,
     type: "machine",
     name: "machine-no-1",
@@ -34,16 +41,6 @@ const facilitiesInitial = [
     hasMaterial: false,
     storageSize: 0,
     processingEndTime: 0,
-  },
-  {
-    index: 2,
-    x: 430,
-    y: 310,
-    r: 10,
-    id: "n2",
-    processingTime: 1,
-    type: "goal",
-    name: "goalPoint",
   },
 ];
 

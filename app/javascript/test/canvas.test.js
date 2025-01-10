@@ -16,7 +16,7 @@ beforeEach(() => {
       x: 230,
       y: 310,
       r: 10,
-      id: "n0",
+      id: "start",
       processingTime: 1,
       type: "start",
       name: "startPoint",
@@ -26,7 +26,7 @@ beforeEach(() => {
       x: 330,
       y: 60,
       r: 15,
-      id: "n1",
+      id: 1,
       processingTime: 15,
       type: "machine",
       name: "machine-no-1",
@@ -40,7 +40,7 @@ beforeEach(() => {
       x: 430,
       y: 310,
       r: 10,
-      id: "n2",
+      id: "goal",
       processingTime: 1,
       type: "goal",
       name: "goalPoint",
@@ -48,12 +48,12 @@ beforeEach(() => {
   ];
 
   routesInitial = [
-    { source: 0, target: 1, l: 20, id: "root10" },
-    { source: 1, target: 2, l: 20, id: "root11" },
-    { source: 2, target: 0, l: 20, id: "root12" },
-    { source: 0, target: 2, l: 20, id: "re_root10" },
-    { source: 1, target: 0, l: 20, id: "re_root11" },
-    { source: 2, target: 1, l: 20, id: "re_root12" },
+    { source: "start", target: 1, l: 20, id: "root10" },
+    { source: 1, target: "goal", l: 20, id: "root11" },
+    { source: "goal", target: "start", l: 20, id: "root12" },
+    { source: "start", target: "goal", l: 20, id: "re_root10" },
+    { source: 1, target: "start", l: 20, id: "re_root11" },
+    { source: "goal", target: 1, l: 20, id: "re_root12" },
   ];
 });
 

@@ -70,7 +70,7 @@ exports[`draw link and circle 1`] = `
       cx="230"
       cy="310"
       fill="LightSalmon"
-      id="n0"
+      id="start"
       r="10"
       stroke="black"
     />
@@ -78,7 +78,7 @@ exports[`draw link and circle 1`] = `
       cx="330"
       cy="60"
       fill="LightSalmon"
-      id="n1"
+      id="1"
       r="15"
       stroke="black"
     />
@@ -86,7 +86,7 @@ exports[`draw link and circle 1`] = `
       cx="430"
       cy="310"
       fill="LightSalmon"
-      id="n2"
+      id="goal"
       r="10"
       stroke="black"
     />

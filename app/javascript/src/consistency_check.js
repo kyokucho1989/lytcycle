@@ -1,89 +1,83 @@
 // import { routes } from "src/set_simulation_params";
 
-export function findNgRoutesIds(routes) {
-  console.log(routes);
-  // const groupBySource = Object.groupBy(routes, ({ source }) => source);
-  // console.log(groupBySource);
-  // { odd: [1, 3, 5], even: [2, 4] }
-  // routes を深さ優先探索を行いやすいように整形
-  // 整形したroutesを引数にして探索
-  // かならずスタートとゴールまでつながっていること
+export function findInvalidRouteIds(routes) {
+  let filterdRoute = routes.filter((el) => !el["lastId"]);
+  let groupedRoutes = formatBySource(filterdRoute);
+  let startNode = "start";
+  let goalNode = "goal";
+  let InvalidRoutesSet = findInvalidRoutesSetByDFS(
+    groupedRoutes,
+    startNode,
+    goalNode
+  );
+  const InvalidRoutes = filterdRoute.filter((route) =>
+    InvalidRoutesSet.has(`${route.source}->${route.target}`)
+  );
+  let InvalidRoutesIds = InvalidRoutes.map((route) => route["id"]);
+  return InvalidRoutesIds;
 }
 
-/*
+export function findInvalidRoutesSetByDFS(groupedRoutes, startNode, goalNode) {
+  const visitedRoutes = [];
+  let InvalidRoutes = new Set();
+  let validRoutes = new Set();
 
-const routesInitial = [
-  { source: 0, target: 1, routeLength: 20, id: "root10" },
-  { source: 1, target: 2, routeLength: 20, id: "root11" },
-  { source: 2, target: 0, routeLength: 20, id: "root12" },
-];
-
-const routesInitial = [
-  { source: 0, target: 1, id: "root10" },
-  { source: 1, target: 2, routeLength: 20, id: "root11" },
-  { source: 2, target: 0, routeLength: 20, id: "root12" },
-];
-
-
-
-// グラフ構造を表す
-const graph = {
-  start: ["A", "B"],
-  A: ["C"],
-  B: ["C"],
-  C: ["goal"],
-  goal: []
-};
-
-// 深さ優先探索を使って整合性を確認する関数
-function validateNetwork(graph, startNode, goalNode) {
-  // 訪問済みノードを記録
-  const visited = new Set();
-  let allNodes = new Set(Object.keys(graph)); // 全ノード
-
-  // スタートからゴールまでの経路が存在するか確認
-  function dfs(node, path) {
-    if (path.has(node)) {
-      throw new Error(`ループ検出: ${node}を複数回訪問しています`);
+  // すべてのルートを配列として保管
+  let keys = Object.keys(groupedRoutes);
+  let allRoutes = [];
+  keys.forEach((key) => {
+    groupedRoutes[key].forEach((el) => {
+      allRoutes.push(`${key}->${el}`);
+    });
+  });
+  function dfs(node, startNode, path) {
+    if (path.includes(startNode) && node == startNode) {
+      path.length == 0;
+      return;
+    } else {
+      path.push(node);
     }
 
-    path.add(node);
-    visited.add(node);
+    const neighbors = groupedRoutes[node] || [];
+    let routeKey;
+    let routesConvertFromPath = [];
+    for (const neighbor of neighbors) {
+      routeKey = `${node}->${neighbor}`;
+      if (!visitedRoutes.includes(routeKey)) {
+        visitedRoutes.push(routeKey);
+        dfs(neighbor, startNode, path);
+      }
+      // path -> routeに変換
+      routesConvertFromPath = [];
+      path.slice(1).forEach((el, i) => {
+        routesConvertFromPath.push(`${path[i]}->${el}`);
+      });
 
-    // ゴールに到達したらtrue
-    if (node === goalNode) {
-      return true;
-    }
-
-    for (const neighbor of graph[node] || []) {
-      if (dfs(neighbor, new Set(path))) {
-        return true;
+      if (neighbor == startNode && node == goalNode) {
+        routesConvertFromPath.push(`${path.at(-1)}->${startNode}`);
+        routesConvertFromPath.forEach((el) => {
+          validRoutes.add(el);
+        });
       }
     }
 
-    return false;
+    path.pop();
   }
 
-  // スタートからゴールまでの経路が正しいかチェック
-  if (!dfs(startNode, new Set())) {
-    throw new Error("スタートからゴールまでの有効な経路がありません");
-  }
+  dfs(startNode, startNode, []);
 
-  // 孤立ノードがないか確認
-  const connectedNodes = visited;
-  if (allNodes.size !== connectedNodes.size) {
-    throw new Error("孤立したノードが存在します");
-  }
-
-  console.log("ネットワークの整合性が確認されました");
-  return true;
+  const allRoutesSet = new Set(allRoutes);
+  InvalidRoutes = allRoutesSet.difference(validRoutes);
+  return InvalidRoutes;
 }
 
-// 実行例
-try {
-  validateNetwork(graph, "start", "goal");
-} catch (error) {
-  console.error(error.message);
+export function formatBySource(routes) {
+  let groupedRoutes = routes.reduce((a, x) => {
+    if (!a[x["source"]]) {
+      a[x["source"]] = [];
+    }
+    a[x["source"]].push(x["target"]);
+    return a;
+  }, {});
+  return groupedRoutes;
 }
-
-*/
