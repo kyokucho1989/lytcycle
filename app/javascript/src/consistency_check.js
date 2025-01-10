@@ -3,17 +3,21 @@
 export function findInvalidRouteIds(routes) {
   let filterdRoute = routes.filter((el) => !el["lastId"]);
   let groupedRoutes = formatBySource(filterdRoute);
-  let startNode = 0;
-  let InvalidRoutesSet = findInvalidRoutesSetByDFS(groupedRoutes, startNode);
-  const InvalidRoutes = filterdRoute.filter((route) => {
-    InvalidRoutesSet.has(`${route.source}->${route.target}`).map((route) => {
-      route.id;
-    });
-  });
-  return InvalidRoutes;
+  let startNode = "start";
+  let goalNode = "goal";
+  let InvalidRoutesSet = findInvalidRoutesSetByDFS(
+    groupedRoutes,
+    startNode,
+    goalNode
+  );
+  const InvalidRoutes = filterdRoute.filter((route) =>
+    InvalidRoutesSet.has(`${route.source}->${route.target}`)
+  );
+  let InvalidRoutesIds = InvalidRoutes.map((route) => route["id"]);
+  return InvalidRoutesIds;
 }
 
-export function findInvalidRoutesSetByDFS(groupedRoutes, startNode) {
+export function findInvalidRoutesSetByDFS(groupedRoutes, startNode, goalNode) {
   const visitedRoutes = [];
   let InvalidRoutes = new Set();
   let validRoutes = new Set();
@@ -27,7 +31,12 @@ export function findInvalidRoutesSetByDFS(groupedRoutes, startNode) {
     });
   });
   function dfs(node, startNode, path) {
-    path.push(node);
+    if (path.includes(startNode) && node == startNode) {
+      path.length == 0;
+      return;
+    } else {
+      path.push(node);
+    }
 
     const neighbors = groupedRoutes[node] || [];
     let routeKey;
@@ -43,45 +52,22 @@ export function findInvalidRoutesSetByDFS(groupedRoutes, startNode) {
       path.slice(1).forEach((el, i) => {
         routesConvertFromPath.push(`${path[i]}->${el}`);
       });
-      if (neighbor != startNode) {
-        routesConvertFromPath.forEach((el) => {
-          InvalidRoutes.add(el);
-        });
-      } else {
+
+      if (neighbor == startNode && node == goalNode) {
+        routesConvertFromPath.push(`${path.at(-1)}->${startNode}`);
         routesConvertFromPath.forEach((el) => {
           validRoutes.add(el);
         });
       }
     }
 
-    if (neighbors.length == 0) {
-      routesConvertFromPath = [];
-      path.slice(1).forEach((el, i) => {
-        routesConvertFromPath.push(`${path[i]}->${el}`);
-      });
-      // console.log(`孤立したルートが存在します/path:${path}`);
-
-      routesConvertFromPath.forEach((el) => {
-        InvalidRoutes.add(el);
-      });
-    }
     path.pop();
   }
 
   dfs(startNode, startNode, []);
 
-  const visitedRoutesSet = new Set(visitedRoutes);
   const allRoutesSet = new Set(allRoutes);
-
-  const notVisitedRoutesSet = allRoutesSet.difference(visitedRoutesSet);
-  if (notVisitedRoutesSet.size == 0) {
-    // console.log("すべてのルートを訪れています。");
-  } else {
-    notVisitedRoutesSet.forEach((el) => {
-      InvalidRoutes.add(el);
-    });
-  }
-  InvalidRoutes = InvalidRoutes.difference(validRoutes);
+  InvalidRoutes = allRoutesSet.difference(validRoutes);
   return InvalidRoutes;
 }
 

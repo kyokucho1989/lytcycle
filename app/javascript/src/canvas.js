@@ -43,12 +43,23 @@ export async function drawLink(linksData, nodesData) {
       // シミュレーション描画
       simulation = d3
         .forceSimulation()
-        .force("link", d3.forceLink().strength(0))
+        .force(
+          "link",
+          d3
+            .forceLink()
+            .strength(0)
+            .id((d) => d.id)
+        )
         .force("charge", d3.forceManyBody().strength(0))
         .force("x", null)
         .force("y", null);
 
-      simulation.nodes(nodesData).on("tick", ticked);
+      simulation
+        .nodes(nodesData)
+        .on("tick", ticked)
+        .on("end", () => {
+          resolve();
+        });
       node
         .call(
           d3
@@ -59,16 +70,7 @@ export async function drawLink(linksData, nodesData) {
         )
         .on("click", nodeClicked);
       link.on("click", linkClicked);
-      simulation
-        .force("link")
-        .links(linksData)
-        .id(function (d) {
-          return d.index;
-        });
-      // シミュレーションが完全に終了したら resolve を呼び出す
-      simulation.on("end", () => {
-        resolve();
-      });
+      simulation.force("link").links(linksData);
 
       // 手動でシミュレーション終了
       setTimeout(() => {
