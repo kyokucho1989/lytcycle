@@ -24,25 +24,7 @@ export async function drawLink(linksData, nodesData) {
         .attr("id", function (d) {
           return d.id;
         })
-        .attr("marker-end", "url(#arr)")
-        .attr("x2", function (d) {
-          // target の x 座標を調整
-          const dx = d.target.x - d.source.x;
-          const dy = d.target.y - d.source.y;
-          const lengthToHide = 10; // 調整したい長さ
-          const distance = Math.sqrt(dx ** 2 + dy ** 2);
-          const ratio = (distance - lengthToHide) / distance;
-          return d.source.x;
-        })
-        .attr("y2", function (d) {
-          // target の y 座標を調整
-          const dx = d.target.x - d.source.x;
-          const dy = d.target.y - d.source.y;
-          const lengthToHide = 10; // 調整したい長さ
-          const distance = Math.sqrt(dx ** 2 + dy ** 2);
-          const ratio = (distance - lengthToHide) / distance;
-          return d.source.y;
-        });
+        .attr("marker-end", "url(#arr)");
 
       node = d3
         .select("#svg02")
@@ -71,7 +53,8 @@ export async function drawLink(linksData, nodesData) {
         )
         .force("charge", d3.forceManyBody().strength(0))
         .force("x", null)
-        .force("y", null);
+        .force("y", null)
+        .on("tick", ticked);
 
       simulation
         .nodes(nodesData)
@@ -141,10 +124,23 @@ function ticked() {
   link
     .attr("x1", (d) => d.source.x)
     .attr("y1", (d) => d.source.y)
-    .attr("x2", (d) => d.target.x)
-    .attr("y2", (d) => d.target.y);
+    .attr("x2", (d) => adjustLinkEnd(d).x) // 終点の x を補正
+    .attr("y2", (d) => adjustLinkEnd(d).y); // 終点の y を補正
 
   node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+}
+
+function adjustLinkEnd(link) {
+  let x1 = link.source.x;
+  let x2 = link.target.x;
+  let y1 = link.source.y;
+  let y2 = link.target.y;
+  const offsetLength = 30;
+  const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+  const ratio = (distance - offsetLength) / distance;
+  const adjustedX = ratio * (x2 - x1) + x1;
+  const adjustedY = ratio * (y2 - y1) + y1;
+  return { x: adjustedX, y: adjustedY };
 }
 
 export function changeInactiveObject() {
