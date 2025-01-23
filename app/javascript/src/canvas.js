@@ -11,6 +11,31 @@ export async function drawLink(linksData, nodesData) {
     d3.select("#svg02").selectAll("line").remove();
     d3.select("#svg02").selectAll("circle").remove();
 
+    function ticked() {
+      link
+        .attr("x1", (d) => d.source.x)
+        .attr("y1", (d) => d.source.y)
+        .attr("x2", (d) => adjustLinkEnd(d).x) // 終点の x を補正
+        .attr("y2", (d) => adjustLinkEnd(d).y); // 終点の y を補正
+
+      node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+    }
+
+    function adjustLinkEnd(link) {
+      let source = nodesData.find((element) => element.index == link.source);
+      let target = nodesData.find((element) => element.index == link.target);
+      let x1 = source.x;
+      let x2 = target.x;
+      let y1 = source.y;
+      let y2 = target.y;
+      const offsetLength = 30;
+      const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+      const ratio = (distance - offsetLength) / distance;
+      const adjustedX = ratio * (x2 - x1) + x1;
+      const adjustedY = ratio * (y2 - y1) + y1;
+      return { x: adjustedX, y: adjustedY };
+    }
+
     const simurateSvg = document.getElementById("svg02");
     if (simurateSvg) {
       link = d3
@@ -62,6 +87,9 @@ export async function drawLink(linksData, nodesData) {
         .on("end", () => {
           resolve();
         });
+      simulation.nodes(nodesData).on("end", () => {
+        resolve();
+      });
       node
         .call(
           d3
@@ -72,7 +100,7 @@ export async function drawLink(linksData, nodesData) {
         )
         .on("click", nodeClicked);
       link.on("click", linkClicked);
-      simulation.force("link").links(linksData);
+      // simulation.force("link").links(linksData);
 
       // 手動でシミュレーション終了
       setTimeout(() => {
@@ -120,28 +148,28 @@ function dragended(event) {
   event.subject.fy = null;
 }
 
-function ticked() {
-  link
-    .attr("x1", (d) => d.source.x)
-    .attr("y1", (d) => d.source.y)
-    .attr("x2", (d) => adjustLinkEnd(d).x) // 終点の x を補正
-    .attr("y2", (d) => adjustLinkEnd(d).y); // 終点の y を補正
+// function ticked() {
+//   link
+//     .attr("x1", (d) => d.source.x)
+//     .attr("y1", (d) => d.source.y)
+//     .attr("x2", (d) => adjustLinkEnd(d).x) // 終点の x を補正
+//     .attr("y2", (d) => adjustLinkEnd(d).y); // 終点の y を補正
 
-  node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
-}
+//   node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+// }
 
-function adjustLinkEnd(link) {
-  let x1 = link.source.x;
-  let x2 = link.target.x;
-  let y1 = link.source.y;
-  let y2 = link.target.y;
-  const offsetLength = 30;
-  const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
-  const ratio = (distance - offsetLength) / distance;
-  const adjustedX = ratio * (x2 - x1) + x1;
-  const adjustedY = ratio * (y2 - y1) + y1;
-  return { x: adjustedX, y: adjustedY };
-}
+// function adjustLinkEnd(link) {
+//   let x1 = link.source.x;
+//   let x2 = link.target.x;
+//   let y1 = link.source.y;
+//   let y2 = link.target.y;
+//   const offsetLength = 30;
+//   const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+//   const ratio = (distance - offsetLength) / distance;
+//   const adjustedX = ratio * (x2 - x1) + x1;
+//   const adjustedY = ratio * (y2 - y1) + y1;
+//   return { x: adjustedX, y: adjustedY };
+// }
 
 export function changeInactiveObject() {
   d3.select("#svg02").selectAll("line").on("click", null);
