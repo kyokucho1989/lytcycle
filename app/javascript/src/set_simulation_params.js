@@ -97,6 +97,16 @@ document.addEventListener("turbo:load", async () => {
         facilities = JSON.parse(json.facilities);
         operators = JSON.parse(json.operators);
 
+        // routesのsourceとtargetをインデックスに修正
+        routes.forEach((route) => {
+          if (typeof route.source === "object") {
+            route.source = route.source.id;
+          }
+          if (typeof route.target === "object") {
+            route.target = route.target.id;
+          }
+        });
+
         drawLink(routes, facilities);
         return json;
       } catch (error) {
