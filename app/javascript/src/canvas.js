@@ -10,36 +10,59 @@ export async function drawLink(linksData, nodesData) {
   return new Promise((resolve) => {
     d3.select("#svg02").selectAll("line").remove();
     d3.select("#svg02").selectAll("circle").remove();
+    function ticked() {
+      link
+        .attr("x1", (d) => d.source.x)
+        .attr("y1", (d) => d.source.y)
+        .attr("x2", (d) => adjustLinkEnd(d).x)
+        .attr("y2", (d) => adjustLinkEnd(d).y);
 
-    link = d3
-      .select("#svg02")
-      .selectAll("line")
-      .data(linksData)
-      .enter()
-      .append("line")
-      .attr("stroke-width", 8)
-      .attr("stroke", "black")
-      .attr("id", function (d) {
-        return d.id;
-      });
+      node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+    }
 
-    node = d3
-      .select("#svg02")
-      .selectAll("circle")
-      .data(nodesData)
-      .enter()
-      .append("circle")
-      .attr("r", function (d) {
-        return d.r;
-      })
-      .attr("stroke", "black")
-      .attr("fill", "LightSalmon")
-      .attr("id", function (d) {
-        return d.id;
-      });
+    function adjustLinkEnd(link) {
+      let x1 = link.source.x;
+      let x2 = link.target.x;
+      let y1 = link.source.y;
+      let y2 = link.target.y;
+      const offsetLength = 30;
+      const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+      const ratio = (distance - offsetLength) / distance;
+      const adjustedX = ratio * (x2 - x1) + x1;
+      const adjustedY = ratio * (y2 - y1) + y1;
+      return { x: adjustedX, y: adjustedY };
+    }
 
     const simurateSvg = document.getElementById("svg02");
     if (simurateSvg) {
+      link = d3
+        .select("#svg02")
+        .selectAll("line")
+        .data(linksData)
+        .enter()
+        .append("line")
+        .attr("stroke-width", 8)
+        .attr("stroke", "black")
+        .attr("id", function (d) {
+          return d.id;
+        })
+        .attr("marker-end", "url(#arr)");
+
+      node = d3
+        .select("#svg02")
+        .selectAll("circle")
+        .data(nodesData)
+        .enter()
+        .append("circle")
+        .attr("r", function (d) {
+          return d.r;
+        })
+        .attr("stroke", "black")
+        .attr("fill", "LightSalmon")
+        .attr("id", function (d) {
+          return d.id;
+        });
+
       // シミュレーション描画
       simulation = d3
         .forceSimulation()
@@ -52,7 +75,8 @@ export async function drawLink(linksData, nodesData) {
         )
         .force("charge", d3.forceManyBody().strength(0))
         .force("x", null)
-        .force("y", null);
+        .force("y", null)
+        .on("tick", ticked);
 
       simulation
         .nodes(nodesData)
@@ -60,6 +84,10 @@ export async function drawLink(linksData, nodesData) {
         .on("end", () => {
           resolve();
         });
+
+      simulation.nodes(nodesData).on("end", () => {
+        resolve();
+      });
       node
         .call(
           d3
@@ -116,16 +144,6 @@ function dragended(event) {
   if (!event.active) simulation.alphaTarget(0);
   event.subject.fx = null;
   event.subject.fy = null;
-}
-
-function ticked() {
-  link
-    .attr("x1", (d) => d.source.x)
-    .attr("y1", (d) => d.source.y)
-    .attr("x2", (d) => d.target.x)
-    .attr("y2", (d) => d.target.y);
-
-  node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
 }
 
 export function changeInactiveObject() {

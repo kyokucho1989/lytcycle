@@ -100,10 +100,10 @@ document.addEventListener("turbo:load", async () => {
         // routesのsourceとtargetをインデックスに修正
         routes.forEach((route) => {
           if (typeof route.source === "object") {
-            route.source = route.source.index;
+            route.source = route.source.id;
           }
           if (typeof route.target === "object") {
-            route.target = route.target.index;
+            route.target = route.target.id;
           }
         });
 

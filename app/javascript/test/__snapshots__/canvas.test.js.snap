@@ -14,57 +14,63 @@ exports[`draw link and circle 1`] = `
     
     <line
       id="root10"
+      marker-end="url(#arr)"
       stroke="black"
       stroke-width="8"
       x1="230"
-      x2="330"
+      x2="318.8582797093769"
       y1="310"
-      y2="60"
+      y2="87.8543007265578"
     />
     <line
       id="root11"
+      marker-end="url(#arr)"
       stroke="black"
       stroke-width="8"
       x1="330"
-      x2="430"
+      x2="418.8582797093769"
       y1="60"
-      y2="310"
+      y2="282.14569927344223"
     />
     <line
       id="root12"
+      marker-end="url(#arr)"
       stroke="black"
       stroke-width="8"
       x1="430"
-      x2="230"
+      x2="260"
       y1="310"
       y2="310"
     />
     <line
       id="re_root10"
+      marker-end="url(#arr)"
       stroke="black"
       stroke-width="8"
       x1="230"
-      x2="430"
+      x2="400"
       y1="310"
       y2="310"
     />
     <line
       id="re_root11"
+      marker-end="url(#arr)"
       stroke="black"
       stroke-width="8"
       x1="330"
-      x2="230"
+      x2="241.1417202906231"
       y1="60"
-      y2="310"
+      y2="282.14569927344223"
     />
     <line
       id="re_root12"
+      marker-end="url(#arr)"
       stroke="black"
       stroke-width="8"
       x1="430"
-      x2="330"
+      x2="341.1417202906231"
       y1="310"
-      y2="60"
+      y2="87.8543007265578"
     />
     <circle
       cx="230"
