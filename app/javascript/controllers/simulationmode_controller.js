@@ -2,6 +2,8 @@ import { Controller } from "@hotwired/stimulus";
 // import { changeInactiveObject } from "src/simulation";
 import { changeActiveObject } from "src/canvas";
 import { setClickEventToObject } from "src/simulation";
+import { routes, facilities } from "src/set_simulation_params";
+import { findInvalidRouteIds } from "src/consistency_check";
 
 export default class extends Controller {
   static targets = ["edit", "simulate", "editbutton", "simulatebutton"];
@@ -77,6 +79,12 @@ export default class extends Controller {
       editRadio.checked = true;
     }
   }
+
+  checkConsistency() {
+    let result = findInvalidRouteIds(routes);
+    console.log(`整合性チェックの結果: ${result}`);
+  }
+
   simulate() {
     this.mainState = this.MAIN_STATES.RUNNING;
     console.log(this.mainState, this.subState);

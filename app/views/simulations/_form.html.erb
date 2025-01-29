@@ -86,6 +86,7 @@ data-facilities ="<%= @simulation.facilities %>">
           <span class="px-2 font-medium text-gray-900 group-has-[:checked]:text-indigo-900">編集</span>
         </span>
       </label>
+      <button type="button" id="checkConsistency" data-action="simulationmode#checkConsistency" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">整合性確認</button>
       <label aria-description="edit" class="group flex cursor-pointer border border-gray-200 p-4 first:rounded-tl-md first:rounded-tr-md last:rounded-bl-md last:rounded-br-md focus:outline-none has-[:checked]:relative has-[:checked]:border-indigo-200 has-[:checked]:bg-indigo-50 md:grid md:grid-cols-3 md:pl-4 md:pr-6">
         <span class="flex items-center gap-3">
           <input

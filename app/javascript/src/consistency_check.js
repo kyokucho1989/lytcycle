@@ -2,6 +2,15 @@
 
 export function findInvalidRouteIds(routes) {
   let filterdRoute = routes.filter((el) => !el["lastId"]);
+
+  filterdRoute.forEach((route) => {
+    if (typeof route.source === "object") {
+      route.source = route.source.id;
+    }
+    if (typeof route.target === "object") {
+      route.target = route.target.id;
+    }
+  });
   let groupedRoutes = formatBySource(filterdRoute);
   let startNode = "start";
   let goalNode = "goal";
