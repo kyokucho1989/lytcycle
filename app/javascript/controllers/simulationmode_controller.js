@@ -74,7 +74,7 @@ export default class extends Controller {
     if (this.readyForExecution) {
       this.simulate();
     } else {
-      alert("実行可能にチェックをしてください");
+      alert("整合性確認を行なってください");
       const editRadio = document.getElementById("editMode");
       editRadio.checked = true;
     }
@@ -83,6 +83,12 @@ export default class extends Controller {
   checkConsistency() {
     let result = findInvalidRouteIds(routes);
     console.log(`整合性チェックの結果: ${result}`);
+    if (result.length == 0) {
+      alert("整合性チェックOK");
+      const simulateRadio = document.getElementById("simulateMode");
+      simulateRadio.disabled = false;
+      this.readyForExecution = true;
+    }
   }
 
   simulate() {
@@ -93,9 +99,5 @@ export default class extends Controller {
     // this.editbuttonTarget.hidden = false;
     // this.simulatebuttonTarget.hidden = true;
     setClickEventToObject(this);
-  }
-
-  toggleReadyForExecution(event) {
-    this.readyForExecution = event.target.checked;
   }
 }

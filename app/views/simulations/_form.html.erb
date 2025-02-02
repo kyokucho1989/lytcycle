@@ -94,13 +94,10 @@ data-facilities ="<%= @simulation.facilities %>">
             name="mode"
             id="simulateMode"
             data-simulationmode-target="simulatebutton" data-action="simulationmode#checkSimulate"
-            class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400">
+            class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400"
+            disabled >
             <span class="px-2 font-medium text-gray-900 group-has-[:checked]:text-indigo-900">実行</span>
         </span>
-      </label>
-      <label>
-        <input type="checkbox" data-simulationmode-target="toggle" data-action="simulationmode#toggleReadyForExecution">
-        実行可能状態にする
       </label>
       <div data-simulationmode-target="edit">
         <h3>編集モード</h3>

@@ -1,7 +1,8 @@
 // import { routes } from "src/set_simulation_params";
 
 export function findInvalidRouteIds(routes) {
-  let filterdRoute = routes.filter((el) => !el["lastId"]);
+  const copiedRoutes = JSON.parse(JSON.stringify(routes));
+  let filterdRoute = copiedRoutes.filter((el) => !el["lastId"]);
 
   filterdRoute.forEach((route) => {
     if (typeof route.source === "object") {
