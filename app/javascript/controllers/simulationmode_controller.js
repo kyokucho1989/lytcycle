@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus";
 // import { changeInactiveObject } from "src/simulation";
 import { changeActiveObject } from "src/canvas";
 import { setClickEventToObject } from "src/simulation";
-import { routes, facilities } from "src/set_simulation_params";
+import { routes } from "src/set_simulation_params";
 import { findInvalidRouteIds } from "src/consistency_check";
 
 export default class extends Controller {

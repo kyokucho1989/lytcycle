@@ -34,10 +34,9 @@ export function setClickEventToObject(object) {
         console.log("link");
         break;
     }
+    d3.select("#svg02").selectAll("line").on("click", linkClicked);
+    d3.select("#svg02").selectAll("circle").on("click", nodeClicked);
   }
-
-  d3.select("#svg02").selectAll("line").on("click", linkClicked);
-  d3.select("#svg02").selectAll("circle").on("click", nodeClicked);
 }
 
 export function switchAddFacilityMode() {
