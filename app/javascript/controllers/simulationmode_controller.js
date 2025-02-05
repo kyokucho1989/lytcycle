@@ -2,6 +2,8 @@ import { Controller } from "@hotwired/stimulus";
 // import { changeInactiveObject } from "src/simulation";
 import { changeActiveObject } from "src/canvas";
 import { setClickEventToObject } from "src/simulation";
+import { routes } from "src/set_simulation_params";
+import { findInvalidRouteIds } from "src/consistency_check";
 
 export default class extends Controller {
   static targets = ["edit", "simulate", "editbutton", "simulatebutton"];
@@ -72,11 +74,23 @@ export default class extends Controller {
     if (this.readyForExecution) {
       this.simulate();
     } else {
-      alert("実行可能にチェックをしてください");
+      alert("整合性確認を行なってください");
       const editRadio = document.getElementById("editMode");
       editRadio.checked = true;
     }
   }
+
+  checkConsistency() {
+    let result = findInvalidRouteIds(routes);
+    console.log(`整合性チェックの結果: ${result}`);
+    if (result.length == 0) {
+      alert("整合性チェックOK");
+      const simulateRadio = document.getElementById("simulateMode");
+      simulateRadio.disabled = false;
+      this.readyForExecution = true;
+    }
+  }
+
   simulate() {
     this.mainState = this.MAIN_STATES.RUNNING;
     console.log(this.mainState, this.subState);
@@ -85,9 +99,5 @@ export default class extends Controller {
     // this.editbuttonTarget.hidden = false;
     // this.simulatebuttonTarget.hidden = true;
     setClickEventToObject(this);
-  }
-
-  toggleReadyForExecution(event) {
-    this.readyForExecution = event.target.checked;
   }
 }
