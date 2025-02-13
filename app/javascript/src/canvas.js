@@ -111,6 +111,25 @@ export async function drawLink(linksData, nodesData) {
   });
 }
 
+// export function createLink() {
+//   // let selectedFacility = facilities.find((facility) => facility.id == this.id);
+//   if (this.hasAttribute("selected")) {
+//     this.removeAttribute("selected");
+//   } else {
+//     this.setAttribute("selected", "");
+//   }
+//   let selectedNodes = document.querySelectorAll("circle[selected]");
+//   if (selectedNodes.length == 2) {
+//     console.log("2つ以上のnodeあり");
+
+//     addRoute();
+//     selectedNodes.forEach((element) => {
+//       element.removeAttribute("selected");
+//     });
+//   }
+//   console.log(selectedNodes);
+// }
+
 export function nodeClicked() {
   let facilityForEdit = facilities.find((facility) => facility.id == this.id);
   setFacilityDataToModal(facilityForEdit);

@@ -44,6 +44,37 @@ const facilitiesInitial = [
   },
 ];
 
+export function addRoute() {
+  // let selectedFacility = facilities.find((facility) => facility.id == this.id);
+  if (this.hasAttribute("selected")) {
+    this.removeAttribute("selected");
+  } else {
+    this.setAttribute("selected", "");
+  }
+  let selectedNodes = document.querySelectorAll("circle[selected]");
+  if (selectedNodes.length == 2) {
+    let targetId = this.id;
+    let source = selectedNodes.find((element) => element.id != targetId);
+    let sourceId = source.id;
+    console.log("2つ以上のnodeあり");
+
+    let idName = `root${sourceId}${targetId}`;
+    let route = {
+      source: sourceId,
+      target: targetId,
+      routeLength: 20,
+      id: idName,
+    };
+    routes.push(route);
+
+    selectedNodes.forEach((element) => {
+      element.removeAttribute("selected");
+    });
+  }
+  console.log(selectedNodes);
+
+  drawLink(routes, facilities);
+}
 export function addFacility([x, y]) {
   let lastIdObject = facilities.find((el) => el.lastId);
   let lastId;
