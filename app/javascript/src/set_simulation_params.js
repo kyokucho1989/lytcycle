@@ -54,26 +54,29 @@ export function addRoute() {
   let selectedNodes = document.querySelectorAll("circle[selected]");
   if (selectedNodes.length == 2) {
     let targetId = this.id;
-    let source = selectedNodes.find((element) => element.id != targetId);
+    let source = [...selectedNodes].find((element) => element.id != targetId);
     let sourceId = source.id;
     console.log("2つ以上のnodeあり");
-
+    let targetNode = facilities.find((element) => element.id == targetId);
+    let sourceNode = facilities.find((element) => element.id == sourceId);
     let idName = `root${sourceId}${targetId}`;
     let route = {
-      source: sourceId,
-      target: targetId,
+      source: sourceNode,
+      target: targetNode,
       routeLength: 20,
       id: idName,
+      index: routes.length,
     };
-    routes.push(route);
+    let newRoutes = routes.concat(route);
 
-    selectedNodes.forEach((element) => {
+    [...selectedNodes].forEach((element) => {
       element.removeAttribute("selected");
     });
+    drawLink(newRoutes, facilities);
   }
   console.log(selectedNodes);
 
-  drawLink(routes, facilities);
+  //
 }
 export function addFacility([x, y]) {
   let lastIdObject = facilities.find((el) => el.lastId);
