@@ -67,12 +67,21 @@ export function addRoute() {
       id: idName,
       index: routes.length,
     };
-    let newRoutes = routes.concat(route);
+
+    let dupicatedLogic = (route) =>
+      (route.target.id == targetId && route.source.id == sourceId) ||
+      (route.target.id == sourceId && route.source.id == targetId);
+
+    if (routes.some(dupicatedLogic)) {
+      console.log("重複");
+    } else {
+      routes = routes.concat(route);
+      drawLink(routes, facilities);
+    }
 
     [...selectedNodes].forEach((element) => {
       element.removeAttribute("selected");
     });
-    drawLink(newRoutes, facilities);
   }
   console.log(selectedNodes);
 
