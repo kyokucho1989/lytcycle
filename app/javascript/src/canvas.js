@@ -97,6 +97,12 @@ export async function drawLink(linksData, nodesData) {
             .on("end", dragended)
         )
         .on("click", nodeClicked);
+
+      const selectMode = document.querySelector(
+        'fieldset#modeSelection  input[type="radio"]:checked'
+      ).id;
+
+      console.log(selectMode);
       link.on("click", linkClicked);
       simulation.force("link").links(linksData);
 
