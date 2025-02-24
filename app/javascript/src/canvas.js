@@ -3,9 +3,13 @@ import { routes, facilities } from "src/set_simulation_params";
 // データの初期値をロード
 
 export let link, node, simulation;
-import { setFacilityDataToModal } from "src/simulation";
-import { setRouteDataToModal } from "src/simulation";
-import { facilityDialog, routeDialog } from "src/simulation";
+import {
+  setFacilityDataToModal,
+  setRouteDataToModal,
+  setClickEventToObject,
+  facilityDialog,
+  routeDialog,
+} from "src/simulation";
 export async function drawLink(linksData, nodesData) {
   return new Promise((resolve) => {
     d3.select("#svg02").selectAll("line").remove();
@@ -88,22 +92,37 @@ export async function drawLink(linksData, nodesData) {
       simulation.nodes(nodesData).on("end", () => {
         resolve();
       });
-      node
-        .call(
-          d3
-            .drag()
-            .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended)
-        )
-        .on("click", nodeClicked);
+      node.call(
+        d3
+          .drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended)
+      );
 
       const selectMode = document.querySelector(
         'fieldset#modeSelection  input[type="radio"]:checked'
       ).id;
 
       console.log(selectMode);
-      link.on("click", linkClicked);
+      const modeState = {};
+      modeState.mainState = "edit";
+
+      switch (selectMode) {
+        case "add-facility":
+          modeState.subState = "add-facility";
+          break;
+        case "select":
+          modeState.subState = "select";
+          break;
+        case "add-link":
+          modeState.subState = "link";
+          break;
+        case "delete":
+          modeState.subState = "delete";
+          break;
+      }
+      setClickEventToObject(modeState);
       simulation.force("link").links(linksData);
 
       // 手動でシミュレーション終了
@@ -116,25 +135,6 @@ export async function drawLink(linksData, nodesData) {
     }
   });
 }
-
-// export function createLink() {
-//   // let selectedFacility = facilities.find((facility) => facility.id == this.id);
-//   if (this.hasAttribute("selected")) {
-//     this.removeAttribute("selected");
-//   } else {
-//     this.setAttribute("selected", "");
-//   }
-//   let selectedNodes = document.querySelectorAll("circle[selected]");
-//   if (selectedNodes.length == 2) {
-//     console.log("2つ以上のnodeあり");
-
-//     addRoute();
-//     selectedNodes.forEach((element) => {
-//       element.removeAttribute("selected");
-//     });
-//   }
-//   console.log(selectedNodes);
-// }
 
 export function nodeClicked() {
   let facilityForEdit = facilities.find((facility) => facility.id == this.id);
