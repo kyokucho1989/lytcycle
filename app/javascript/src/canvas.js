@@ -105,7 +105,6 @@ export async function drawLink(linksData, nodesData) {
       );
       let selectModeName;
 
-      console.log(selectMode);
       if (selectMode !== null) {
         selectModeName = selectMode.id;
       }
@@ -122,7 +121,7 @@ export async function drawLink(linksData, nodesData) {
         case "add-link":
           modeState.subState = "link";
           break;
-        case "delete":
+        case "delete-object":
           modeState.subState = "delete";
           break;
       }

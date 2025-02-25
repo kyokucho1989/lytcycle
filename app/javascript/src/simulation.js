@@ -4,7 +4,12 @@ import { routes, operators, facilities } from "src/set_simulation_params";
 
 export let link, node, simulation;
 export let facilityDialog, confirmBtn, routeDialog, routeConfirmBtn;
-import { addFacility, addRoute } from "src/set_simulation_params";
+import {
+  addFacility,
+  addRoute,
+  deleteRoute,
+  deleteFacility,
+} from "src/set_simulation_params";
 import { changeInactiveObject } from "src/canvas";
 import { linkClicked, nodeClicked } from "src/canvas";
 
@@ -28,14 +33,21 @@ export function setClickEventToObject(object) {
         switchAddFacilityMode();
         break;
       case "delete":
-        d3.select("#svg02").on("click", null);
+        switchDeleteObjectMode();
         console.log("delete");
+        break;
       case "link":
         switchAddRouteMode();
         console.log("link");
         break;
     }
   }
+}
+
+export function switchDeleteObjectMode() {
+  d3.select("#svg02").on("click", null);
+  d3.select("#svg02").selectAll("line").on("click", deleteRoute);
+  d3.select("#svg02").selectAll("circle").on("click", deleteFacility);
 }
 
 export function switchAddFacilityMode() {
