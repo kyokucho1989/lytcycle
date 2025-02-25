@@ -3,9 +3,13 @@ import { routes, facilities } from "src/set_simulation_params";
 // データの初期値をロード
 
 export let link, node, simulation;
-import { setFacilityDataToModal } from "src/simulation";
-import { setRouteDataToModal } from "src/simulation";
-import { facilityDialog, routeDialog } from "src/simulation";
+import {
+  setFacilityDataToModal,
+  setRouteDataToModal,
+  setClickEventToObject,
+  facilityDialog,
+  routeDialog,
+} from "src/simulation";
 export async function drawLink(linksData, nodesData) {
   return new Promise((resolve) => {
     d3.select("#svg02").selectAll("line").remove();
@@ -88,16 +92,41 @@ export async function drawLink(linksData, nodesData) {
       simulation.nodes(nodesData).on("end", () => {
         resolve();
       });
-      node
-        .call(
-          d3
-            .drag()
-            .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended)
-        )
-        .on("click", nodeClicked);
-      link.on("click", linkClicked);
+      node.call(
+        d3
+          .drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended)
+      );
+
+      const selectMode = document.querySelector(
+        'fieldset#modeSelection  input[type="radio"]:checked'
+      );
+      let selectModeName;
+
+      console.log(selectMode);
+      if (selectMode !== null) {
+        selectModeName = selectMode.id;
+      }
+      const modeState = {};
+      modeState.mainState = "edit";
+
+      switch (selectModeName) {
+        case "add-facility":
+          modeState.subState = "add-facility";
+          break;
+        case "select":
+          modeState.subState = "select";
+          break;
+        case "add-link":
+          modeState.subState = "link";
+          break;
+        case "delete":
+          modeState.subState = "delete";
+          break;
+      }
+      setClickEventToObject(modeState);
       simulation.force("link").links(linksData);
 
       // 手動でシミュレーション終了

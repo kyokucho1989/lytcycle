@@ -4,7 +4,7 @@ import { routes, operators, facilities } from "src/set_simulation_params";
 
 export let link, node, simulation;
 export let facilityDialog, confirmBtn, routeDialog, routeConfirmBtn;
-import { addFacility } from "src/set_simulation_params";
+import { addFacility, addRoute } from "src/set_simulation_params";
 import { changeInactiveObject } from "src/canvas";
 import { linkClicked, nodeClicked } from "src/canvas";
 
@@ -15,8 +15,10 @@ export function setClickEventToObject(object) {
   } else {
     switch (object.subState) {
       case "select":
-        d3.select("#svg02").on("click", null);
+        // d3.select("#svg02").on("click", null);
         console.log("select");
+        d3.select("#svg02").selectAll("line").on("click", linkClicked);
+        d3.select("#svg02").selectAll("circle").on("click", nodeClicked);
         break;
       case "add-operator":
         d3.select("#svg02").on("click", null);
@@ -28,14 +30,11 @@ export function setClickEventToObject(object) {
       case "delete":
         d3.select("#svg02").on("click", null);
         console.log("delete");
-        break;
       case "link":
-        d3.select("#svg02").on("click", null);
+        switchAddRouteMode();
         console.log("link");
         break;
     }
-    d3.select("#svg02").selectAll("line").on("click", linkClicked);
-    d3.select("#svg02").selectAll("circle").on("click", nodeClicked);
   }
 }
 
@@ -46,6 +45,12 @@ export function switchAddFacilityMode() {
     const [x, y] = d3.pointer(e, this);
     addFacility([x, y]);
   });
+}
+
+export function switchAddRouteMode() {
+  d3.select("#svg02").on("click", null);
+  d3.select("#svg02").selectAll("line").on("click", null);
+  d3.select("#svg02").selectAll("circle").on("click", addRoute);
 }
 
 export function setObjectparams(e, params, objects) {
