@@ -102,13 +102,17 @@ export async function drawLink(linksData, nodesData) {
 
       const selectMode = document.querySelector(
         'fieldset#modeSelection  input[type="radio"]:checked'
-      ).id;
+      );
+      let selectModeName;
 
       console.log(selectMode);
+      if (selectMode !== null) {
+        selectModeName = selectMode.id;
+      }
       const modeState = {};
       modeState.mainState = "edit";
 
-      switch (selectMode) {
+      switch (selectModeName) {
         case "add-facility":
           modeState.subState = "add-facility";
           break;
