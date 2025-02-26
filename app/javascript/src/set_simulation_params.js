@@ -1,7 +1,4 @@
-// import * as d3 from "d3";
-// import { routesInitial, operatorsInitial, simulation } from "./simulation.js";
 export let routes, operators, facilities;
-// export const parametersetEvent
 import { drawLink } from "src/canvas";
 
 const routesInitial = [
@@ -44,6 +41,33 @@ const facilitiesInitial = [
   },
 ];
 
+export function deleteRoute() {
+  let selectedRoute = routes.find((route) => route.id == this.id);
+  if (window.confirm("削除しますか？")) {
+    routes = routes.filter((route) => route.id != selectedRoute.id);
+    drawLink(routes, facilities);
+  }
+}
+
+export function deleteFacility() {
+  let selectedFacility = facilities.find((facility) => facility.id == this.id);
+  let unConnectedRoutes = routes.filter(
+    (route) =>
+      route.target.id != selectedFacility.id &&
+      route.source.id != selectedFacility.id
+  );
+
+  let unConnectedRoutesIds = unConnectedRoutes.map((route) => route.id);
+
+  if (window.confirm("削除しますか？")) {
+    facilities = facilities.filter(
+      (facility) => facility.id != selectedFacility.id
+    );
+    routes = routes.filter((route) => unConnectedRoutesIds.includes(route.id));
+    drawLink(routes, facilities);
+  }
+}
+
 export function addRoute() {
   // let selectedFacility = facilities.find((facility) => facility.id == this.id);
   if (this.hasAttribute("selected")) {
@@ -84,9 +108,8 @@ export function addRoute() {
     });
   }
   console.log(selectedNodes);
-
-  //
 }
+
 export function addFacility([x, y]) {
   let lastIdObject = facilities.find((el) => el.lastId);
   let lastId;
