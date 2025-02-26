@@ -17,17 +17,17 @@ data-facilities ="<%= @simulation.facilities %>">
 
     <div>
       <%= form.label :cycle_time, style: "display: block" %>
-      <%= form.number_field :cycle_time , size: "10x1", disabled: 'disabled'%>
+      <%= form.number_field :cycle_time , size: "10x1", readonly: true%>
     </div>
 
     <div>
       <%= form.label :bottleneck_process, style: "display: block" %>
-      <%= form.text_area :bottleneck_process , size: "10x1", disabled: 'disabled'%>
+      <%= form.text_area :bottleneck_process , size: "10x1", readonly: true%>
     </div>
 
     <div>
       <%= form.label :waiting_time, style: "display: block" %>
-      <%= form.number_field :waiting_time , size: "10x1", disabled: 'disabled'%>
+      <%= form.number_field :waiting_time , size: "10x1", readonly: true%>
     </div>
 
     <div>

@@ -75,7 +75,7 @@ class SimulationsController < ApplicationController
       params.require(:simulation)[key] = params.require("js_#{key}")
     end
     params.require(:simulation).permit(:user_id, :title, :bottleneck_process, :waiting_time, :routes, :operators,
-                                       :facilities)
+                                       :facilities, :cycle_time)
   end
 
   def create_success_response(format)
