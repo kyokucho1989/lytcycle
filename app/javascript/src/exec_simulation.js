@@ -117,6 +117,21 @@ function generatePairRoutes(routes) {
     return routesWithPairs.unshift(lastIds);
   }
 }
+
+let controlsProgress = document.querySelector("#simulation input.progress");
+
+let tl = anime.timeline({
+  easing: "easeOutExpo",
+  autoplay: false,
+  update: function (anim) {
+    controlsProgress.value = tl.progress;
+  },
+});
+
+controlsProgress.oninput = function () {
+  tl.seek(tl.duration * (controlsProgress.value / 100));
+};
+
 async function countStart() {
   let linksData = generatePairRoutes(routes);
   let nodesData1 = facilities;
@@ -140,9 +155,10 @@ async function countStart() {
   let object1, object2, object3;
   let totalCount = 0;
 
-  let tl = anime.timeline({
-    easing: "easeOutExpo",
-  });
+  // tl = anime.timeline({
+  //   easing: "easeOutExpo",
+  //   autoplay: false,
+  // });
   object3 = getCountObject(totalCount);
   tl.add(object3, t * 100);
 
@@ -248,6 +264,7 @@ async function countStart() {
   document.getElementById("simulation_bottleneck_process").value =
     bottleneck_process;
   document.getElementById("simulation_waiting_time").value = waitingTime;
+  alert("シミュレーション終了");
 }
 
 function formatStateHistory(operator) {
@@ -363,7 +380,21 @@ function getMachineAnimeObject() {
 
 document.addEventListener("turbo:load", () => {
   const start = document.getElementById("startSimulation2");
+  const play = document.getElementById("play");
+  const pause = document.getElementById("pause");
   if (start) {
     start.addEventListener("click", countStart, false);
+  }
+  if (play) {
+    play.addEventListener("click", function () {
+      alert("test");
+      tl.play();
+    });
+  }
+  if (pause) {
+    pause.addEventListener("click", function () {
+      console.log("pause");
+      tl.pause();
+    });
   }
 });
