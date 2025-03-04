@@ -118,19 +118,44 @@ function generatePairRoutes(routes) {
   }
 }
 
-let controlsProgress = document.querySelector("#simulation input.progress");
-
 let tl = anime.timeline({
-  easing: "easeOutExpo",
   autoplay: false,
-  update: function (anim) {
-    controlsProgress.value = tl.progress;
-  },
 });
 
-controlsProgress.oninput = function () {
-  tl.seek(tl.duration * (controlsProgress.value / 100));
-};
+document.addEventListener("turbo:load", () => {
+  const start = document.getElementById("startSimulation2");
+  const play = document.getElementById("play");
+  const pause = document.getElementById("pause");
+
+  let controlsProgress = document.querySelector("#simulation input.progress");
+  if (controlsProgress) {
+    tl = anime.timeline({
+      easing: "easeOutExpo",
+      autoplay: false,
+      update: function () {
+        controlsProgress.value = tl.progress;
+      },
+    });
+
+    controlsProgress.oninput = function () {
+      tl.seek(tl.duration * (controlsProgress.value / 100));
+    };
+  }
+
+  if (start) {
+    start.addEventListener("click", countStart, false);
+  }
+  if (play) {
+    play.addEventListener("click", function () {
+      tl.play();
+    });
+  }
+  if (pause) {
+    pause.addEventListener("click", function () {
+      tl.pause();
+    });
+  }
+});
 
 async function countStart() {
   let linksData = generatePairRoutes(routes);
@@ -331,18 +356,21 @@ export function calculateCycleTime(goalPoint) {
 }
 
 function getCountObject(countSize) {
-  let count = {
-    totalCount: countSize,
-  };
+  // let count = {
+  //   totalCount: countSize,
+  // };
   let JSobjectProp = anime({
-    targets: count,
-    totalCount: countSize,
+    // targets: count,
+    targets: "#JSobjectProp pre.count",
+    // totalCount: countSize,
     easing: "linear",
     round: 1,
-    update: function () {
-      var el = document.querySelector("#JSobjectProp pre");
-      el.innerHTML = JSON.stringify(count);
-    },
+    value: countSize,
+    // autoplay: false,
+    // update: function () {
+    //   var el = document.querySelector("#JSobjectProp pre");
+    //   el.innerHTML = JSON.stringify(count);
+    // },
   });
 
   return JSobjectProp;
@@ -373,28 +401,8 @@ function getMachineAnimeObject() {
     easing: "linear",
     fill: "#00f",
     duration: 100,
+    autoplay: false,
   };
 
   return animeObject;
 }
-
-document.addEventListener("turbo:load", () => {
-  const start = document.getElementById("startSimulation2");
-  const play = document.getElementById("play");
-  const pause = document.getElementById("pause");
-  if (start) {
-    start.addEventListener("click", countStart, false);
-  }
-  if (play) {
-    play.addEventListener("click", function () {
-      alert("test");
-      tl.play();
-    });
-  }
-  if (pause) {
-    pause.addEventListener("click", function () {
-      console.log("pause");
-      tl.pause();
-    });
-  }
-});
