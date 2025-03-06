@@ -45,12 +45,12 @@ export async function drawLink(linksData, nodesData) {
         .data(linksData)
         .enter()
         .append("line")
-        .attr("stroke-width", 8)
+        .attr("stroke-width", (d) => (d.id.includes("re") ? 0 : 8))
         .attr("stroke", "black")
         .attr("id", function (d) {
           return d.id;
         })
-        .attr("marker-end", "url(#arr)");
+        .attr("marker-end", (d) => (d.id.includes("re") ? "" : "url(#arr)"));
 
       node = d3
         .select("#svg02")
