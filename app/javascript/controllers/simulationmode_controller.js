@@ -27,7 +27,7 @@ export default class extends Controller {
     this.subState = this.SUB_STATES.SELECT;
     // this.readyForExecution = false;
     this.editTarget.hidden = false;
-    // this.simulateTarget.hidden = true;
+    this.simulateTarget.hidden = true;
     // this.editbuttonTarget.hidden = true;
     // this.simulatebuttonTarget.hidden = false;
   }

@@ -117,6 +117,46 @@ function generatePairRoutes(routes) {
     return routesWithPairs.unshift(lastIds);
   }
 }
+
+let tl = anime.timeline({
+  autoplay: false,
+});
+
+document.addEventListener("turbo:load", () => {
+  const start = document.getElementById("startSimulation2");
+  const play = document.getElementById("play");
+  const pause = document.getElementById("pause");
+
+  let controlsProgress = document.querySelector("#simulation input.progress");
+  if (controlsProgress) {
+    tl = anime.timeline({
+      easing: "easeOutExpo",
+      autoplay: false,
+      update: function () {
+        controlsProgress.value = tl.progress;
+      },
+    });
+
+    controlsProgress.oninput = function () {
+      tl.seek(tl.duration * (controlsProgress.value / 100));
+    };
+  }
+
+  if (start) {
+    start.addEventListener("click", countStart, false);
+  }
+  if (play) {
+    play.addEventListener("click", function () {
+      tl.play();
+    });
+  }
+  if (pause) {
+    pause.addEventListener("click", function () {
+      tl.pause();
+    });
+  }
+});
+
 async function countStart() {
   let linksData = generatePairRoutes(routes);
   let nodesData1 = facilities;
@@ -140,9 +180,6 @@ async function countStart() {
   let object1, object2, object3;
   let totalCount = 0;
 
-  let tl = anime.timeline({
-    easing: "easeOutExpo",
-  });
   object3 = getCountObject(totalCount);
   tl.add(object3, t * 100);
 
@@ -248,6 +285,7 @@ async function countStart() {
   document.getElementById("simulation_bottleneck_process").value =
     bottleneck_process;
   document.getElementById("simulation_waiting_time").value = waitingTime;
+  alert("シミュレーション終了");
 }
 
 function formatStateHistory(operator) {
@@ -322,7 +360,8 @@ function getCountObject(countSize) {
     totalCount: countSize,
     easing: "linear",
     round: 1,
-    update: function () {
+    value: countSize,
+    change: function () {
       var el = document.querySelector("#JSobjectProp pre");
       el.innerHTML = JSON.stringify(count);
     },
@@ -356,14 +395,8 @@ function getMachineAnimeObject() {
     easing: "linear",
     fill: "#00f",
     duration: 100,
+    autoplay: false,
   };
 
   return animeObject;
 }
-
-document.addEventListener("turbo:load", () => {
-  const start = document.getElementById("startSimulation2");
-  if (start) {
-    start.addEventListener("click", countStart, false);
-  }
-});

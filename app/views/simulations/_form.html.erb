@@ -136,10 +136,12 @@ data-facilities ="<%= @simulation.facilities %>">
           </div>
         </fieldset>
       </div>
-      <div data-simulationmode-target="simulate">
+      <div data-simulationmode-target="simulate" id="simulation">
         <h3>実行モード</h3>
-        <button type="button" id="startSimulation2" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">Button text</button>
-        <%= button_tag 'Start', {id: "startSimulation", class: "bt"} %>
+        <button type="button" id="startSimulation2" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">シミュレーション実行</button>
+        <button type="button" id="play" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">再生</button>
+        <button type="button" id="pause" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">停止</button>
+        <input class="progress" step=".001" min="0" max="100" value="0" type="range"></input>
       </div>
     </fieldset>
   </div>
