@@ -180,10 +180,6 @@ async function countStart() {
   let object1, object2, object3;
   let totalCount = 0;
 
-  // tl = anime.timeline({
-  //   easing: "easeOutExpo",
-  //   autoplay: false,
-  // });
   object3 = getCountObject(totalCount);
   tl.add(object3, t * 100);
 
@@ -356,21 +352,19 @@ export function calculateCycleTime(goalPoint) {
 }
 
 function getCountObject(countSize) {
-  // let count = {
-  //   totalCount: countSize,
-  // };
+  let count = {
+    totalCount: countSize,
+  };
   let JSobjectProp = anime({
-    // targets: count,
-    targets: "#JSobjectProp pre.count",
-    // totalCount: countSize,
+    targets: count,
+    totalCount: countSize,
     easing: "linear",
     round: 1,
     value: countSize,
-    // autoplay: false,
-    // update: function () {
-    //   var el = document.querySelector("#JSobjectProp pre");
-    //   el.innerHTML = JSON.stringify(count);
-    // },
+    change: function () {
+      var el = document.querySelector("#JSobjectProp pre");
+      el.innerHTML = JSON.stringify(count);
+    },
   });
 
   return JSobjectProp;
