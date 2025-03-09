@@ -158,6 +158,8 @@ document.addEventListener("turbo:load", () => {
 });
 
 async function countStart() {
+  tl.children = [];
+
   let linksData = generatePairRoutes(routes);
   let nodesData1 = facilities;
   await drawLink(linksData, nodesData1);
@@ -219,7 +221,7 @@ async function countStart() {
                 targets: "circle#\\31",
                 easing: "steps(1)",
                 fill: "#00f",
-                duration: 3000,
+                duration: machine.processingTime * 1000,
               })
               .add({
                 targets: "circle#\\31",
