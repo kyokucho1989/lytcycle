@@ -110,12 +110,6 @@ data-facilities ="<%= @simulation.facilities %>">
               <label for="select" class="ml-3 block text-sm/6 font-medium text-gray-900">選択</label>
             </div>
             <div class="flex items-center">
-              <input id="add-operator" name="edit-mode" type="radio"
-              data-simulationmode-target="editmode" data-action="simulationmode#changeModeToAddMan"
-              class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden [&:not(:checked)]:before:hidden">
-              <label for="add-operator" class="ml-3 block text-sm/6 font-medium text-gray-900">作業者追加</label>
-            </div>
-            <div class="flex items-center">
               <input id="add-facility" name="edit-mode" type="radio"
               data-simulationmode-target="editmode" data-action="simulationmode#changeModeToAddFacility"
               class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden [&:not(:checked)]:before:hidden">
@@ -154,7 +148,7 @@ data-facilities ="<%= @simulation.facilities %>">
           <path d="M0,0 L2,1 0,2 Z" fill="#eab942" />
         </marker>
       </defs>
-      <text id="ob1" x="0" y="20">object</text>
+      <text id="ob1" x="0" y="20">作業者</text>
     </svg>
   </div>
 </div>
