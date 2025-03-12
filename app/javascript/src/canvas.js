@@ -46,7 +46,6 @@ export async function drawLink(linksData, nodesData) {
         .enter()
         .append("line")
         .attr("stroke-width", (d) => (d.id.includes("re") ? 0 : 8))
-        .attr("stroke", "black")
         .attr("id", function (d) {
           return d.id;
         })
@@ -62,11 +61,12 @@ export async function drawLink(linksData, nodesData) {
           return d.r;
         })
         .attr("stroke", "black")
-        .attr("fill", "LightSalmon")
         .attr("id", function (d) {
           return d.id;
         });
 
+      setNodeColor(nodesData, "#99aaee");
+      setLinkColor(linksData, "#aaa");
       // シミュレーション描画
       simulation = d3
         .forceSimulation()
@@ -137,6 +137,18 @@ export async function drawLink(linksData, nodesData) {
       resolve(); // SVGが存在しない場合もresolveを呼び出す
     }
   });
+}
+
+export async function setNodeColor(nodesData, color) {
+  d3.selectAll("circle")
+    .filter((d) => nodesData.includes(d))
+    .attr("fill", color);
+}
+
+export async function setLinkColor(linksData, color) {
+  d3.selectAll("line")
+    .filter((d) => linksData.includes(d))
+    .attr("stroke", color);
 }
 
 export function nodeClicked() {

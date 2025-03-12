@@ -15,7 +15,7 @@ exports[`draw link and circle 1`] = `
     <line
       id="root10"
       marker-end="url(#arr)"
-      stroke="black"
+      stroke="#aaa"
       stroke-width="8"
       x1="230"
       x2="318.8582797093769"
@@ -25,7 +25,7 @@ exports[`draw link and circle 1`] = `
     <line
       id="root11"
       marker-end="url(#arr)"
-      stroke="black"
+      stroke="#aaa"
       stroke-width="8"
       x1="330"
       x2="418.8582797093769"
@@ -35,7 +35,7 @@ exports[`draw link and circle 1`] = `
     <line
       id="root12"
       marker-end="url(#arr)"
-      stroke="black"
+      stroke="#aaa"
       stroke-width="8"
       x1="430"
       x2="260"
@@ -45,7 +45,7 @@ exports[`draw link and circle 1`] = `
     <line
       id="re_root10"
       marker-end=""
-      stroke="black"
+      stroke="#aaa"
       stroke-width="0"
       x1="230"
       x2="400"
@@ -55,7 +55,7 @@ exports[`draw link and circle 1`] = `
     <line
       id="re_root11"
       marker-end=""
-      stroke="black"
+      stroke="#aaa"
       stroke-width="0"
       x1="330"
       x2="241.1417202906231"
@@ -65,7 +65,7 @@ exports[`draw link and circle 1`] = `
     <line
       id="re_root12"
       marker-end=""
-      stroke="black"
+      stroke="#aaa"
       stroke-width="0"
       x1="430"
       x2="341.1417202906231"
@@ -75,7 +75,7 @@ exports[`draw link and circle 1`] = `
     <circle
       cx="230"
       cy="310"
-      fill="LightSalmon"
+      fill="#99aaee"
       id="start"
       r="10"
       stroke="black"
@@ -83,7 +83,7 @@ exports[`draw link and circle 1`] = `
     <circle
       cx="330"
       cy="60"
-      fill="LightSalmon"
+      fill="#99aaee"
       id="1"
       r="15"
       stroke="black"
@@ -91,7 +91,7 @@ exports[`draw link and circle 1`] = `
     <circle
       cx="430"
       cy="310"
-      fill="LightSalmon"
+      fill="#99aaee"
       id="goal"
       r="10"
       stroke="black"
