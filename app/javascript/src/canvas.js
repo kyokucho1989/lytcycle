@@ -66,7 +66,7 @@ export async function drawLink(linksData, nodesData) {
         });
 
       setNodeColor(nodesData, "#99aaee");
-      setLinkColor(linksData, "#999");
+      setLinkColor(linksData, "#aaa");
       // シミュレーション描画
       simulation = d3
         .forceSimulation()
@@ -140,11 +140,15 @@ export async function drawLink(linksData, nodesData) {
 }
 
 export async function setNodeColor(nodesData, color) {
-  d3.select("#svg02").selectAll("circle").data(nodesData).attr("fill", color);
+  d3.selectAll("circle")
+    .filter((d) => nodesData.includes(d))
+    .attr("fill", color);
 }
 
 export async function setLinkColor(linksData, color) {
-  d3.selectAll("line").data(linksData).attr("stroke", color);
+  d3.selectAll("line")
+    .filter((d) => linksData.includes(d))
+    .attr("stroke", color);
 }
 
 export function nodeClicked() {
