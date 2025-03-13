@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
 // import { changeInactiveObject } from "src/simulation";
-import { changeActiveObject, setLinkColor } from "src/canvas";
+import { changeActiveObject, drawLink } from "src/canvas";
 import { setClickEventToObject } from "src/simulation";
 import { routes } from "src/set_simulation_params";
 import { findInvalidRouteIds } from "src/consistency_check";
@@ -82,18 +82,16 @@ export default class extends Controller {
 
   checkConsistency() {
     let result = findInvalidRouteIds(routes);
-    console.log(`整合性チェックの結果: ${result}`);
-    if (result.length == 0) {
+    console.log(`整合性チェックの結果: ${result.ids}`);
+    if (result.ids.length == 0) {
       alert("整合性チェックOK");
       const simulateRadio = document.getElementById("simulateMode");
       simulateRadio.disabled = false;
       this.readyForExecution = true;
-      setLinkColor(routes, "#aaa");
     } else {
       alert("異常なルートがあります。削除してください。");
-      let selectedRoutes = routes.filter((route) => result.includes(route.id));
-      setLinkColor(selectedRoutes, "#a00");
     }
+    drawLink();
   }
 
   simulate() {

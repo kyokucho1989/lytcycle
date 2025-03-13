@@ -1,5 +1,5 @@
 // import { routes } from "src/set_simulation_params";
-
+export let invalidRoutesIds = { ids: [] };
 export function findInvalidRouteIds(routes) {
   const copiedRoutes = JSON.parse(JSON.stringify(routes));
   let filterdRoute = copiedRoutes.filter((el) => !el["lastId"]);
@@ -15,21 +15,21 @@ export function findInvalidRouteIds(routes) {
   let groupedRoutes = formatBySource(filterdRoute);
   let startNode = "start";
   let goalNode = "goal";
-  let InvalidRoutesSet = findInvalidRoutesSetByDFS(
+  let invalidRoutesSet = findInvalidRoutesSetByDFS(
     groupedRoutes,
     startNode,
     goalNode
   );
-  const InvalidRoutes = filterdRoute.filter((route) =>
-    InvalidRoutesSet.has(`${route.source}->${route.target}`)
+  const invalidRoutes = filterdRoute.filter((route) =>
+    invalidRoutesSet.has(`${route.source}->${route.target}`)
   );
-  let InvalidRoutesIds = InvalidRoutes.map((route) => route["id"]);
-  return InvalidRoutesIds;
+  invalidRoutesIds.ids = invalidRoutes.map((route) => route["id"]);
+  return invalidRoutesIds;
 }
 
 export function findInvalidRoutesSetByDFS(groupedRoutes, startNode, goalNode) {
   const visitedRoutes = [];
-  let InvalidRoutes = new Set();
+  let invalidRoutes = new Set();
   let validRoutes = new Set();
 
   // すべてのルートを配列として保管
@@ -77,8 +77,8 @@ export function findInvalidRoutesSetByDFS(groupedRoutes, startNode, goalNode) {
   dfs(startNode, startNode, []);
 
   const allRoutesSet = new Set(allRoutes);
-  InvalidRoutes = allRoutesSet.difference(validRoutes);
-  return InvalidRoutes;
+  invalidRoutes = allRoutesSet.difference(validRoutes);
+  return invalidRoutes;
 }
 
 export function formatBySource(routes) {
@@ -91,3 +91,5 @@ export function formatBySource(routes) {
   }, {});
   return groupedRoutes;
 }
+
+export default invalidRoutesIds;
