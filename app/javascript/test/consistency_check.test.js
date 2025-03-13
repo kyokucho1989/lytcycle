@@ -132,7 +132,7 @@ test("findInvalidRouteIds", async () => {
     { source: "goal", target: "start", l: 20, id: "root-gs" },
   ];
 
-  let Ids = ["root-s1", "root-s2", "root-14", "root-24", "root-41"];
+  let Ids = { ids: ["root-s1", "root-s2", "root-14", "root-24", "root-41"] };
 
   let result = findInvalidRouteIds(routesInitial);
   expect(result).toStrictEqual(Ids);
