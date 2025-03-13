@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 import { routes, facilities } from "src/set_simulation_params";
+import { invalidRoutesIds } from "src/consistency_check";
 // データの初期値をロード
 
 export let link, node, simulation;
@@ -10,7 +11,7 @@ import {
   facilityDialog,
   routeDialog,
 } from "src/simulation";
-export async function drawLink(linksData, nodesData) {
+export async function drawLink(linksData = routes, nodesData = facilities) {
   return new Promise((resolve) => {
     d3.select("#svg02").selectAll("line").remove();
     d3.select("#svg02").selectAll("circle").remove();
@@ -67,6 +68,11 @@ export async function drawLink(linksData, nodesData) {
 
       setNodeColor(nodesData, "#99aaee");
       setLinkColor(linksData, "#aaa");
+
+      let invalidRoutes = linksData.filter((link) =>
+        invalidRoutesIds.ids.includes(link.id)
+      );
+      setLinkColor(invalidRoutes, "#faa");
       // シミュレーション描画
       simulation = d3
         .forceSimulation()
@@ -128,13 +134,12 @@ export async function drawLink(linksData, nodesData) {
       setClickEventToObject(modeState);
       simulation.force("link").links(linksData);
 
-      // 手動でシミュレーション終了
       setTimeout(() => {
         simulation.stop();
         resolve();
-      }, 1000); // 1秒後にシミュレーションを強制終了
+      }, 1000);
     } else {
-      resolve(); // SVGが存在しない場合もresolveを呼び出す
+      resolve();
     }
   });
 }
@@ -174,7 +179,6 @@ function dragstarted(event) {
   event.subject.fy = event.subject.y;
 }
 
-// Update the subject (dragged node) position during drag.
 function dragged(event) {
   event.subject.fx = event.x;
   event.subject.fy = event.y;
