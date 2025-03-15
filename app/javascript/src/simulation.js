@@ -3,7 +3,12 @@ import { routes, operators, facilities } from "src/set_simulation_params";
 // データの初期値をロード
 
 export let link, node, simulation;
-export let facilityDialog, confirmBtn, routeDialog, routeConfirmBtn;
+export let facilityDialog,
+  confirmBtn,
+  routeDialog,
+  routeConfirmBtn,
+  facilityForm,
+  routeForm;
 import {
   addFacility,
   addRoute,
@@ -66,7 +71,6 @@ export function switchAddRouteMode() {
 }
 
 export function setObjectparams(e, params, objects) {
-  e.preventDefault(); // この偽フォームを送信しない
   let id = params.id;
   let selectedObject = objects.find((object) => object.id == id);
   for (const [key, value] of Object.entries(params)) {
@@ -79,9 +83,16 @@ export function setObjectparams(e, params, objects) {
 export function setParamsToFacilityOnModal() {
   facilityDialog = document.getElementById("facilityDialog");
   confirmBtn = document.getElementById("confirmBtn");
+  facilityForm = document.getElementById("facility-form");
+  const cancelBtn = document.getElementById("cancel-btn");
+
   if (confirmBtn) {
     confirmBtn.addEventListener("click", (e) => {
-      // e.preventDefault();
+      if (!facilityForm.checkValidity()) {
+        facilityForm.reportValidity();
+        return;
+      }
+
       let params = {};
       params.id = document.getElementById("hidden-id").value;
       params.name = document.getElementById("name").value;
@@ -91,19 +102,38 @@ export function setParamsToFacilityOnModal() {
       facilityDialog.close();
     });
   }
+
+  if (cancelBtn) {
+    cancelBtn.addEventListener("click", () => {
+      facilityDialog.close();
+    });
+  }
 }
 
 export function setParamsToRouteOnModal() {
   routeDialog = document.getElementById("route-dialog");
   routeConfirmBtn = document.getElementById("route-confirm-btn");
+  routeForm = document.getElementById("route-form");
+  const routeCancelBtn = document.getElementById("route-cancel-btn");
+
   if (routeConfirmBtn) {
-    // ［確認］ボタンが既定でフォームを送信しないようにし、`close()` メソッドでダイアログを閉じ、"close" イベントを発生させる
     routeConfirmBtn.addEventListener("click", (e) => {
+      if (!routeForm.checkValidity()) {
+        routeForm.reportValidity();
+        return;
+      }
+
       let params = {};
       params.id = document.getElementById("route-hidden-id").value;
       params.routeLength = document.getElementById("route-length").value;
 
       setObjectparams(e, params, routes);
+      routeDialog.close();
+    });
+  }
+
+  if (routeCancelBtn) {
+    routeCancelBtn.addEventListener("click", () => {
       routeDialog.close();
     });
   }

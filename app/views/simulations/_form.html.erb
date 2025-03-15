@@ -42,32 +42,32 @@ data-facilities ="<%= @simulation.facilities %>">
     <dialog id="facilityDialog">
     パラメータ
       <div id="hidden-id" hidden></div>
-      <form>
+      <form id="facility-form">
         <div>
           <label for="name">設備名</label>
           <input type="text" id="name" name="name" maxlength="16" size="15" />
         </div>
         <div>
           <label for="processingTime">加工時間</label>
-          <input type="number" id="processingTime" name="name" min="0" max="400" />
+          <input type="number" id="processingTime" name="name" min="1" max="400" />
         </div>
         <div>
-          <button value="cancel" formmethod="dialog">取り消し</button>
-          <button id="confirmBtn" value="default">保存</button>
+          <button type="button" id="cancel-btn" formmethod="dialog">取り消し</button>
+          <button type="button" id="confirmBtn" value="default">保存</button>
         </div>
       </form>
     </dialog>
     <dialog id="route-dialog">
       パラメータ
       <div id="route-hidden-id" hidden></div>
-      <form>
+      <form id="route-form">
         <div>
           <label for="route-length">距離</label>
           <input type="number" id="route-length" name="root-length" min="1" max="50" />
         </div>
         <div>
-          <button value="cancel" formmethod="dialog">取り消し</button>
-          <button id="route-confirm-btn" value="default">保存</button>
+          <button type="button" id="route-cancel-btn" value="cancel" formmethod="dialog">取り消し</button>
+          <button type="button" id="route-confirm-btn" value="default">保存</button>
         </div>
       </form>
     </dialog>
