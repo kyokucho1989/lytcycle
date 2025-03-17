@@ -43,9 +43,13 @@ const facilitiesInitial = [
 
 export function deleteRoute() {
   let selectedRoute = routes.find((route) => route.id == this.id);
-  if (window.confirm("削除しますか？")) {
-    routes = routes.filter((route) => route.id != selectedRoute.id);
-    drawLink(routes, facilities);
+  if (selectedRoute.source.id == "goal" && selectedRoute.target.id == "start") {
+    alert("スタートとゴールの間のルートは削除できません。");
+  } else {
+    if (window.confirm("削除しますか？")) {
+      routes = routes.filter((route) => route.id != selectedRoute.id);
+      drawLink(routes, facilities);
+    }
   }
 }
 
