@@ -122,6 +122,7 @@ let tl = anime.timeline({
 });
 
 let countHistory = [{ t: 0, productionCount: 0 }];
+const simulationSpeedRatio = 10;
 
 document.addEventListener("turbo:load", () => {
   const start = document.getElementById("startSimulation2");
@@ -139,10 +140,11 @@ document.addEventListener("turbo:load", () => {
     });
 
     controlsProgress.oninput = function () {
-      tl.seek(tl.duration * (controlsProgress.value / 100));
-
-      let t = tl.duration * (controlsProgress.value / 100);
-      dispCount(t / 1000);
+      let targetAnimetionSecond = tl.duration * (controlsProgress.value / 100);
+      let targetSecond = (targetAnimetionSecond / 1000) * simulationSpeedRatio;
+      console.log(tl.duration);
+      tl.seek(targetAnimetionSecond);
+      dispCount(targetSecond);
     };
   }
 
@@ -163,6 +165,7 @@ document.addEventListener("turbo:load", () => {
 
 function dispCount(t) {
   countHistory;
+  console.log(t);
   let closestTime, count;
   let timeSeries = countHistory.map((el) => el.t);
   if (timeSeries[0] > t) {
@@ -178,7 +181,7 @@ function dispCount(t) {
     });
     count = countHistory.filter((el) => el.t == closestTime)[0].productionCount;
   }
-  // let count = t;
+
   let el = document.querySelector("#JSobjectProp pre");
   el.innerHTML = JSON.stringify(`total:${count}`);
 }
@@ -205,11 +208,9 @@ async function countStart() {
   );
   let endTime = 400;
   let t = 0;
-  let object1, object2, object3;
+  let object1, object2;
   let totalCount = 0;
-
-  object3 = getCountObject(totalCount);
-  tl.add(object3, t * 1000);
+  let scaledTime;
 
   let machine;
   while (t < endTime) {
@@ -228,7 +229,7 @@ async function countStart() {
     } else {
       switch (operator1.currentLocation.type) {
         case "machine":
-          console.log(`加工地点 :t=${t}`);
+          // console.log(`加工地点 :t=${t}`);
           machine = locations.find(
             (elemnt) => elemnt.id == operator1.currentLocation.id
           );
@@ -242,12 +243,16 @@ async function countStart() {
             operator1.isWaiting = false;
             machine.processingEndTime = t + Number(machine.processingTime);
             object2 = getMachineAnimeObject();
-            tl.add(object2, t * 1000)
+            scaledTime = (t * 1000) / simulationSpeedRatio;
+
+            tl.add(object2, scaledTime)
               .add({
                 targets: "circle#\\31",
                 easing: "steps(1)",
                 fill: "#00f",
-                duration: Number(machine.processingTime) * 1000,
+                duration:
+                  (Number(machine.processingTime) * 1000) /
+                  simulationSpeedRatio,
               })
               .add({
                 targets: "circle#\\31",
@@ -255,30 +260,28 @@ async function countStart() {
                 fill: "#000",
                 duration: 100,
               });
-            console.log(tl);
+            // console.log(tl);
           } else {
             operator1.isWaiting = true;
             // if ()
             operator1.addStateToHistory(t, "待機中");
-            console.log("待機中");
+            // console.log("待機中");
           }
           break;
 
         case "start":
           operator1.hasMaterial = true;
           operator1.addStateToHistory(t, "脱着中");
-          console.log(`start :t= ${t}`);
+          // console.log(`start :t= ${t}`);
           break;
 
         case "goal":
-          console.log(`goal :t=${t}`);
+          // console.log(`goal :t=${t}`);
           operator1.addStateToHistory(t, "脱着中");
           operator1.hasMaterial = false;
           totalCount = totalCount + 1;
           goalPoint.storageSize++;
           goalPoint.addCountToHistory(t, goalPoint.storageSize);
-          object3 = getCountObject(totalCount);
-          tl.add(object3, t * 1000);
           break;
       }
 
@@ -286,7 +289,7 @@ async function countStart() {
         let { destination, selectedRoot } = contoller.determineRoute(operator1);
         operator1.arrivalTime = t + Number(selectedRoot.routeLength);
         object1 = getAnimeObject(selectedRoot);
-        tl.add(object1, t * 1000);
+        tl.add(object1, scaledTime);
         operator1.destination = destination;
         operator1.isMoving = true;
       }
@@ -379,30 +382,6 @@ export function calculateCycleTime(goalPoint) {
   return cycleTime;
 }
 
-function getCountObject(countSize) {
-  let count = {
-    totalCount: 300,
-  };
-
-  // count.totalCount = countSize;
-  let JSobjectProp = anime({
-    targets: count,
-    totalCount: countSize,
-    easing: "linear",
-    round: 1,
-    // duration: 10,
-    update: function () {
-      var el = document.querySelector("#JSobjectProp pre");
-      el.innerHTML = JSON.stringify(`${count}`);
-      console.log(count);
-      // el.innerHTML = JSON.stringify(`totalCount: ${count.value}`);
-      // console.log(anim.value);
-    },
-  });
-
-  return JSobjectProp;
-}
-
 function getAnimeObject(root) {
   let path = anime.path(`#svg02 line#${root.id}`);
   let animeObject = {
@@ -410,7 +389,7 @@ function getAnimeObject(root) {
     translateX: path("x"),
     translateY: path("y"),
     // direction: "alternate",
-    duration: Number(root.routeLength) * 1000,
+    duration: (Number(root.routeLength) * 1000) / simulationSpeedRatio,
     direction: "reverse",
     // loop: true,
     easing: "linear",
