@@ -121,6 +121,8 @@ let tl = anime.timeline({
   autoplay: false,
 });
 
+let countHistory = [{ t: 0, productionCount: 0 }];
+
 document.addEventListener("turbo:load", () => {
   const start = document.getElementById("startSimulation2");
   const play = document.getElementById("play");
@@ -138,6 +140,9 @@ document.addEventListener("turbo:load", () => {
 
     controlsProgress.oninput = function () {
       tl.seek(tl.duration * (controlsProgress.value / 100));
+
+      let t = tl.duration * (controlsProgress.value / 100);
+      dispCount(t / 1000);
     };
   }
 
@@ -155,6 +160,28 @@ document.addEventListener("turbo:load", () => {
     });
   }
 });
+
+function dispCount(t) {
+  countHistory;
+  let closestTime, count;
+  let timeSeries = countHistory.map((el) => el.t);
+  if (timeSeries[0] > t) {
+    closestTime = 0;
+    count = 0;
+  } else {
+    closestTime = timeSeries.reduce((a, current) => {
+      if (Math.abs(current - t) < Math.abs(a - t) && current < t) {
+        return current;
+      } else {
+        return a;
+      }
+    });
+    count = countHistory.filter((el) => el.t == closestTime)[0].productionCount;
+  }
+  // let count = t;
+  let el = document.querySelector("#JSobjectProp pre");
+  el.innerHTML = JSON.stringify(`total:${count}`);
+}
 
 async function countStart() {
   tl.children = [];
@@ -277,7 +304,7 @@ async function countStart() {
   }
 
   // 結果出力
-
+  countHistory = goalPoint.history;
   let cycleTime = calculateCycleTime(goalPoint);
   let waitingArray = formatStateHistory(operator1);
   let waitingTime = calculateWaitingTime(waitingArray);
@@ -353,19 +380,23 @@ export function calculateCycleTime(goalPoint) {
 }
 
 function getCountObject(countSize) {
-  // let count = {
-  //   totalCount: countSize,
-  // };
+  let count = {
+    totalCount: 300,
+  };
+
+  // count.totalCount = countSize;
   let JSobjectProp = anime({
-    // targets: count,
-    // totalCount: countSize,
+    targets: count,
+    totalCount: countSize,
     easing: "linear",
-    // round: 100,
+    round: 1,
     // duration: 10,
-    // value: countSize,
-    change: function () {
+    update: function () {
       var el = document.querySelector("#JSobjectProp pre");
-      el.innerHTML = JSON.stringify(`totalCount: ${countSize}`);
+      el.innerHTML = JSON.stringify(`${count}`);
+      console.log(count);
+      // el.innerHTML = JSON.stringify(`totalCount: ${count.value}`);
+      // console.log(anim.value);
     },
   });
 
