@@ -142,7 +142,6 @@ document.addEventListener("turbo:load", () => {
     controlsProgress.oninput = function () {
       let targetAnimetionSecond = tl.duration * (controlsProgress.value / 100);
       let targetSecond = (targetAnimetionSecond / 1000) * simulationSpeedRatio;
-      console.log(tl.duration);
       tl.seek(targetAnimetionSecond);
       dispCount(targetSecond);
     };
@@ -210,7 +209,6 @@ async function countStart() {
   let t = 0;
   let object1, object2;
   let totalCount = 0;
-  let scaledTime;
 
   let machine;
   while (t < endTime) {
@@ -229,7 +227,7 @@ async function countStart() {
     } else {
       switch (operator1.currentLocation.type) {
         case "machine":
-          // console.log(`加工地点 :t=${t}`);
+          console.log(`加工地点 :t=${t}`);
           machine = locations.find(
             (elemnt) => elemnt.id == operator1.currentLocation.id
           );
@@ -243,16 +241,13 @@ async function countStart() {
             operator1.isWaiting = false;
             machine.processingEndTime = t + Number(machine.processingTime);
             object2 = getMachineAnimeObject();
-            scaledTime = (t * 1000) / simulationSpeedRatio;
-
-            tl.add(object2, scaledTime)
+            tl.add(object2, (t * 1000) / simulationSpeedRatio)
               .add({
                 targets: "circle#\\31",
                 easing: "steps(1)",
                 fill: "#00f",
                 duration:
-                  (Number(machine.processingTime) * 1000) /
-                  simulationSpeedRatio,
+                  (machine.processingTime * 1000) / simulationSpeedRatio,
               })
               .add({
                 targets: "circle#\\31",
@@ -289,7 +284,7 @@ async function countStart() {
         let { destination, selectedRoot } = contoller.determineRoute(operator1);
         operator1.arrivalTime = t + Number(selectedRoot.routeLength);
         object1 = getAnimeObject(selectedRoot);
-        tl.add(object1, scaledTime);
+        tl.add(object1, (t * 1000) / simulationSpeedRatio);
         operator1.destination = destination;
         operator1.isMoving = true;
       }
@@ -388,10 +383,8 @@ function getAnimeObject(root) {
     targets: "#ob1",
     translateX: path("x"),
     translateY: path("y"),
-    // direction: "alternate",
-    duration: (Number(root.routeLength) * 1000) / simulationSpeedRatio,
+    duration: (root.routeLength * 1000) / simulationSpeedRatio,
     direction: "reverse",
-    // loop: true,
     easing: "linear",
   };
 
