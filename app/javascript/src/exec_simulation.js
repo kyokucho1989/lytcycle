@@ -61,7 +61,7 @@ class Controller {
   }
 
   determineRoute(operator) {
-    let selectedRoot, rootName, destination, roots, currentLocation;
+    let selectedRoot, destination, roots, currentLocation;
     roots = this.route;
     currentLocation = operator.currentLocation;
     switch (operator.currentLocation.type) {
@@ -92,8 +92,7 @@ class Controller {
         break;
     }
 
-    rootName = selectedRoot.id;
-    return { destination, rootName };
+    return { destination, selectedRoot };
   }
 }
 
@@ -122,6 +121,9 @@ let tl = anime.timeline({
   autoplay: false,
 });
 
+let countHistory = [{ t: 0, productionCount: 0 }];
+const simulationSpeedRatio = 10;
+
 document.addEventListener("turbo:load", () => {
   const start = document.getElementById("startSimulation2");
   const play = document.getElementById("play");
@@ -132,13 +134,16 @@ document.addEventListener("turbo:load", () => {
     tl = anime.timeline({
       easing: "easeOutExpo",
       autoplay: false,
-      update: function () {
+      change: function () {
         controlsProgress.value = tl.progress;
       },
     });
 
     controlsProgress.oninput = function () {
-      tl.seek(tl.duration * (controlsProgress.value / 100));
+      let targetAnimetionSecond = tl.duration * (controlsProgress.value / 100);
+      let targetSecond = (targetAnimetionSecond / 1000) * simulationSpeedRatio;
+      tl.seek(targetAnimetionSecond);
+      dispCount(targetSecond);
     };
   }
 
@@ -156,6 +161,29 @@ document.addEventListener("turbo:load", () => {
     });
   }
 });
+
+function dispCount(t) {
+  countHistory;
+  console.log(t);
+  let closestTime, count;
+  let timeSeries = countHistory.map((el) => el.t);
+  if (timeSeries[0] > t) {
+    closestTime = 0;
+    count = 0;
+  } else {
+    closestTime = timeSeries.reduce((a, current) => {
+      if (Math.abs(current - t) < Math.abs(a - t) && current < t) {
+        return current;
+      } else {
+        return a;
+      }
+    });
+    count = countHistory.filter((el) => el.t == closestTime)[0].productionCount;
+  }
+
+  let el = document.querySelector("#JSobjectProp pre");
+  el.innerHTML = JSON.stringify(`total:${count}`);
+}
 
 async function countStart() {
   tl.children = [];
@@ -179,11 +207,8 @@ async function countStart() {
   );
   let endTime = 400;
   let t = 0;
-  let object1, object2, object3;
+  let object1, object2;
   let totalCount = 0;
-
-  object3 = getCountObject(totalCount);
-  tl.add(object3, t * 100);
 
   let machine;
   while (t < endTime) {
@@ -206,7 +231,7 @@ async function countStart() {
           machine = locations.find(
             (elemnt) => elemnt.id == operator1.currentLocation.id
           );
-          if (!machine.isProcessing || machine.processingEndTime < t) {
+          if (!machine.isProcessing || Number(machine.processingEndTime) < t) {
             operator1.addStateToHistory(t, "脱着中");
             if (!machine.hasMaterial) {
               operator1.hasMaterial = false;
@@ -214,14 +239,15 @@ async function countStart() {
             machine.isProcessing = true;
             machine.hasMaterial = true;
             operator1.isWaiting = false;
-            machine.processingEndTime = t + machine.processingTime;
+            machine.processingEndTime = t + Number(machine.processingTime);
             object2 = getMachineAnimeObject();
-            tl.add(object2, t * 100)
+            tl.add(object2, (t * 1000) / simulationSpeedRatio)
               .add({
                 targets: "circle#\\31",
                 easing: "steps(1)",
                 fill: "#00f",
-                duration: machine.processingTime * 1000,
+                duration:
+                  (machine.processingTime * 1000) / simulationSpeedRatio,
               })
               .add({
                 targets: "circle#\\31",
@@ -234,14 +260,14 @@ async function countStart() {
             operator1.isWaiting = true;
             // if ()
             operator1.addStateToHistory(t, "待機中");
-            console.log("待機中");
+            // console.log("待機中");
           }
           break;
 
         case "start":
           operator1.hasMaterial = true;
           operator1.addStateToHistory(t, "脱着中");
-          console.log(`start :t= ${t}`);
+          // console.log(`start :t= ${t}`);
           break;
 
         case "goal":
@@ -251,16 +277,14 @@ async function countStart() {
           totalCount = totalCount + 1;
           goalPoint.storageSize++;
           goalPoint.addCountToHistory(t, goalPoint.storageSize);
-          object3 = getCountObject(totalCount);
-          tl.add(object3, t * 100);
           break;
       }
 
       if (!operator1.isWaiting) {
-        operator1.arrivalTime = t + 20;
-        let { destination, rootName } = contoller.determineRoute(operator1);
-        object1 = getAnimeObject(rootName);
-        tl.add(object1, t * 100);
+        let { destination, selectedRoot } = contoller.determineRoute(operator1);
+        operator1.arrivalTime = t + Number(selectedRoot.routeLength);
+        object1 = getAnimeObject(selectedRoot);
+        tl.add(object1, (t * 1000) / simulationSpeedRatio);
         operator1.destination = destination;
         operator1.isMoving = true;
       }
@@ -268,8 +292,8 @@ async function countStart() {
 
     locations.forEach((machine) => {
       if (machine.isProcessing) {
-        if (machine.processingEndTime == t) {
-          // console.log("加工終了");
+        if (Number(machine.processingEndTime) == t) {
+          console.log("加工終了");
           machine.isProcessing = false;
         }
       }
@@ -278,7 +302,7 @@ async function countStart() {
   }
 
   // 結果出力
-
+  countHistory = goalPoint.history;
   let cycleTime = calculateCycleTime(goalPoint);
   let waitingArray = formatStateHistory(operator1);
   let waitingTime = calculateWaitingTime(waitingArray);
@@ -353,36 +377,15 @@ export function calculateCycleTime(goalPoint) {
   return cycleTime;
 }
 
-function getCountObject(countSize) {
-  let count = {
-    totalCount: countSize,
-  };
-  let JSobjectProp = anime({
-    targets: count,
-    totalCount: countSize,
-    easing: "linear",
-    round: 1,
-    value: countSize,
-    change: function () {
-      var el = document.querySelector("#JSobjectProp pre");
-      el.innerHTML = JSON.stringify(count);
-    },
-  });
-
-  return JSobjectProp;
-}
-
-function getAnimeObject(rootName) {
-  let path = anime.path(`#svg02 line#${rootName}`);
+function getAnimeObject(root) {
+  let path = anime.path(`#svg02 line#${root.id}`);
   let animeObject = {
     targets: "#ob1",
     translateX: path("x"),
     translateY: path("y"),
-    // direction: "alternate",
-    // duration: 500,
+    duration: (root.routeLength * 1000) / simulationSpeedRatio,
     direction: "reverse",
-    // loop: true,
-    // easing: "easeInOutSine",
+    easing: "linear",
   };
 
   return animeObject;
