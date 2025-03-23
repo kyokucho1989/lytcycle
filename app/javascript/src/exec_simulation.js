@@ -185,7 +185,7 @@ function dispCount(t) {
   el.innerHTML = JSON.stringify(`total:${count}`);
 }
 
-async function countStart() {
+export async function countStart() {
   tl.children = [];
 
   let linksData = generatePairRoutes(routes);

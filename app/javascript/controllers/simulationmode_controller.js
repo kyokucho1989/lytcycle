@@ -4,6 +4,7 @@ import { changeActiveObject, drawLink } from "src/canvas";
 import { setClickEventToObject } from "src/simulation";
 import { routes } from "src/set_simulation_params";
 import { findInvalidRouteIds } from "src/consistency_check";
+import { countStart } from "src/exec_simulation";
 
 export default class extends Controller {
   static targets = ["edit", "simulate", "editbutton", "simulatebutton"];
@@ -70,28 +71,37 @@ export default class extends Controller {
     setClickEventToObject(this);
   }
 
-  checkSimulate() {
-    if (this.readyForExecution) {
-      this.simulate();
-    } else {
-      alert("整合性確認を行なってください");
-      const editRadio = document.getElementById("editMode");
-      editRadio.checked = true;
+  async startSimulation() {
+    let isConsistency = this.isConsistency();
+    drawLink();
+    if (!isConsistency) {
+      alert("異常なルートがあります。削除してください。");
+      return;
     }
+    alert("整合性チェックOK");
+    this.readyForExecution = true;
+    await countStart();
+    const play = document.getElementById("play");
+    const pause = document.getElementById("pause");
+    const progress = document.getElementById("progress");
+    play.disabled = false;
+    pause.disabled = false;
+    progress.disabled = false;
   }
 
-  checkConsistency() {
+  checkSimulate() {
+    this.simulate();
+  }
+
+  isConsistency() {
     let result = findInvalidRouteIds(routes);
     console.log(`整合性チェックの結果: ${result.ids}`);
     if (result.ids.length == 0) {
-      alert("整合性チェックOK");
-      const simulateRadio = document.getElementById("simulateMode");
-      simulateRadio.disabled = false;
       this.readyForExecution = true;
+      return true;
     } else {
-      alert("異常なルートがあります。削除してください。");
+      return false;
     }
-    drawLink();
   }
 
   simulate() {
