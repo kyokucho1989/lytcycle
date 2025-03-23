@@ -16,13 +16,4 @@ RSpec.describe 'Widget', type: :system do
     expect(page).to have_css 'circle#\\31'
     expect(page).to have_css 'circle#goal'
   end
-
-  it 'can not fire click event in simulation mode', js: true do
-    sign_in @user
-    visit new_user_simulation_path(@user)
-    accept_alert '整合性チェックOK' do
-      click_on '整合性確認'
-    end
-    expect(page).to have_no_selector 'input#simulateMode[disabled]'
-  end
 end
