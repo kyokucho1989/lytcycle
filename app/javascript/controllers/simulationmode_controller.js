@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
 // import { changeInactiveObject } from "src/simulation";
-import { changeActiveObject, drawLink } from "src/canvas";
+import { changeActiveObject, drawLink, activePlayButtons } from "src/canvas";
 import { setClickEventToObject } from "src/simulation";
 import { routes } from "src/set_simulation_params";
 import { findInvalidRouteIds } from "src/consistency_check";
@@ -81,12 +81,13 @@ export default class extends Controller {
     alert("整合性チェックOK");
     this.readyForExecution = true;
     await countStart();
-    const play = document.getElementById("play");
-    const pause = document.getElementById("pause");
-    const progress = document.getElementById("progress");
-    play.disabled = false;
-    pause.disabled = false;
-    progress.disabled = false;
+    activePlayButtons();
+    // const play = document.getElementById("play");
+    // const pause = document.getElementById("pause");
+    // const progress = document.getElementById("progress");
+    // play.disabled = false;
+    // pause.disabled = false;
+    // progress.disabled = false;
   }
 
   checkSimulate() {
