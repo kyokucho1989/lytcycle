@@ -155,18 +155,22 @@ export function inactivePlayButtons() {
   const play = document.getElementById("play");
   const pause = document.getElementById("pause");
   const progress = document.getElementById("progress");
-  play.disabled = true;
-  pause.disabled = true;
-  progress.disabled = true;
+  if (play && pause && progress) {
+    play.disabled = true;
+    pause.disabled = true;
+    progress.disabled = true;
+  }
 }
 
 export function activePlayButtons() {
   const play = document.getElementById("play");
   const pause = document.getElementById("pause");
   const progress = document.getElementById("progress");
-  play.disabled = false;
-  pause.disabled = false;
-  progress.disabled = false;
+  if (play && pause && progress) {
+    play.disabled = false;
+    pause.disabled = false;
+    progress.disabled = false;
+  }
 }
 
 export async function setLinkColor(linksData, color) {
