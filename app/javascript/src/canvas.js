@@ -141,6 +141,7 @@ export async function drawLink(linksData = routes, nodesData = facilities) {
     } else {
       resolve();
     }
+    inactivePlayButtons();
   });
 }
 
@@ -148,6 +149,28 @@ export async function setNodeColor(nodesData, color) {
   d3.selectAll("circle")
     .filter((d) => nodesData.includes(d))
     .attr("fill", color);
+}
+
+export function inactivePlayButtons() {
+  const play = document.getElementById("play");
+  const pause = document.getElementById("pause");
+  const progress = document.getElementById("progress");
+  if (play && pause && progress) {
+    play.disabled = true;
+    pause.disabled = true;
+    progress.disabled = true;
+  }
+}
+
+export function activePlayButtons() {
+  const play = document.getElementById("play");
+  const pause = document.getElementById("pause");
+  const progress = document.getElementById("progress");
+  if (play && pause && progress) {
+    play.disabled = false;
+    pause.disabled = false;
+    progress.disabled = false;
+  }
 }
 
 export async function setLinkColor(linksData, color) {

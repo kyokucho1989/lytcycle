@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import { inactivePlayButtons } from "src/canvas";
 import { routes, operators, facilities } from "src/set_simulation_params";
 // データの初期値をロード
 
@@ -78,6 +79,7 @@ export function setObjectparams(e, params, objects) {
       selectedObject[key] = value;
     }
   }
+  inactivePlayButtons();
 }
 
 export function setParamsToFacilityOnModal() {
