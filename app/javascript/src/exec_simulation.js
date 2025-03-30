@@ -10,6 +10,7 @@ class Location {
     this.storageSize = parameters.storageSize ?? 0;
     this.isProcessing = false;
     this.processingEndTime = 0;
+    this.hasMaterial = false;
     this.type = parameters.type ?? "machine";
     this.history = [];
   }
@@ -60,39 +61,52 @@ class Controller {
     this.route = routes;
   }
 
-  determineRoute(operator) {
-    let selectedRoot, destination, roots, currentLocation;
-    roots = this.route;
+  determineRoute(operator, locations) {
+    let selectedRoute, destination, routes, currentLocation, linkedRoutes;
+    routes = this.route;
     currentLocation = operator.currentLocation;
+    linkedRoutes = routes.filter(
+      (route) =>
+        route.source.index == currentLocation.index && !route.id.includes("re")
+    );
+
+    selectedRoute = linkedRoutes.find((route) => {
+      let notProcessingMachine = locations.find(
+        (machine) => machine.id == route.target.id && !machine.isProcessing
+      );
+      if (notProcessingMachine) {
+        // console.log(`停止中マシンあり ${notProcessingMachine.id}`);
+        return route;
+      }
+    });
+    if (!selectedRoute) {
+      selectedRoute = linkedRoutes[0];
+    }
     switch (operator.currentLocation.type) {
       case "start":
-      // break;
+        destination = selectedRoute.target;
+        break;
       case "goal":
-        selectedRoot = roots.find(
+        selectedRoute = routes.find(
           (element) => element.source.index == currentLocation.index
         );
-        destination = selectedRoot.target;
+        destination = selectedRoute.target;
         break;
       case "machine":
         if (operator.hasMaterial) {
-          // console.log("持ってる");
-          selectedRoot = roots.find(
-            (element) => element.source.id == currentLocation.id
-          );
-          destination = selectedRoot.target;
+          destination = selectedRoute.target;
         } else {
-          // console.log("もってない");
-          selectedRoot = roots.find(
+          selectedRoute = routes.find(
             (element) =>
               element.source.id == currentLocation.id &&
               element.id.includes("re")
           );
-          destination = selectedRoot.target;
+          destination = selectedRoute.target;
         }
         break;
     }
 
-    return { destination, selectedRoot };
+    return { destination, selectedRoute };
   }
 }
 
@@ -136,6 +150,11 @@ document.addEventListener("turbo:load", () => {
       autoplay: false,
       change: function () {
         controlsProgress.value = tl.progress;
+        let targetAnimetionSecond =
+          tl.duration * (controlsProgress.value / 100);
+        let targetSecond =
+          (targetAnimetionSecond / 1000) * simulationSpeedRatio;
+        dispCount(targetSecond);
       },
     });
 
@@ -163,8 +182,6 @@ document.addEventListener("turbo:load", () => {
 });
 
 function dispCount(t) {
-  countHistory;
-  console.log(t);
   let closestTime, count;
   let timeSeries = countHistory.map((el) => el.t);
   if (timeSeries[0] > t) {
@@ -188,16 +205,31 @@ function dispCount(t) {
 export async function countStart() {
   tl.children = [];
 
-  let linksData = generatePairRoutes(routes);
   let nodesData1 = facilities;
-  await drawLink(linksData, nodesData1);
-
   const contoller = new Controller();
   let locations = [];
 
   nodesData1.forEach((facility) => {
     locations.push(new Location(facility));
   });
+
+  nodesData1.forEach((el) => (el.hasMaterial = false));
+  nodesData1.forEach((el) => (el.isProcessing = false));
+  nodesData1.forEach((el) => (el.processingEndTime = 0));
+  let copyLinks = routes;
+
+  let linksData2 = copyLinks.map((route) => {
+    return {
+      ...route,
+      source: nodesData1.find((facility) => facility.id == route.source.id),
+      target: nodesData1.find((facility) => facility.id == route.target.id),
+      id: `${route.id}`,
+    };
+  });
+
+  let linksData = generatePairRoutes(linksData2);
+  await drawLink(linksData, nodesData1);
+
   contoller.setRoutes(linksData);
   // let startPoint = locations.find((object) => object.type == "start");
   let goalPoint = locations.find((object) => object.type == "goal");
@@ -218,17 +250,14 @@ export async function countStart() {
       if (operator1.arrivalTime == t) {
         operator1.isMoving = false;
         operator1.currentLocation = operator1.destination;
-
-        // console.log("現在地セット");
-        // console.log(operator1.currentLocation);
       } else {
         // operator1.arrivalTime = operator1.arrivalTime - 1;
       }
     } else {
       switch (operator1.currentLocation.type) {
         case "machine":
-          console.log(`加工地点 :t=${t}`);
-          machine = locations.find(
+          // console.log(`加工地点 :t=${t}`);
+          machine = nodesData1.find(
             (elemnt) => elemnt.id == operator1.currentLocation.id
           );
           if (!machine.isProcessing || Number(machine.processingEndTime) < t) {
@@ -241,16 +270,17 @@ export async function countStart() {
             operator1.isWaiting = false;
             machine.processingEndTime = t + Number(machine.processingTime);
             object2 = getMachineAnimeObject();
+            // console.log(`circle#${machine.id}`);
             tl.add(object2, (t * 1000) / simulationSpeedRatio)
               .add({
-                targets: "circle#\\31",
+                targets: `circle#${machine.id}`,
                 easing: "steps(1)",
                 fill: "#00f",
                 duration:
                   (machine.processingTime * 1000) / simulationSpeedRatio,
               })
               .add({
-                targets: "circle#\\31",
+                targets: `circle#${machine.id}`,
                 easing: "steps(1)",
                 fill: "#000",
                 duration: 100,
@@ -258,9 +288,8 @@ export async function countStart() {
             // console.log(tl);
           } else {
             operator1.isWaiting = true;
-            // if ()
             operator1.addStateToHistory(t, "待機中");
-            // console.log("待機中");
+            console.log("待機中");
           }
           break;
 
@@ -281,19 +310,22 @@ export async function countStart() {
       }
 
       if (!operator1.isWaiting) {
-        let { destination, selectedRoot } = contoller.determineRoute(operator1);
-        operator1.arrivalTime = t + Number(selectedRoot.routeLength);
-        object1 = getAnimeObject(selectedRoot);
+        let { destination, selectedRoute } = contoller.determineRoute(
+          operator1,
+          nodesData1
+        );
+        operator1.arrivalTime = t + Number(selectedRoute.routeLength);
+        object1 = getAnimeObject(selectedRoute);
         tl.add(object1, (t * 1000) / simulationSpeedRatio);
         operator1.destination = destination;
         operator1.isMoving = true;
       }
     }
 
-    locations.forEach((machine) => {
+    nodesData1.forEach((machine) => {
       if (machine.isProcessing) {
         if (Number(machine.processingEndTime) == t) {
-          console.log("加工終了");
+          // console.log(`machine:${machine.id}  加工終了  t: ${t}`);
           machine.isProcessing = false;
         }
       }

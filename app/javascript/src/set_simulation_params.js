@@ -2,8 +2,8 @@ export let routes, operators, facilities;
 import { drawLink } from "src/canvas";
 
 const routesInitial = [
-  { source: "start", target: 1, routeLength: 20, id: "root10" },
-  { source: 1, target: "goal", routeLength: 20, id: "root1-1" },
+  { source: "start", target: "n1", routeLength: 20, id: "root10" },
+  { source: "n1", target: "goal", routeLength: 20, id: "root1-1" },
   { source: "goal", target: "start", routeLength: 20, id: "root-10" },
 ];
 const operatorsInitial = [{ name: "Alice" }];
@@ -30,7 +30,7 @@ const facilitiesInitial = [
     x: 330,
     y: 60,
     r: 15,
-    id: 1,
+    id: "n1",
     processingTime: 15,
     type: "machine",
     name: "machine-no-1",
