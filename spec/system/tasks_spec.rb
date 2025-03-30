@@ -13,7 +13,7 @@ RSpec.describe 'Widget', type: :system do
     assert_selector 'h1', text: 'Simulation一覧'
     click_on '編集'
     expect(page).to have_css 'circle#start'
-    expect(page).to have_css 'circle#\\31'
+    expect(page).to have_css 'circle#n1'
     expect(page).to have_css 'circle#goal'
   end
 end

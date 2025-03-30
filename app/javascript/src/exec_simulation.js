@@ -150,6 +150,11 @@ document.addEventListener("turbo:load", () => {
       autoplay: false,
       change: function () {
         controlsProgress.value = tl.progress;
+        let targetAnimetionSecond =
+          tl.duration * (controlsProgress.value / 100);
+        let targetSecond =
+          (targetAnimetionSecond / 1000) * simulationSpeedRatio;
+        dispCount(targetSecond);
       },
     });
 
