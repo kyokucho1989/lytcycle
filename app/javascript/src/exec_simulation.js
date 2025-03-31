@@ -239,7 +239,7 @@ export async function countStart() {
   );
   let endTime = 400;
   let t = 0;
-  let object1, object2;
+  let object1;
   let totalCount = 0;
 
   let machine;
@@ -269,22 +269,17 @@ export async function countStart() {
             machine.hasMaterial = true;
             operator1.isWaiting = false;
             machine.processingEndTime = t + Number(machine.processingTime);
-            object2 = getMachineAnimeObject();
-            // console.log(`circle#${machine.id}`);
-            tl.add(object2, (t * 1000) / simulationSpeedRatio)
-              .add({
-                targets: `circle#${machine.id}`,
-                easing: "steps(1)",
-                fill: "#00f",
-                duration:
-                  (machine.processingTime * 1000) / simulationSpeedRatio,
-              })
-              .add({
-                targets: `circle#${machine.id}`,
-                easing: "steps(1)",
-                fill: "#000",
-                duration: 100,
-              });
+            let litingAnime = getMachineLitingAnime(
+              machine,
+              simulationSpeedRatio
+            );
+            let lightOutAnime = getMachineLightOutAnime(
+              machine,
+              simulationSpeedRatio
+            );
+            tl.add(litingAnime, (t * 1000) / simulationSpeedRatio).add(
+              lightOutAnime
+            );
             // console.log(tl);
           } else {
             operator1.isWaiting = true;
@@ -423,17 +418,20 @@ function getAnimeObject(root) {
   return animeObject;
 }
 
-function getMachineAnimeObject() {
-  // const path = anime.path(`#svg01 path.${rootName}`);
-  let animeObject = {
-    targets: "circle#n1",
-    direction: "alternate",
-    // loop: true,
-    easing: "linear",
+function getMachineLitingAnime(machine, simulationSpeedRatio) {
+  return {
+    targets: `circle#${machine.id}`,
+    easing: "steps(1)",
     fill: "#00f",
-    duration: 100,
-    autoplay: false,
+    duration: (machine.processingTime * 1000) / simulationSpeedRatio,
   };
+}
 
-  return animeObject;
+function getMachineLightOutAnime(machine, simulationSpeedRatio) {
+  return {
+    targets: `circle#${machine.id}`,
+    easing: "steps(1)",
+    fill: "#000",
+    duration: 100 / simulationSpeedRatio,
+  };
 }
