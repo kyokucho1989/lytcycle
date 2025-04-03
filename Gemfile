@@ -74,6 +74,8 @@ gem 'cssbundling-rails'
 
 gem "dockerfile-rails", ">= 1.6", :group => :development
 
+gem "meta-tags"
+
 gem 'rubocop', require: false
 
 gem "tailwindcss-rails", "~> 2.6"

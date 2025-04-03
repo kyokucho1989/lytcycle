@@ -8,13 +8,13 @@ RSpec.describe 'Widget management', type: :system do
 
   it 'visiting the demo page' do
     visit demo_path
-    assert_selector 'h1', text: 'demo Simulation'
+    assert_selector 'h1', text: 'デモページ'
   end
 
   it 'visiting the index simulation when sign in' do
     sign_in @user
     visit user_simulations_path(@user)
-    assert_selector 'h1', text: 'Simulation一覧'
+    assert_selector 'h1', text: 'シミュレーション一覧'
   end
 
   # it "enables me to create widgets" do
