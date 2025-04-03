@@ -138,6 +138,15 @@ let tl = anime.timeline({
 let countHistory = [{ t: 0, productionCount: 0 }];
 const simulationSpeedRatio = 10;
 
+function syncTimelineAndSeekbar(controlProgress, tl = this) {
+  if (tl) {
+    let targetAnimetionSecond = tl.duration * (controlProgress.value / 100);
+    let targetSecond = (targetAnimetionSecond / 1000) * simulationSpeedRatio;
+    tl.seek(targetAnimetionSecond);
+    dispCount(targetSecond);
+  }
+}
+
 document.addEventListener("turbo:load", () => {
   const start = document.getElementById("startSimulation2");
   const play = document.getElementById("play");
@@ -148,22 +157,12 @@ document.addEventListener("turbo:load", () => {
     tl = anime.timeline({
       easing: "easeOutExpo",
       autoplay: false,
-      change: function () {
-        controlsProgress.value = tl.progress;
-        let targetAnimetionSecond =
-          tl.duration * (controlsProgress.value / 100);
-        let targetSecond =
-          (targetAnimetionSecond / 1000) * simulationSpeedRatio;
-        dispCount(targetSecond);
-      },
+      change: () => syncTimelineAndSeekbar(controlsProgress),
     });
 
-    controlsProgress.oninput = function () {
-      let targetAnimetionSecond = tl.duration * (controlsProgress.value / 100);
-      let targetSecond = (targetAnimetionSecond / 1000) * simulationSpeedRatio;
-      tl.seek(targetAnimetionSecond);
-      dispCount(targetSecond);
-    };
+    controlsProgress.addEventListener("input", () =>
+      syncTimelineAndSeekbar(controlsProgress, tl)
+    );
   }
 
   if (start) {
@@ -203,8 +202,18 @@ function dispCount(t) {
 }
 
 export async function countStart() {
-  tl.children = [];
+  let controlsProgress = document.querySelector("#simulation input.progress");
 
+  if (controlsProgress) {
+    controlsProgress.value = 0;
+    tl = anime.timeline({
+      easing: "easeOutExpo",
+      autoplay: false,
+      change: () => syncTimelineAndSeekbar(controlsProgress),
+    });
+  }
+
+  tl.children = [];
   let nodesData1 = facilities;
   const contoller = new Controller();
   let locations = [];
