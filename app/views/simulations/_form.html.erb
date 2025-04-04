@@ -3,12 +3,14 @@ data-user_id ="<%= @simulation.user_id %>"
 data-routes ="<%= @simulation.routes %>"
 data-operators ="<%= @simulation.operators %>"
 data-facilities ="<%= @simulation.facilities %>">
-<span>フォーム</span>
+<h2 class="text-base/7 font-semibold text-gray-900">フォーム</h2>
 <% if user_signed_in? %>
   <%= form_with(model: @simulation ,url: [current_user , @simulation] ,id: "simulationForm") do |form| %>
-    <div>
-      <%= form.label :title, style: "display: block" %>
-      <%= form.text_field :title %>
+    <div class="sm:col-span-4">
+      <%= form.label :title ,class: "block text-sm/6 font-medium text-gray-900" %>
+      <div class="mt-2">
+          <%= form.text_field :title , placeholder: "生産ライン名" ,class: "rounded-md block min-w-0 outline-gray-300 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6"%>
+      </div>
     </div>
 
       <%= form.hidden_field :routes %>
@@ -17,7 +19,7 @@ data-facilities ="<%= @simulation.facilities %>">
 
     <div>
       <%= form.label :cycle_time, style: "display: block" %>
-      <%= form.number_field :cycle_time , size: "10x1", readonly: true%>
+      <%= form.number_field :cycle_time , size: "10x1", readonly: true ,class: "cursor-default focus:outline-none focus:ring-0"%>
     </div>
 
     <div>
@@ -141,8 +143,8 @@ data-facilities ="<%= @simulation.facilities %>">
     </fieldset>
   </div>
 
-  <div class="svg-wrapper w-32 overflow-auto">
-    <svg id="svg02" xmlns="http://www.w3.org/2000/svg">
+  <div class="w-full overflow-scroll">
+    <svg id="svg02" class="h-[500px] w-[500px]" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <marker id="arr" refX="0" refY="1" orient="auto">
           <path d="M0,0 L2,1 0,2 Z" fill="#eab942" />
