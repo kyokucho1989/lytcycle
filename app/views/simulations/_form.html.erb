@@ -3,11 +3,11 @@ data-user_id ="<%= @simulation.user_id %>"
 data-routes ="<%= @simulation.routes %>"
 data-operators ="<%= @simulation.operators %>"
 data-facilities ="<%= @simulation.facilities %>">
-<h2 class="text-base/7 font-semibold text-gray-900">フォーム</h2>
+<h2 class="mt-5 mb-2 text-xl font-semibold text-gray-900">フォーム</h2>
 <% if user_signed_in? %>
   <%= form_with(model: @simulation ,url: [current_user , @simulation] ,id: "simulationForm") do |form| %>
     <div class="sm:col-span-4">
-      <%= form.label :title ,class: "block text-sm/6 font-medium text-gray-900" %>
+      <%= form.label "タイトル" ,class: "block text-sm/6 font-medium text-gray-900" %>
       <div class="mt-2">
           <%= form.text_field :title , placeholder: "生産ライン名" ,class: "rounded-md block min-w-0 outline-gray-300 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6"%>
       </div>
@@ -16,28 +16,25 @@ data-facilities ="<%= @simulation.facilities %>">
       <%= form.hidden_field :routes %>
       <%= form.hidden_field :operators %>
       <%= form.hidden_field :facilities %>
+    <h3 class="mt-5 text-base/7 font-semibold text-gray-900">シミュレーション結果</h3>
+    <div class="grid grid-cols-2 gap-x-4 gap-y-2 pl-4 max-w-sm mt-2 mb-5">
+        <%= form.label "サイクルタイム", class: "self-center" %>
+        <%= form.number_field :cycle_time , size: "10x1", readonly: true ,class: "cursor-default border-none focus:outline-none focus:ring-0"%>
 
-    <div>
-      <%= form.label :cycle_time, style: "display: block" %>
-      <%= form.number_field :cycle_time , size: "10x1", readonly: true ,class: "cursor-default focus:outline-none focus:ring-0"%>
+        <%= form.label "ボトルネック工程", class: "self-center" %>
+        <%= form.text_area :bottleneck_process , size: "10x1", readonly: true, class: "cursor-default border-none focus:outline-none focus:ring-0 resize-none overflow-hidden"%>
+
+        <%= form.label "待ち時間", class: "self-center" %>
+        <%= form.number_field :waiting_time , size: "10x1", readonly: true, class: "cursor-default border-none focus:outline-none focus:ring-0"%>
     </div>
 
     <div>
-      <%= form.label :bottleneck_process, style: "display: block" %>
-      <%= form.text_area :bottleneck_process , size: "10x1", readonly: true%>
-    </div>
-
-    <div>
-      <%= form.label :waiting_time, style: "display: block" %>
-      <%= form.number_field :waiting_time , size: "10x1", readonly: true%>
-    </div>
-
-    <div>
-      <%= form.submit "save", id: 'savesimulation' ,class: "bg-blue-500 text-white font-bold py-2 px-4 rounded"%>
+      <%= form.submit "データを保存", id: 'savesimulation' ,class: "bg-blue-500 text-white font-bold py-2 px-4 rounded"%>
     </div>
   <% end %>
 <% end %>
 
+<h2 class="mt-10 mb-2 text-xl font-semibold text-gray-900">シミュレーション</h2>
   <!-- フォームを含むモーダルダイアログ -->
     <dialog id="facilityDialog">
     パラメータ
@@ -72,7 +69,7 @@ data-facilities ="<%= @simulation.facilities %>">
       </form>
     </dialog>
 
-  <div data-controller="simulationmode" id="simulation-controller">
+  <div class="pt-5" data-controller="simulationmode" id="simulation-controller">
     <fieldset class="relative -space-y-px rounded-md bg-white">
       <label aria-description="edit" class="group flex cursor-pointer border border-gray-200 p-4 first:rounded-tl-md first:rounded-tr-md last:rounded-bl-md last:rounded-br-md focus:outline-none has-[:checked]:relative has-[:checked]:border-indigo-200 has-[:checked]:bg-indigo-50 md:grid md:grid-cols-3 md:pl-4 md:pr-6">
         <span class="flex items-center gap-3">
@@ -83,7 +80,7 @@ data-facilities ="<%= @simulation.facilities %>">
             checked
             data-simulationmode-target="editbutton" data-action="simulationmode#edit"
             class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden [&:not(:checked)]:before:hidden">
-          <span class="px-2 font-medium text-gray-900 group-has-[:checked]:text-indigo-900">編集</span>
+          <span class="px-2 font-medium text-gray-900 group-has-[:checked]:text-indigo-900">編集モード</span>
         </span>
       </label>
 
@@ -96,11 +93,10 @@ data-facilities ="<%= @simulation.facilities %>">
             data-simulationmode-target="simulatebutton" data-action="simulationmode#checkSimulate"
             class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400"
           >
-            <span class="px-2 font-medium text-gray-900 group-has-[:checked]:text-indigo-900">実行</span>
+            <span class="px-2 font-medium text-gray-900 group-has-[:checked]:text-indigo-900">実行モード</span>
         </span>
       </label>
       <div data-simulationmode-target="edit">
-        <h3>編集モード</h3>
         <fieldset id="modeSelection">
           <div class="mt-6 space-y-6">
             <div class="flex items-center">
@@ -131,7 +127,6 @@ data-facilities ="<%= @simulation.facilities %>">
         </fieldset>
       </div>
       <div data-simulationmode-target="simulate" id="simulation">
-        <h3>実行モード</h3>
         <button type="button" id="isConsistency" data-action="simulationmode#startSimulation" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">シミュレーション開始</button>
         <button type="button" id="play" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" disabled>再生</button>
         <button type="button" id="pause" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" disabled>停止</button>
