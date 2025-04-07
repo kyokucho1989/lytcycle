@@ -9,7 +9,7 @@ RSpec.describe 'Widget', type: :system do
     sign_in @user
     visit new_user_simulation_path(@user)
     fill_in 'simulation[title]', with: 'machine'
-    click_on 'save'
+    click_on 'データを保存'
     assert_selector 'h1', text: 'シミュレーション一覧'
     click_on '編集'
     expect(page).to have_css 'circle#start'
