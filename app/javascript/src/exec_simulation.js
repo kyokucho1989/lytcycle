@@ -138,15 +138,6 @@ let tl = anime.timeline({
 let countHistory = [{ t: 0, productionCount: 0 }];
 const simulationSpeedRatio = 10;
 
-function syncTimelineAndSeekbar(controlProgress, tl = this) {
-  if (tl) {
-    let targetAnimetionSecond = tl.duration * (controlProgress.value / 100);
-    let targetSecond = (targetAnimetionSecond / 1000) * simulationSpeedRatio;
-    tl.seek(targetAnimetionSecond);
-    dispCount(targetSecond);
-  }
-}
-
 document.addEventListener("turbo:load", () => {
   const start = document.getElementById("startSimulation2");
   const play = document.getElementById("play");
@@ -157,12 +148,22 @@ document.addEventListener("turbo:load", () => {
     tl = anime.timeline({
       easing: "easeOutExpo",
       autoplay: false,
-      change: () => syncTimelineAndSeekbar(controlsProgress),
+      update: function () {
+        let targetAnimetionSecond =
+          tl.duration * (controlsProgress.value / 100);
+        let targetSecond =
+          (targetAnimetionSecond / 1000) * simulationSpeedRatio;
+        controlsProgress.value = tl.progress;
+        dispCount(targetSecond);
+      },
     });
 
-    controlsProgress.addEventListener("input", () =>
-      syncTimelineAndSeekbar(controlsProgress, tl)
-    );
+    controlsProgress.addEventListener("input", function () {
+      let targetAnimetionSecond = tl.duration * (controlsProgress.value / 100);
+      let targetSecond = (targetAnimetionSecond / 1000) * simulationSpeedRatio;
+      tl.seek(targetAnimetionSecond);
+      dispCount(targetSecond);
+    });
   }
 
   if (start) {
@@ -209,7 +210,14 @@ export async function countStart() {
     tl = anime.timeline({
       easing: "easeOutExpo",
       autoplay: false,
-      change: () => syncTimelineAndSeekbar(controlsProgress),
+      update: function () {
+        let targetAnimetionSecond =
+          tl.duration * (controlsProgress.value / 100);
+        let targetSecond =
+          (targetAnimetionSecond / 1000) * simulationSpeedRatio;
+        controlsProgress.value = tl.progress;
+        dispCount(targetSecond);
+      },
     });
   }
 
