@@ -4,6 +4,22 @@ data-routes ="<%= @simulation.routes %>"
 data-operators ="<%= @simulation.operators %>"
 data-facilities ="<%= @simulation.facilities %>">
 <h2 class="mt-10 mb-2 text-xl font-semibold text-gray-900">フォーム</h2>
+<h3 class="mt-5 text-base/7 font-semibold text-gray-900 col-span-2">シミュレーション結果</h3>
+<% if !user_signed_in? %>
+  <%= form_with do |form| %>
+    <div class="grid grid-cols-2 gap-x-4 gap-y-2 pl-4 max-w-sm mt-2 mb-5">
+    <%= form.label "サイクルタイム", class: "self-center" %>
+    <%= form.number_field :simulation_cycle_time , size: "10x1", readonly: true ,class: "cursor-default border-none focus:outline-none focus:ring-0"%>
+
+    <%= form.label "ボトルネック工程", class: "self-center" %>
+    <%= form.text_area :simulation_bottleneck_process , size: "10x1", readonly: true, class: "cursor-default border-none focus:outline-none focus:ring-0 resize-none overflow-hidden"%>
+
+    <%= form.label "待ち時間", class: "self-center" %>
+    <%= form.number_field :simulation_waiting_time , size: "10x1", readonly: true, class: "cursor-default border-none focus:outline-none focus:ring-0"%>
+    </div>
+  <% end %>
+<% end %>
+
 <% if user_signed_in? %>
 
   <%= form_with(model: @simulation ,url: [current_user , @simulation] ,id: "simulationForm") do |form| %>
