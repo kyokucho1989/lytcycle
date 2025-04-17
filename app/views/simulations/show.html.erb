@@ -2,27 +2,39 @@
 <% set_meta_tags description: 'シミュレーションの詳細ページです' %>
 <div class="mx-auto max-w-7xl py-5 px-4 sm:px-6 lg:px-8">
   <h1 class="text-3xl font-bold tracking-tight text-gray-900">シミュレーション詳細</h1>
-</div>
-<div>
-  <ul>
-    <li>
-      タイトル：<%= @simulation.title %>
-    </li>
-    <li>
-      待ち時間：<%= @simulation.waiting_time %>
-    </li>
-    <li>
-    ネック工程：<%= @simulation.bottleneck_process %>
-    </li>
-    <li>
-    サイクルタイム：<%= @simulation.cycle_time %>
-    </li>
-  </ul>
-  <%= link_to edit_user_simulation_path(current_user, @simulation) do %>
-    編集
-  <% end %>
-  <%= link_to user_simulations_path(current_user) do %>
-    一覧ページへ
-  <% end %>
+  <div class="mx-auto py-8 max-w-4xl">
+    <div class="mt-6 border-gray-100">
+      <dl class="divide-y divide-gray-100">
+        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="font-medium text-gray-900">タイトル</dt>
+          <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0"><%= @simulation.title %></dd>
+        </div>
+        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="font-medium text-gray-900">待ち時間</dt>
+          <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0"><%= @simulation.waiting_time %></dd>
+        </div>
+        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="font-medium text-gray-900">ネック工程</dt>
+          <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0"><%= @simulation.bottleneck_process %></dd>
+        </div>
+        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="font-medium text-gray-900">サイクルタイム</dt>
+          <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0"><%= @simulation.cycle_time %></dd>
+        </div>
+      </dl>
+    </div>
+    <div class="mt-6 border-gray-100">
+      <%= link_to edit_user_simulation_path(current_user, @simulation) ,class: "rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" do %>
+        編集
+      <% end %>
+    </div>
+    <div class="mt-6 border-gray-100">
+      <p class="text-sm/6 font-semibold text-gray-900">
+      <%= link_to user_simulations_path(current_user) ,class: "hover:underline" do%>
+        一覧ページへ
+      <% end %>
+      </p>
+    </div>
+  </div>
 </div>
 
