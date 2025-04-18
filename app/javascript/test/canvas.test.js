@@ -68,8 +68,8 @@ test("draw link and circle", async () => {
   await drawLink(routesInitial, facilitiesInitial);
 
   await waitFor(() => {
-    const circle = document.querySelector("circle");
-    expect(circle).toHaveAttribute("cx"); // cxが設定されていることを確認
+    const group = document.querySelector("g");
+    expect(group).toHaveAttribute("transform");
   });
 
   expect(div).toMatchSnapshot();
