@@ -11,10 +11,24 @@ import {
   facilityDialog,
   routeDialog,
 } from "src/simulation";
+
+export async function displayOperator() {
+  d3.select("#svg02").append("text").attr("id", "ob1").text("作業者");
+}
+
+export async function displayRaiseOperator() {
+  d3.select("#ob1").raise();
+}
+
+export async function displayStartGoalName() {
+  d3.select("#svg02").selectAll("circle").select("#start").text("スタート");
+  d3.select("#svg02").selectAll("circle").select("#goal").text("ゴール");
+}
+
 export async function drawLink(linksData = routes, nodesData = facilities) {
   return new Promise((resolve) => {
     d3.select("#svg02").selectAll("line").remove();
-    d3.select("#svg02").selectAll("circle").remove();
+    d3.select("#svg02").selectAll("g").remove();
     function ticked() {
       link
         .attr("x1", (d) => d.source.x)
@@ -22,7 +36,7 @@ export async function drawLink(linksData = routes, nodesData = facilities) {
         .attr("x2", (d) => adjustLinkEnd(d).x)
         .attr("y2", (d) => adjustLinkEnd(d).y);
 
-      node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+      node.attr("transform", (d) => `translate(${d.x}, ${d.y})`);
     }
 
     function adjustLinkEnd(link) {
@@ -54,17 +68,23 @@ export async function drawLink(linksData = routes, nodesData = facilities) {
 
       node = d3
         .select("#svg02")
-        .selectAll("circle")
+        .selectAll("g")
         .data(nodesData)
         .enter()
+        .append("g")
+        .attr("transform", (d) => `translate(${d.x}, ${d.y})`);
+
+      node
         .append("circle")
-        .attr("r", function (d) {
-          return d.r;
-        })
+        .attr("r", (d) => d.r)
         .attr("stroke", "black")
-        .attr("id", function (d) {
-          return d.id;
-        });
+        .attr("id", (d) => d.id);
+
+      node
+        .append("text")
+        .text((d) => d.id)
+        .attr("text-anchor", "middle")
+        .attr("y", 25);
 
       setNodeColor(nodesData, "#99aaee");
       setLinkColor(linksData, "#aaa");
@@ -141,6 +161,7 @@ export async function drawLink(linksData = routes, nodesData = facilities) {
     } else {
       resolve();
     }
+    displayStartGoalName();
     inactivePlayButtons();
   });
 }
