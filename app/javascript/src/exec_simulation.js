@@ -1,6 +1,7 @@
 import anime from "animejs";
 import { routes, facilities } from "src/set_simulation_params";
 import { drawLink } from "src/canvas";
+import { displayOperator } from "src/canvas";
 
 class Location {
   constructor(parameters) {
@@ -204,6 +205,8 @@ function dispCount(t) {
 
 export async function countStart() {
   let controlsProgress = document.querySelector("#simulation input.progress");
+  await displayOperator();
+  // await displayStartGoalName();
 
   if (controlsProgress) {
     controlsProgress.value = 0;
