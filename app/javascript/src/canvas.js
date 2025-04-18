@@ -16,6 +16,10 @@ export async function displayOperator() {
   d3.select("#svg02").append("text").attr("id", "ob1").text("作業者");
 }
 
+export async function displayRaiseOperator() {
+  d3.select("#ob1").raise();
+}
+
 export async function displayStartGoalName() {
   d3.select("#svg02").selectAll("circle").select("#start").text("スタート");
   d3.select("#svg02").selectAll("circle").select("#goal").text("ゴール");
@@ -32,7 +36,6 @@ export async function drawLink(linksData = routes, nodesData = facilities) {
         .attr("x2", (d) => adjustLinkEnd(d).x)
         .attr("y2", (d) => adjustLinkEnd(d).y);
 
-      // node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
       node.attr("transform", (d) => `translate(${d.x}, ${d.y})`);
     }
 
@@ -63,62 +66,25 @@ export async function drawLink(linksData = routes, nodesData = facilities) {
         })
         .attr("marker-end", (d) => (d.id.includes("re") ? "" : "url(#arr)"));
 
-      // node = d3
-      // .select("#svg02")
-      // .selectAll("circle")
       node = d3
         .select("#svg02")
-        .selectAll("g") // g要素単位でデータをバインド
+        .selectAll("g")
         .data(nodesData)
         .enter()
-        .append("g") // g要素を追加して circle + text をグルーピング
+        .append("g")
         .attr("transform", (d) => `translate(${d.x}, ${d.y})`);
-      // .call(
-      //   d3
-      //     .drag()
-      //     .on("start", function () {
-      //       alert("start");
-      //     })
-      //     .on("drag", dragged)
-      //     .on("end", dragended)
-      // ); // 初期位置
-      // .call(
-      //   d3.drag().on("drag", function (event, d) {
-      //     d.x = event.x;
-      //     d.y = event.y;
-      //     d3.select(this).attr("transform", `translate(${d.x}, ${d.y})`);
-      //   })
-      // );
 
-      // circleをg内に追加
       node
         .append("circle")
         .attr("r", (d) => d.r)
-        .attr("stroke", "black") // 任意の色
+        .attr("stroke", "black")
         .attr("id", (d) => d.id);
 
-      // textをg内に追加（circleの中央または外側）
       node
         .append("text")
         .text((d) => d.id)
-        .attr("text-anchor", "middle") // 中央揃え
-        .attr("y", 25); // 垂直方向の調整（中央に見せる）
-      // .attr("font-size", "12px")
-      // .attr("pointer-events", "none"); // ドラッグイベントの妨げにならないように
-
-      // node = d3
-      //   .select("#svg02")
-      //   .selectAll("circle")
-      //   .data(nodesData)
-      //   .enter()
-      //   .append("circle")
-      //   .attr("r", function (d) {
-      //     return d.r;
-      //   })
-      //   .attr("stroke", "black")
-      //   .attr("id", function (d) {
-      //     return d.id;
-      //   });
+        .attr("text-anchor", "middle")
+        .attr("y", 25);
 
       setNodeColor(nodesData, "#99aaee");
       setLinkColor(linksData, "#aaa");
