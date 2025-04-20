@@ -200,7 +200,7 @@ function dispCount(t) {
   }
 
   let el = document.querySelector("#JSobjectProp pre");
-  el.innerHTML = JSON.stringify(`total:${count}`);
+  el.innerHTML = JSON.stringify(`t: ${Math.trunc(t)} / total:${count}`);
 }
 
 export async function countStart() {
