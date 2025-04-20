@@ -397,6 +397,9 @@ export function judgeBottleneckProcess(waitingArray) {
     (element) => element[1] == waitingTime
   );
   let bottleneck_process = bottleneck_map[0];
+  if (bottleneck_process == "start") {
+    bottleneck_process = "なし(移動ネック)";
+  }
   return bottleneck_process;
 }
 
