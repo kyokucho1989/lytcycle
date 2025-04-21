@@ -1,8 +1,58 @@
 <% set_meta_tags title: 'トップページ' %>
 <% set_meta_tags description: 'トップページです' %>
 <main class="container mx-auto px-4">
-    <h1 class="font-bold text-4xl pt-5">index</h1>
+    <h1 class="font-bold text-4xl pt-5">工場最適化の第一歩を、もっと手軽に。</h1>
     <p class="mt-4 text-sm/6">lytcycle （ライトサイクル）は、製造業向けの簡易な生産ラインシミュレータです。</p>
+
+    <%= button_to "早速使ってみる", demo_path ,method: :get, class:"rounded-md bg-white my-4 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
+    <%= button_to "新規登録", new_user_registration_path, method: :get, class:"rounded-md bg-white my-4 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
+
+    <h1 class="font-bold text-4xl pt-12 pb-4">よくある課題</h1>
+    <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
+        <div class="flex flex-col">
+            <dt class="mt-4 text-base font-semibold">ボトルネックが分からない</dt>
+            <dd class="text-base">どの工程が全体の効率を下げているか、直感では判断しづらいことがあります。</dd>
+        </div>
+        <div class="flex flex-col">
+            <dt class="mt-4 text-base font-semibold">シミュレーターが高額</dt>
+            <dd class="text-base">市販のシミュレーターはコストが高く、導入に踏み切れない場合があります。</dd>
+        </div>
+        <div class="flex flex-col">
+            <dt class="mt-4 text-base font-semibold">表計算ソフトでは流れが見えない</dt>
+            <dd class="text-base">エクセルの表計算だけでは設備の流れや関係性がイメージしにくいことが多いです。</dd>
+        </div>
+    </div>
+    <h1 class="font-bold text-4xl pt-12 pb-4">lytcycleでできること</h1>
+    <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
+        <div class="flex flex-col">
+            <dt class="mt-4 text-base font-semibold">ボタン一つでボトルネックがすぐ分かる</dt>
+            <dd class="text-base">パラメータを設定しシミュレーション実行ボタンを押せば、ボトルネックがすぐに分かります。</dd>
+        </div>
+        <div class="flex flex-col">
+            <dt class="mt-4 text-base font-semibold">無料で導入可能</dt>
+            <dd class="text-base">ユーザー登録後、無料で始めることができます。（現在無料版のみ公開中）</dd>
+        </div>
+        <div class="flex flex-col">
+            <dt class="mt-4 text-base font-semibold">直感操作で生産の流れ可視化</dt>
+            <dd class="text-base">設備や人の流れを可視化し、表計算だけでは分かりづらい関係も理解できます。</dd>
+        </div>
+    </div>
+    <h1 class="font-bold text-4xl pt-12 pb-4">使い方</h1>
+    <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
+        <div class="flex flex-col">
+            <dt class="mt-4 text-base font-semibold">Step1:設備を配置</dt>
+            <dd class="text-base">必要な設備を配置します。加工時間や名前を設定できます。</dd>
+        </div>
+        <div class="flex flex-col">
+            <dt class="mt-4 text-base font-semibold">Step2:設備間をリンクでつなぐ</dt>
+            <dd class="text-base">それぞれの設備をリンクで結びます。リンクをクリックすることで、設備間の移動時間も設定できます。</dd>
+        </div>
+        <div class="flex flex-col">
+            <dt class="mt-4 text-base font-semibold">Step3:シミュレーション実行</dt>
+            <dd class="text-base">シミュレーション実行ボタンを押すと、サイクルタイムやボトルネックが計算されます。
+            また、再生ボタンを押すことで作業の様子がアニメーションも再生されます。</dd>
+        </div>
+    </div>
 
     <%= button_to "早速使ってみる", demo_path ,method: :get, class:"rounded-md bg-white my-4 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
     <%= button_to "新規登録", new_user_registration_path, method: :get, class:"rounded-md bg-white my-4 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
