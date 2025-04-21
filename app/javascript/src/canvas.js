@@ -224,8 +224,12 @@ function dragstarted(event) {
 }
 
 function dragged(event) {
-  event.subject.fx = event.x;
-  event.subject.fy = event.y;
+  const svg = document.getElementById("svg02");
+  const width = svg.clientWidth;
+  const height = svg.clientHeight;
+
+  event.subject.fx = Math.max(0, Math.min(width, event.x));
+  event.subject.fy = Math.max(0, Math.min(height, event.y));
 }
 
 function dragended(event) {
