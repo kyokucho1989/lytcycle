@@ -69,7 +69,6 @@
               <%= link_to "新規登録", new_user_registration_path ,class: "block px-4 py-2 text-sm text-gray-700" %>
               <%= link_to "ログイン", new_user_session_path ,class: "block px-4 py-2 text-sm text-gray-700" %>
             <% end %>
-              <%= link_to "利用規約", term_path ,class: "block px-4 py-2 text-sm text-gray-700" %>
             </div>
           </div>
         </div>
@@ -112,6 +111,8 @@
       <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
           <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
           <span class="block text-sm text-gray-500 sm:text-center dark:text-gray-400">2025 Lytcycle All Rights Reserved.</span>
+          <%= link_to "プライバシーポリシー", pages_privacy_url ,class: "block text-sm text-gray-500 sm:text-center dark:text-gray-400" %>
+          <%= link_to "利用規約", term_path ,class: "block text-sm text-gray-500 sm:text-center dark:text-gray-400" %>
       </div>
   </footer>
   </body>

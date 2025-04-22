@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'pages/privacy'
   get 'welcome/index'
   devise_for :users
   resources :users do
