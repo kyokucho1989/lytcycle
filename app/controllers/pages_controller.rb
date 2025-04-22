@@ -1,4 +1,3 @@
 class PagesController < ApplicationController
-  def privacy
-  end
+  def privacy; end
 end
