@@ -99,33 +99,6 @@ data-facilities ="<%= @simulation.facilities %>">
 
   <div class="pt-1" data-controller="simulationmode" id="simulation-controller">
     <fieldset class="relative -space-y-px rounded-md bg-white">
-      <div class="mt-3 mb-6 flex items-center gap-3">
-        <label aria-description="edit" class="group flex cursor-pointer border border-gray-200 p-4 focus:outline-none has-[:checked]:relative has-[:checked]:border-indigo-200 has-[:checked]:bg-indigo-50 md:grid md:grid-cols-2 md:pl-4 md:pr-6">
-          <span class="flex items-center gap-3">
-            <input
-              type="radio"
-              name="mode"
-              id="editMode"
-              checked
-              data-simulationmode-target="editbutton" data-action="simulationmode#edit"
-              class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden [&:not(:checked)]:before:hidden">
-            <span class="px-2 font-medium text-gray-900 group-has-[:checked]:text-indigo-900">編集モード</span>
-          </span>
-        </label>
-
-        <label aria-description="edit" class="group flex cursor-pointer border border-gray-200 p-4 focus:outline-none has-[:checked]:relative has-[:checked]:border-indigo-200 has-[:checked]:bg-indigo-50 md:grid md:grid-cols-2 md:pl-4 md:pr-6">
-          <span class="flex items-center gap-3">
-            <input
-              type="radio"
-              name="mode"
-              id="simulateMode"
-              data-simulationmode-target="simulatebutton" data-action="simulationmode#checkSimulate"
-              class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400"
-            >
-              <span class="px-2 font-medium text-gray-900 group-has-[:checked]:text-indigo-900">実行モード</span>
-          </span>
-        </label>
-      </div>
       <div data-simulationmode-target="edit">
         <fieldset id="modeSelection">
           <div class="grid md:grid-cols-5 items-center gap-4">

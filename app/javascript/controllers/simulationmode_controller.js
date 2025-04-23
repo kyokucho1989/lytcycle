@@ -15,7 +15,7 @@ export default class extends Controller {
     RUNNING: "running",
   };
 
-  SUB_STATES = {
+  STATES = {
     SELECT: "select",
     ADD_OPERATOR: "add-operator",
     ADD_FACILITY: "add-facility",
@@ -25,20 +25,20 @@ export default class extends Controller {
 
   connect() {
     this.mainState = this.MAIN_STATES.EDIT;
-    this.subState = this.SUB_STATES.SELECT;
+    this.state = this.STATES.SELECT;
     // this.readyForExecution = false;
     this.editTarget.hidden = false;
-    this.simulateTarget.hidden = true;
+    this.simulateTarget.hidden = false;
     // this.editbuttonTarget.hidden = true;
     // this.simulatebuttonTarget.hidden = false;
   }
 
   edit() {
     this.mainState = this.MAIN_STATES.EDIT;
-    this.subState = this.SUB_STATES.SELECT;
-    console.log(this.mainState, this.subState);
+    this.state = this.STATES.SELECT;
+    console.log(this.mainState, this.state);
     this.editTarget.hidden = false;
-    this.simulateTarget.hidden = true;
+    this.simulateTarget.hidden = false;
     // this.editbuttonTarget.hidden = true;
     // this.simulatebuttonTarget.hidden = false;
     const editSubRadio = document.getElementById("select");
@@ -48,26 +48,26 @@ export default class extends Controller {
   }
 
   changeModeToAddMan() {
-    this.mainState = this.MAIN_STATES.EDIT;
-    this.subState = this.SUB_STATES.ADD_OPERATOR;
+    // this.mainState = this.MAIN_STATES.EDIT;
+    this.state = this.STATES.ADD_OPERATOR;
     setClickEventToObject(this);
   }
 
   changeModeToAddFacility() {
-    this.mainState = this.MAIN_STATES.EDIT;
-    this.subState = this.SUB_STATES.ADD_FACILITY;
+    // this.mainState = this.MAIN_STATES.EDIT;
+    this.state = this.STATES.ADD_FACILITY;
     setClickEventToObject(this);
   }
 
   changeModeToLink() {
-    this.mainState = this.MAIN_STATES.EDIT;
-    this.subState = this.SUB_STATES.LINK;
+    // this.mainState = this.MAIN_STATES.EDIT;
+    this.state = this.STATES.LINK;
     setClickEventToObject(this);
   }
 
   changeModeToDelete() {
-    this.mainState = this.MAIN_STATES.EDIT;
-    this.subState = this.SUB_STATES.DELETE;
+    // this.mainState = this.MAIN_STATES.EDIT;
+    this.state = this.STATES.DELETE;
     setClickEventToObject(this);
   }
 
@@ -107,7 +107,7 @@ export default class extends Controller {
 
   simulate() {
     this.mainState = this.MAIN_STATES.RUNNING;
-    console.log(this.mainState, this.subState);
+    console.log(this.mainState, this.state);
     this.editTarget.hidden = true;
     this.simulateTarget.hidden = false;
     // this.editbuttonTarget.hidden = false;
