@@ -116,7 +116,25 @@ export function switchAddRouteMode() {
   d3.select("#svg02").on("click", null);
   d3.select("#svg02").on("mousemove", null);
   d3.select("#svg02").selectAll("line").on("click", null);
-  d3.select("#svg02").selectAll("circle").on("click", addRoute);
+  d3.select("#svg02")
+    .selectAll("circle")
+    .on("click", function () {
+      let targetId, sourceId;
+      let sourceNode = document.querySelectorAll("circle[selected]");
+
+      if (this.hasAttribute("selected")) {
+        this.removeAttribute("selected");
+      } else {
+        this.setAttribute("selected", "");
+        if (sourceNode.length != 0) {
+          sourceId = sourceNode[0].id;
+          targetId = this.id;
+          addRoute(targetId, sourceId);
+        } else {
+          sourceId = this.id;
+        }
+      }
+    });
 }
 
 export function setObjectparams(e, params, objects) {
