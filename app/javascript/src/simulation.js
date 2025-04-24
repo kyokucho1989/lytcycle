@@ -16,58 +16,105 @@ import {
   deleteRoute,
   deleteFacility,
 } from "src/set_simulation_params";
-import { changeInactiveObject } from "src/canvas";
-import { linkClicked, nodeClicked } from "src/canvas";
-
+// import { changeInactiveObject } from "src/canvas";
+import {
+  linkClicked,
+  nodeClicked,
+  nodeMouseOver,
+  nodeMouseOut,
+  linkMouseOver,
+  linkMouseOut,
+} from "src/canvas";
+let ghostNode;
 export function setClickEventToObject(object) {
-  if (object.mainState == "running") {
-    console.log("run");
-    changeInactiveObject();
-  } else {
-    switch (object.state) {
-      case "select":
-        // d3.select("#svg02").on("click", null);
-        console.log("select");
-        d3.select("#svg02").on("click", null);
-        d3.select("#svg02").selectAll("line").on("click", linkClicked);
-        d3.select("#svg02").selectAll("circle").on("click", nodeClicked);
-        break;
-      case "add-operator":
-        d3.select("#svg02").on("click", null);
-        console.log("add-operator");
-        break;
-      case "add-facility":
-        switchAddFacilityMode();
-        console.log("add-facility");
-        break;
-      case "delete":
-        switchDeleteObjectMode();
-        console.log("delete");
-        break;
-      case "link":
-        switchAddRouteMode();
-        console.log("link");
-        break;
-    }
+  switch (object.state) {
+    case "edit":
+      // d3.select("#svg02").on("click", null);
+      console.log("select");
+      if (ghostNode) {
+        ghostNode.remove();
+        ghostNode = null;
+      }
+      d3.select("#svg02").on("click", null);
+      d3.select("#svg02").on("mousemove", null);
+      d3.select("#svg02").selectAll("line").on("click", linkClicked);
+      d3.select("#svg02").selectAll("circle").on("click", nodeClicked);
+      d3.select("#svg02").selectAll("line").on("mouseover", linkMouseOver);
+      d3.select("#svg02").selectAll("line").on("mouseout", linkMouseOut);
+      d3.select("#svg02").selectAll("circle").on("mouseover", nodeMouseOver);
+      d3.select("#svg02").selectAll("circle").on("mouseout", nodeMouseOut);
+      break;
+    case "add-operator":
+      d3.select("#svg02").on("click", null);
+      console.log("add-operator");
+      break;
+    case "add-facility":
+      switchAddFacilityMode();
+      console.log("add-facility");
+      break;
+    case "delete":
+      switchDeleteObjectMode();
+      console.log("delete");
+      break;
+    case "link":
+      switchAddRouteMode();
+      console.log("link");
+      break;
   }
 }
 
 export function switchDeleteObjectMode() {
+  if (ghostNode) {
+    ghostNode.remove();
+    ghostNode = null;
+  }
   d3.select("#svg02").on("click", null);
+  d3.select("#svg02").on("mousemove", null);
+  d3.select("#svg02").selectAll("line").on("mouseover", linkMouseOver);
+  d3.select("#svg02").selectAll("line").on("mouseout", linkMouseOut);
+  d3.select("#svg02").selectAll("circle").on("mouseover", nodeMouseOver);
+  d3.select("#svg02").selectAll("circle").on("mouseout", nodeMouseOut);
   d3.select("#svg02").selectAll("line").on("click", deleteRoute);
   d3.select("#svg02").selectAll("circle").on("click", deleteFacility);
 }
 
 export function switchAddFacilityMode() {
+  if (ghostNode) {
+    ghostNode.remove();
+    ghostNode = null;
+  }
+  d3.select("#svg02").selectAll("line").on("click", null);
+  d3.select("#svg02").selectAll("circle").on("click", null);
+  d3.select("#svg02").selectAll("line").on("mouseover", null);
+  d3.select("#svg02").selectAll("line").on("mouseout", null);
+  d3.select("#svg02").selectAll("circle").on("mouseover", null);
+  d3.select("#svg02").selectAll("circle").on("mouseout", null);
   d3.select("#svg02").on("click", null);
   d3.select("#svg02").on("click", function (e) {
     const [x, y] = d3.pointer(e, this);
     addFacility([x, y]);
   });
+
+  d3.select("#svg02").on("mousemove", function (e) {
+    const [x, y] = d3.pointer(e, this);
+    if (!ghostNode) {
+      ghostNode = d3
+        .select("#svg02")
+        .append("circle")
+        .attr("r", 15)
+        .attr("fill", "gray");
+    }
+    ghostNode.attr("cx", x).attr("cy", y);
+  });
 }
 
 export function switchAddRouteMode() {
+  if (ghostNode) {
+    ghostNode.remove();
+    ghostNode = null;
+  }
   d3.select("#svg02").on("click", null);
+  d3.select("#svg02").on("mousemove", null);
   d3.select("#svg02").selectAll("line").on("click", null);
   d3.select("#svg02").selectAll("circle").on("click", addRoute);
 }

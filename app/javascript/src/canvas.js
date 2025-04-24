@@ -200,6 +200,22 @@ export async function setLinkColor(linksData, color) {
     .attr("stroke", color);
 }
 
+export function linkMouseOver(event) {
+  d3.select(event.currentTarget).attr("stroke", "#D7E8FE");
+}
+
+export function linkMouseOut(event) {
+  d3.select(event.currentTarget).attr("stroke", "#aaa");
+}
+
+export function nodeMouseOver(event) {
+  d3.select(event.currentTarget).attr("fill", "#D7E8FE");
+}
+
+export function nodeMouseOut(event) {
+  d3.select(event.currentTarget).attr("fill", "#99aaee");
+}
+
 export function nodeClicked() {
   let facilityForEdit = facilities.find((facility) => facility.id == this.id);
   setFacilityDataToModal(facilityForEdit);
