@@ -99,7 +99,7 @@ data-facilities ="<%= @simulation.facilities %>">
 
   <div class="pt-1" data-controller="simulationmode" id="simulation-controller">
     <fieldset class="relative -space-y-px rounded-md bg-white">
-      <div data-simulationmode-target="edit">
+      <div>
         <fieldset id="modeSelection">
           <div class="grid md:grid-cols-5 items-center gap-4">
             <div class="flex items-center">
@@ -129,7 +129,7 @@ data-facilities ="<%= @simulation.facilities %>">
           </div>
         </fieldset>
       </div>
-      <div data-simulationmode-target="simulate" id="simulation">
+      <div id="simulation">
         <button type="button" id="isConsistency" data-action="simulationmode#startSimulation" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">シミュレーション開始</button>
         <button type="button" id="play" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:bg-gray-300" disabled>再生</button>
         <button type="button" id="pause" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:bg-gray-300" disabled>停止</button>
