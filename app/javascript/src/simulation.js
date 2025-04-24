@@ -24,10 +24,11 @@ export function setClickEventToObject(object) {
     console.log("run");
     changeInactiveObject();
   } else {
-    switch (object.subState) {
+    switch (object.state) {
       case "select":
         // d3.select("#svg02").on("click", null);
         console.log("select");
+        d3.select("#svg02").on("click", null);
         d3.select("#svg02").selectAll("line").on("click", linkClicked);
         d3.select("#svg02").selectAll("circle").on("click", nodeClicked);
         break;
@@ -37,6 +38,7 @@ export function setClickEventToObject(object) {
         break;
       case "add-facility":
         switchAddFacilityMode();
+        console.log("add-facility");
         break;
       case "delete":
         switchDeleteObjectMode();
@@ -57,9 +59,8 @@ export function switchDeleteObjectMode() {
 }
 
 export function switchAddFacilityMode() {
-  const svg = d3.select("#svg02");
-  svg.on("click", null);
-  svg.on("click", function (e) {
+  d3.select("#svg02").on("click", null);
+  d3.select("#svg02").on("click", function (e) {
     const [x, y] = d3.pointer(e, this);
     addFacility([x, y]);
   });

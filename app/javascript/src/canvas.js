@@ -139,16 +139,16 @@ export async function drawLink(linksData = routes, nodesData = facilities) {
 
       switch (selectModeName) {
         case "add-facility":
-          modeState.subState = "add-facility";
+          modeState.state = "add-facility";
           break;
         case "select":
-          modeState.subState = "select";
+          modeState.state = "select";
           break;
         case "add-link":
-          modeState.subState = "link";
+          modeState.state = "link";
           break;
         case "delete-object":
-          modeState.subState = "delete";
+          modeState.state = "delete";
           break;
       }
       setClickEventToObject(modeState);
