@@ -55,6 +55,10 @@ export function deleteRoute() {
 
 export function deleteFacility() {
   let selectedFacility = facilities.find((facility) => facility.id == this.id);
+  if (selectedFacility.id == "goal" || selectedFacility.id == "start") {
+    alert("スタートとゴールは削除できません。");
+    return;
+  }
   let unConnectedRoutes = routes.filter(
     (route) =>
       route.target.id != selectedFacility.id &&
