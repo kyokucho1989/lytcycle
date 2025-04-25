@@ -9,7 +9,7 @@ export default class extends Controller {
   static targets = ["editbutton", "simulatebutton"];
 
   STATES = {
-    SELECT: "select",
+    EDIT: "edit",
     ADD_OPERATOR: "add-operator",
     ADD_FACILITY: "add-facility",
     DELETE: "delete",
@@ -17,12 +17,13 @@ export default class extends Controller {
   };
 
   connect() {
-    this.state = this.STATES.SELECT;
+    this.state = this.STATES.EDIT;
+    setClickEventToObject(this);
   }
 
   edit() {
-    this.state = this.STATES.SELECT;
-    console.log(this.mainState, this.state);
+    this.state = this.STATES.EDIT;
+    console.log(this.state);
     changeActiveObject();
     setClickEventToObject(this);
   }
@@ -60,10 +61,6 @@ export default class extends Controller {
     activePlayButtons();
   }
 
-  checkSimulate() {
-    this.simulate();
-  }
-
   isConsistency() {
     let result = findInvalidRouteIds(routes);
     console.log(`整合性チェックの結果: ${result.ids}`);
@@ -73,13 +70,5 @@ export default class extends Controller {
     } else {
       return false;
     }
-  }
-
-  simulate() {
-    this.mainState = this.MAIN_STATES.RUNNING;
-    console.log(this.mainState, this.state);
-    this.editTarget.hidden = true;
-    this.simulateTarget.hidden = false;
-    setClickEventToObject(this);
   }
 }

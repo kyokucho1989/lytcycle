@@ -55,6 +55,10 @@ export function deleteRoute() {
 
 export function deleteFacility() {
   let selectedFacility = facilities.find((facility) => facility.id == this.id);
+  if (selectedFacility.id == "goal" || selectedFacility.id == "start") {
+    alert("スタートとゴールは削除できません。");
+    return;
+  }
   let unConnectedRoutes = routes.filter(
     (route) =>
       route.target.id != selectedFacility.id &&
@@ -72,46 +76,33 @@ export function deleteFacility() {
   }
 }
 
-export function addRoute() {
-  // let selectedFacility = facilities.find((facility) => facility.id == this.id);
-  if (this.hasAttribute("selected")) {
-    this.removeAttribute("selected");
+export function addRoute(targetId, sourceId) {
+  let targetNode = facilities.find((element) => element.id == targetId);
+  let sourceNode = facilities.find((element) => element.id == sourceId);
+  let idName = `root${sourceId}${targetId}`;
+  let route = {
+    source: sourceNode,
+    target: targetNode,
+    routeLength: 20,
+    id: idName,
+    index: routes.length,
+  };
+
+  let dupicatedLogic = (route) =>
+    (route.target.id == targetId && route.source.id == sourceId) ||
+    (route.target.id == sourceId && route.source.id == targetId);
+
+  if (routes.some(dupicatedLogic)) {
+    console.log("重複");
   } else {
-    this.setAttribute("selected", "");
+    routes = routes.concat(route);
+    drawLink(routes, facilities);
   }
   let selectedNodes = document.querySelectorAll("circle[selected]");
-  if (selectedNodes.length == 2) {
-    let targetId = this.id;
-    let source = [...selectedNodes].find((element) => element.id != targetId);
-    let sourceId = source.id;
-    console.log("2つ以上のnodeあり");
-    let targetNode = facilities.find((element) => element.id == targetId);
-    let sourceNode = facilities.find((element) => element.id == sourceId);
-    let idName = `root${sourceId}${targetId}`;
-    let route = {
-      source: sourceNode,
-      target: targetNode,
-      routeLength: 20,
-      id: idName,
-      index: routes.length,
-    };
 
-    let dupicatedLogic = (route) =>
-      (route.target.id == targetId && route.source.id == sourceId) ||
-      (route.target.id == sourceId && route.source.id == targetId);
-
-    if (routes.some(dupicatedLogic)) {
-      console.log("重複");
-    } else {
-      routes = routes.concat(route);
-      drawLink(routes, facilities);
-    }
-
-    [...selectedNodes].forEach((element) => {
-      element.removeAttribute("selected");
-    });
-  }
-  console.log(selectedNodes);
+  [...selectedNodes].forEach((element) => {
+    element.removeAttribute("selected");
+  });
 }
 
 export function addFacility([x, y]) {
