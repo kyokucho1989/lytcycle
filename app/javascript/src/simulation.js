@@ -26,8 +26,8 @@ import {
   linkMouseOut,
 } from "src/canvas";
 let ghostNode, tempLine;
-const svg = d3.select("#svg02");
 export async function setClickEventToObject(object) {
+  const svg = d3.select("#svg02");
   switch (object.state) {
     case "edit":
       console.log("edit");
@@ -63,6 +63,7 @@ export async function setClickEventToObject(object) {
 }
 
 export function switchDeleteObjectMode() {
+  const svg = d3.select("#svg02");
   clearGhostObjects();
   removeSelectAttribute();
 
@@ -77,6 +78,7 @@ export function switchDeleteObjectMode() {
 }
 
 export function switchAddFacilityMode() {
+  const svg = d3.select("#svg02");
   clearGhostObjects();
   removeSelectAttribute();
 
@@ -106,6 +108,7 @@ export function switchAddFacilityMode() {
 }
 
 export function switchAddRouteMode() {
+  const svg = d3.select("#svg02");
   clearGhostObjects();
   removeSelectAttribute();
 
