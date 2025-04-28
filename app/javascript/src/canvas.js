@@ -135,14 +135,13 @@ export async function drawLink(linksData = routes, nodesData = facilities) {
         selectModeName = selectMode.id;
       }
       const modeState = {};
-      modeState.mainState = "edit";
 
       switch (selectModeName) {
         case "add-facility":
           modeState.state = "add-facility";
           break;
-        case "select":
-          modeState.state = "select";
+        case "edit":
+          modeState.state = "edit";
           break;
         case "add-link":
           modeState.state = "link";

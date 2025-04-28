@@ -6,7 +6,7 @@ import { findInvalidRouteIds } from "src/consistency_check";
 import { countStart } from "src/exec_simulation";
 
 export default class extends Controller {
-  static targets = ["editbutton", "simulatebutton"];
+  static targets = ["detail", "editbutton", "simulatebutton"];
 
   STATES = {
     EDIT: "edit",
@@ -17,8 +17,9 @@ export default class extends Controller {
   };
 
   connect() {
-    this.state = this.STATES.EDIT;
-    setClickEventToObject(this);
+    //   this.state = this.STATES.EDIT;
+    //   // console.log(`Stimuls:${this.state}`);
+    //   // setClickEventToObject(this);
   }
 
   edit() {
@@ -26,6 +27,14 @@ export default class extends Controller {
     console.log(this.state);
     changeActiveObject();
     setClickEventToObject(this);
+  }
+
+  showDetail() {
+    this.detailTarget.showModal();
+  }
+
+  closeDetail() {
+    this.detailTarget.close();
   }
 
   changeModeToAddMan() {

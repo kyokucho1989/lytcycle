@@ -27,10 +27,10 @@ import {
 } from "src/canvas";
 let ghostNode, tempLine;
 const svg = d3.select("#svg02");
-export function setClickEventToObject(object) {
+export async function setClickEventToObject(object) {
   switch (object.state) {
     case "edit":
-      console.log("select");
+      console.log("edit");
       clearGhostObjects();
       removeSelectAttribute();
 
