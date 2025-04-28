@@ -9,6 +9,7 @@ RSpec.describe 'Widget', type: :system do
   it 'can see facility objects', js: true do
     sign_in @confirmed_user
     visit new_user_simulation_path(@confirmed_user)
+    click_on '結果確認'
     fill_in 'simulation[title]', with: 'machine'
     click_on 'データを保存'
     assert_selector 'h1', text: 'シミュレーション一覧'
