@@ -3,7 +3,26 @@ data-user_id ="<%= @simulation.user_id %>"
 data-routes ="<%= @simulation.routes %>"
 data-operators ="<%= @simulation.operators %>"
 data-facilities ="<%= @simulation.facilities %>">
+
+<button type="button" id="help-btn"
+  data-help-title="ヘルプタイトル"
+  data-help-text="ヘルプ本文"
+  class="help-button mt-3 inline-flex rounded-full bg-white p-1 text-gray-900 shadow-sm hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+    <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-7">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+  </svg>
+</button>
   <!-- フォームを含むモーダルダイアログ -->
+    <dialog id="helpDialog" class="transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+      <div class="mt-3 text-center sm:mt-5">
+      <h3 class="text-base font-semibold text-gray-900" id="help-title"></h3>
+      <div class="mt-2">
+        <p class="text-sm text-gray-500" id="help-text"></p>
+      </div>
+      <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-col-start-2 sm:gap-3">
+      <button type="button" id="help-close" value="cancel" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0" formmethod="dialog">閉じる</button>
+      </div>
+    </dialog>
     <dialog id="facilityDialog" class="transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
       <h3 class="text-base font-semibold text-gray-900" id="modal-title">パラメータ</h3>
       <div id="hidden-id" hidden></div>
