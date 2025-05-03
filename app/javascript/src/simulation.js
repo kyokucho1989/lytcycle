@@ -263,6 +263,12 @@ document.addEventListener("turbo:load", () => {
       helpDialog.close();
     });
   }
+
+  helpDialog.addEventListener("click", (e) => {
+    if (e.target.closest("#help-dialog-container") === null) {
+      helpDialog.close();
+    }
+  });
   if (document.querySelectorAll(".help-button")) {
     document.querySelectorAll(".help-button").forEach((btn) => {
       btn.addEventListener("click", () => {
