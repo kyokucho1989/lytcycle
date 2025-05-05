@@ -256,28 +256,43 @@ document.addEventListener("turbo:load", () => {
   setSimulationSaveEvent();
 
   // ヘルプボタンの実装
-  const closeBtn = document.getElementById("help-close");
+  // const closeBtn = document.getElementById("help-close");
   const helpDialog = document.getElementById("helpDialog");
-  if (closeBtn) {
-    closeBtn.addEventListener("click", () => {
-      helpDialog.close();
+
+  const helpDialogs = document.querySelectorAll(".help-button");
+  const helpBtns = document.querySelectorAll(".help-button");
+  const closeBtns = document.querySelectorAll(".close-button");
+
+  if (helpDialogs.length == 0) {
+    return;
+  } else {
+    helpDialogs.forEach((dialog) => {
+      dialog.addEventListener("click", (e) => {
+        if (e.target.closest("#help-dialog-container") === null) {
+          helpDialog.close();
+        }
+      });
     });
   }
 
-  helpDialog.addEventListener("click", (e) => {
-    if (e.target.closest("#help-dialog-container") === null) {
-      helpDialog.close();
-    }
-  });
-  if (document.querySelectorAll(".help-button")) {
-    document.querySelectorAll(".help-button").forEach((btn) => {
+  if (helpBtns.length == 0) {
+    return;
+  } else {
+    helpBtns.forEach((btn) => {
       btn.addEventListener("click", () => {
-        const title = btn.dataset.helpTitle;
-        const text = btn.dataset.helpText;
+        const targetid = btn.dataset.helpTargetid;
+        const dialog = document.getElementById(`${targetid}`);
+        dialog.showModal();
+      });
+    });
+  }
 
-        helpDialog.querySelector("#help-title").textContent = title;
-        helpDialog.querySelector("#help-text").textContent = text;
-        helpDialog.showModal();
+  if (closeBtns.length != 0) {
+    closeBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const targetid = btn.dataset.targetid;
+        const dialog = document.getElementById(`${targetid}`);
+        dialog.close();
       });
     });
   }
