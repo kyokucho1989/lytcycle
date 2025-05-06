@@ -254,6 +254,48 @@ document.addEventListener("turbo:load", async () => {
 document.addEventListener("turbo:load", () => {
   // シミュレーション保存ボタンを押したときの処理
   setSimulationSaveEvent();
+
+  // ヘルプボタンの実装
+  // const closeBtn = document.getElementById("help-close");
+  const helpDialog = document.getElementById("helpDialog");
+
+  const helpDialogs = document.querySelectorAll(".help-button");
+  const helpBtns = document.querySelectorAll(".help-button");
+  const closeBtns = document.querySelectorAll(".close-button");
+
+  if (helpDialogs.length == 0) {
+    return;
+  } else {
+    helpDialogs.forEach((dialog) => {
+      dialog.addEventListener("click", (e) => {
+        if (e.target.closest("#help-dialog-container") === null) {
+          helpDialog.close();
+        }
+      });
+    });
+  }
+
+  if (helpBtns.length == 0) {
+    return;
+  } else {
+    helpBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const targetid = btn.dataset.helpTargetid;
+        const dialog = document.getElementById(`${targetid}`);
+        dialog.showModal();
+      });
+    });
+  }
+
+  if (closeBtns.length != 0) {
+    closeBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const targetid = btn.dataset.targetid;
+        const dialog = document.getElementById(`${targetid}`);
+        dialog.close();
+      });
+    });
+  }
 });
 
 export function setFacilityDataToModal(facility) {

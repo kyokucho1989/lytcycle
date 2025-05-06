@@ -3,152 +3,292 @@ data-user_id ="<%= @simulation.user_id %>"
 data-routes ="<%= @simulation.routes %>"
 data-operators ="<%= @simulation.operators %>"
 data-facilities ="<%= @simulation.facilities %>">
-  <!-- フォームを含むモーダルダイアログ -->
-    <dialog id="facilityDialog" class="transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
-      <h3 class="text-base font-semibold text-gray-900" id="modal-title">パラメータ</h3>
-      <div id="hidden-id" hidden></div>
-      <form id="facility-form" class="grid grid-cols-1 gap-5">
-        <div class="grid grid-cols-2 items-center">
-          <label for="name" class="flex">設備名</label>
-          <input type="text" class="flex" id="name" name="name" maxlength="16" size="15" />
-        </div>
-        <div class="grid grid-cols-2 items-center">
-          <label for="processingTime">加工時間</label>
-          <input type="number" id="processingTime" name="name" min="1" max="400" />
-        </div>
-        <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-          <button type="button" id="cancel-btn" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0" formmethod="dialog">取り消し</button>
-          <button type="button" id="confirmBtn" class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2" value="default">保存</button>
-        </div>
-      </form>
-    </dialog>
-    <dialog id="route-dialog" class="transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
-      <h3 class="text-base font-semibold text-gray-900" id="modal-route-title">パラメータ</h3>
-      <div id="route-hidden-id" hidden></div>
-      <form id="route-form" class="grid grid-cols-1 gap-5">
-        <div class="grid grid-cols-2 items-center">
-          <label for="route-length" class="flex">距離</label>
-          <input type="number" class="flex" id="route-length" name="root-length" min="1" max="50" />
-        </div>
-        <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-          <button type="button" id="route-cancel-btn" value="cancel" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0" formmethod="dialog">取り消し</button>
-          <button type="button" id="route-confirm-btn" value="default" class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2">保存</button>
-        </div>
-      </form>
-    </dialog>
 
-  <div class="pt-1" data-controller="simulationmode" id="simulation-controller">
+  <div class="flex mt-3">
+    <h2 class="text-lg font-semibold text-gray-900">ツールパレット</h2>
+    <button type="button" id="help-btn"
+      data-help-targetid="helpDialog1"
+      class="help-button inline rounded-full bg-white p-1 text-gray-900 shadow-sm hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+      </svg>
+    </button>
+  </div>
+  <!-- モーダル -->
+  <%= render "help" %>
+  <dialog id="helpDialog" class="transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+    <div id="help-dialog-container" class="mt-3 text-center sm:mt-5">
+    <h3 class="text-base font-semibold text-gray-900" id="help-title"></h3>
+    <div class="mt-2">
+      <p class="text-sm text-gray-500" id="help-text"></p>
+    </div>
+    <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-col-start-2 sm:gap-3">
+    <button type="button" id="help-close" value="cancel" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0" formmethod="dialog">閉じる</button>
+    </div>
+  </dialog>
+  <!-- フォームを含むモーダル -->
+  <dialog id="facilityDialog" class="transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+    <h3 class="text-base font-semibold text-gray-900" id="modal-title">パラメータ</h3>
+    <div id="hidden-id" hidden></div>
+    <form id="facility-form" class="grid grid-cols-1 gap-5">
+      <div class="grid grid-cols-2 items-center">
+        <label for="name" class="flex">設備名</label>
+        <input type="text" class="flex" id="name" name="name" maxlength="16" size="15" />
+      </div>
+      <div class="grid grid-cols-2 items-center">
+        <label for="processingTime">加工時間</label>
+        <input type="number" id="processingTime" name="name" min="1" max="400" />
+      </div>
+      <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
+        <button type="button" id="cancel-btn" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0" formmethod="dialog">取り消し</button>
+        <button type="button" id="confirmBtn" class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2" value="default">保存</button>
+      </div>
+    </form>
+  </dialog>
+  <dialog id="route-dialog" class="transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+    <h3 class="text-base font-semibold text-gray-900" id="modal-route-title">パラメータ</h3>
+    <div id="route-hidden-id" hidden></div>
+    <form id="route-form" class="grid grid-cols-1 gap-5">
+      <div class="grid grid-cols-2 items-center">
+        <label for="route-length" class="flex">距離</label>
+        <input type="number" class="flex" id="route-length" name="root-length" min="1" max="50" />
+      </div>
+      <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
+        <button type="button" id="route-cancel-btn" value="cancel" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0" formmethod="dialog">取り消し</button>
+        <button type="button" id="route-confirm-btn" value="default" class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2">保存</button>
+      </div>
+    </form>
+  </dialog>
 
-      <button id="result" type="button"
-      data-action="simulationmode#showDetail">結果確認</button>
-      <dialog data-simulationmode-target="detail" class="transform rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
-        <h3 class="mt-5 text-base/7 font-semibold text-gray-900 col-span-2">シミュレーション結果</h3>
-        <% if !user_signed_in? %>
-          <%= form_with do |form| %>
-            <div class="grid grid-cols-2 gap-x-4 gap-y-2 pl-4 max-w-sm mt-2 mb-5">
-            <%= form.label "サイクルタイム", class: "self-center" %>
-            <%= form.number_field :simulation_cycle_time , size: "10x1", readonly: true ,class: "cursor-default border-none focus:outline-none focus:ring-0"%>
+  <div class="pt-4" data-controller="simulationmode" id="simulation-controller">
+    <dialog data-simulationmode-target="detail" class="transform rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+      <h3 class="mt-5 text-base/7 font-semibold text-gray-900 col-span-2">シミュレーション結果</h3>
+      <% if !user_signed_in? %>
+        <%= form_with do |form| %>
+          <div class="grid grid-cols-2 gap-x-4 gap-y-2 pl-4 max-w-sm mt-2 mb-5">
+          <%= form.label "サイクルタイム", class: "self-center" %>
+          <%= form.number_field :simulation_cycle_time , size: "10x1", readonly: true ,class: "cursor-default border-none focus:outline-none focus:ring-0"%>
 
-            <%= form.label "ボトルネック工程", class: "self-center" %>
-            <%= form.text_area :simulation_bottleneck_process , size: "10x1", readonly: true, class: "cursor-default border-none focus:outline-none focus:ring-0 resize-none overflow-hidden"%>
+          <%= form.label "ボトルネック工程", class: "self-center" %>
+          <%= form.text_area :simulation_bottleneck_process , size: "10x1", readonly: true, class: "cursor-default border-none focus:outline-none focus:ring-0 resize-none overflow-hidden"%>
 
-            <%= form.label "待ち時間", class: "self-center" %>
-            <%= form.number_field :simulation_waiting_time , size: "10x1", readonly: true, class: "cursor-default border-none focus:outline-none focus:ring-0"%>
-            </div>
-          <% end %>
-          <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-            <button type="button" id="detail-close" data-action="simulationmode#closeDetail" value="cancel" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0" formmethod="dialog">閉じる</button>
+          <%= form.label "待ち時間", class: "self-center" %>
+          <%= form.number_field :simulation_waiting_time , size: "10x1", readonly: true, class: "cursor-default border-none focus:outline-none focus:ring-0"%>
           </div>
         <% end %>
+        <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
+          <button type="button" id="detail-close" data-action="simulationmode#closeDetail" value="cancel" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0" formmethod="dialog">閉じる</button>
+        </div>
+      <% end %>
 
-        <% if user_signed_in? %>
-          <%= form_with(model: @simulation ,url: [current_user , @simulation] ,id: "simulationForm") do |form| %>
-            <div class="">
-              <div class="flex">
-                <%= form.hidden_field :routes %>
-                <%= form.hidden_field :operators %>
-                <%= form.hidden_field :facilities %>
-              </div>
-              <div class="flex">
-                <div class="">
-                  <div class="grid grid-cols-2 gap-x-4 gap-y-2 pl-4 max-w-sm mt-2 mb-5">
+      <% if user_signed_in? %>
+        <%= form_with(model: @simulation ,url: [current_user , @simulation] ,id: "simulationForm") do |form| %>
+          <div class="">
+            <div class="flex">
+              <%= form.hidden_field :routes %>
+              <%= form.hidden_field :operators %>
+              <%= form.hidden_field :facilities %>
+            </div>
+            <div class="flex">
+              <div class="">
+                <div class="grid grid-cols-2 gap-x-4 gap-y-2 pl-4 max-w-sm mt-2 mb-5">
 
-                      <%= form.label "サイクルタイム", class: "self-center" %>
-                      <%= form.number_field :cycle_time , size: "10x1", readonly: true ,class: "cursor-default border-none focus:outline-none focus:ring-0"%>
+                    <%= form.label "サイクルタイム", class: "self-center" %>
+                    <%= form.number_field :cycle_time , size: "10x1", readonly: true ,class: "cursor-default border-none focus:outline-none focus:ring-0"%>
 
-                      <%= form.label "ボトルネック工程", class: "self-center" %>
-                      <%= form.text_area :bottleneck_process , size: "10x1", readonly: true, class: "cursor-default border-none focus:outline-none focus:ring-0 resize-none overflow-hidden"%>
+                    <%= form.label "ボトルネック工程", class: "self-center" %>
+                    <%= form.text_area :bottleneck_process , size: "10x1", readonly: true, class: "cursor-default border-none focus:outline-none focus:ring-0 resize-none overflow-hidden"%>
 
-                      <%= form.label "待ち時間", class: "self-center" %>
-                      <%= form.number_field :waiting_time , size: "10x1", readonly: true, class: "cursor-default border-none focus:outline-none focus:ring-0"%>
-                  </div>
+                    <%= form.label "待ち時間", class: "self-center" %>
+                    <%= form.number_field :waiting_time , size: "10x1", readonly: true, class: "cursor-default border-none focus:outline-none focus:ring-0"%>
                 </div>
-              </div>
-              <h3 class="mt-5 text-base/7 font-semibold text-gray-900 col-span-2">保存する</h3>
-              <div class="pl-4">
-                <%= form.label "タイトル" ,class: "block" %>
-                <div class="mt-2">
-                  <%= form.text_field :title , placeholder: "生産ライン名" ,class: "rounded-md block min-w-0 outline-gray-300 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6"%>
-                </div>
-              </div>
-              <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-                <button type="button" id="detail-close" data-action="simulationmode#closeDetail" value="cancel" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0" formmethod="dialog">閉じる</button>
-                <%= form.submit "データを保存", id: 'savesimulation' ,class: "inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"%>
               </div>
             </div>
-          <% end %>
+            <h3 class="mt-5 text-base/7 font-semibold text-gray-900 col-span-2">保存する</h3>
+            <div class="pl-4">
+              <%= form.label "タイトル" ,class: "block" %>
+              <div class="mt-2">
+                <%= form.text_field :title , placeholder: "生産ライン名" ,class: "rounded-md block min-w-0 outline-gray-300 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6"%>
+              </div>
+            </div>
+            <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
+              <button type="button" id="detail-close" data-action="simulationmode#closeDetail" value="cancel" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0" formmethod="dialog">閉じる</button>
+              <%= form.submit "データを保存", id: 'savesimulation' ,class: "inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"%>
+            </div>
+          </div>
         <% end %>
-      </dialog>
-      <fieldset class="relative -space-y-px rounded-md bg-white">
-      <div>
+      <% end %>
+    </dialog>
+    <fieldset class="relative -space-y-px rounded-md bg-white">
+      <div class="mb-5">
         <fieldset id="modeSelection">
-          <div class="grid md:grid-cols-5 items-center gap-4">
+          <div class="grid grid-cols-4 md:grid-cols-6 items-center gap-4">
             <div class="flex items-center">
               <input id="edit" name="edit-mode" type="radio" checked
               data-simulationmode-target="editmode" data-action="simulationmode#edit"
-              class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden [&:not(:checked)]:before:hidden">
-              <label for="select" class="ml-2 block text-sm/6 font-medium text-gray-900">パラメータ変更</label>
+              class="sr-only peer"
+              value="パラメータ変更">
+              <label for="edit"
+              class="peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:ring-0 peer-checked:hover:bg-indigo-500
+              flex cursor-pointer items-center justify-center rounded-md px-3 py-3 text-sm font-semibold uppercase
+              ring-1 ring-gray-300 bg-white text-gray-900 hover:bg-gray-50
+              focus-visible:outline focus-visible:outline-2 sm:flex-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="md:mr-2 inline size-6 peer-checked:fill-white fill-gray-900">
+                    <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                    <path d="M0 416c0 17.7 14.3 32 32 32l54.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 448c17.7 0 32-14.3 32-32s-14.3-32-32-32l-246.7 0c-12.3-28.3-40.5-48-73.3-48s-61 19.7-73.3 48L32 384c-17.7 0-32 14.3-32 32zm128 0a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zM320 256a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm32-80c-32.8 0-61 19.7-73.3 48L32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l246.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48l54.7 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-54.7 0c-12.3-28.3-40.5-48-73.3-48zM192 128a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm73.3-64C253 35.7 224.8 16 192 16s-61 19.7-73.3 48L32 64C14.3 64 0 78.3 0 96s14.3 32 32 32l86.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 128c17.7 0 32-14.3 32-32s-14.3-32-32-32L265.3 64z"/>
+                  </svg>
+                  <span class="hidden md:inline">パラメータ変更
+                </span>
+              </label>
             </div>
             <div class="flex items-center">
               <input id="add-facility" name="edit-mode" type="radio"
-              data-simulationmode-target="editmode" data-action="simulationmode#changeModeToAddFacility"
-              class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden [&:not(:checked)]:before:hidden">
-              <label for="add-facility" class="ml-2 block text-sm/6 font-medium text-gray-900">設備追加</label>
+                class="sr-only peer"
+                value="設備追加"
+                data-simulationmode-target="editmode"
+                data-action="simulationmode#changeModeToAddFacility">
+              <label for="add-facility"
+              class="peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:ring-0 peer-checked:hover:bg-indigo-500
+                    flex cursor-pointer items-center justify-center rounded-md px-3 py-3 text-sm font-semibold uppercase
+                    ring-1 ring-gray-300 bg-white text-gray-900 hover:bg-gray-50
+                    focus-visible:outline focus-visible:outline-2 sm:flex-1">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="md:mr-2 inline size-6 fill-gray-900">
+                  <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                  <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/>
+                </svg>
+                <span class="hidden md:inline">設備追加</span>
+              </label>
             </div>
             <div class="flex items-center">
               <input id="add-link" name="edit-mode" type="radio"
-              data-simulationmode-target="editmode" data-action="simulationmode#changeModeToLink"
-              class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden [&:not(:checked)]:before:hidden">
-              <label for="add-link" class="ml-2 block text-sm/6 font-medium text-gray-900">リンク追加</label>
+              class="sr-only peer"
+              value="リンク追加"
+              data-simulationmode-target="editmode"
+              data-action="simulationmode#changeModeToLink">
+              <label for="add-link"
+              class="peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:ring-0 peer-checked:hover:bg-indigo-500
+                    flex cursor-pointer items-center justify-center rounded-md px-3 py-3 text-sm font-semibold uppercase
+                    ring-1 ring-gray-300 bg-white text-gray-900 hover:bg-gray-50
+                    focus-visible:outline focus-visible:outline-2 sm:flex-1">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="md:mr-2 inline size-6 fill-gray-900">
+                  <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                  <path d="M418.4 157.9c35.3-8.3 61.6-40 61.6-77.9c0-44.2-35.8-80-80-80c-43.4 0-78.7 34.5-80 77.5L136.2 151.1C121.7 136.8 101.9 128 80 128c-44.2 0-80 35.8-80 80s35.8 80 80 80c12.2 0 23.8-2.7 34.1-7.6L259.7 407.8c-2.4 7.6-3.7 15.8-3.7 24.2c0 44.2 35.8 80 80 80s80-35.8 80-80c0-27.7-14-52.1-35.4-66.4l37.8-207.7zM156.3 232.2c2.2-6.9 3.5-14.2 3.7-21.7l183.8-73.5c3.6 3.5 7.4 6.7 11.6 9.5L317.6 354.1c-5.5 1.3-10.8 3.1-15.8 5.5L156.3 232.2z"/>
+                </svg>
+                <span class="hidden md:inline">リンク追加</span>
+              </label>
             </div>
             <div class="flex items-center">
               <input id="delete-object" name="edit-mode" type="radio"
-              data-simulationmode-target="editmode" data-action="simulationmode#changeModeToDelete"
-              class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden [&:not(:checked)]:before:hidden">
-              <label for="delete-object" class="ml-2 block text-sm/6 font-medium text-gray-900">削除</label>
+              class="sr-only peer"
+              value="削除"
+              data-simulationmode-target="editmode"
+              data-action="simulationmode#changeModeToDelete">
+            <label for="delete-object"
+            class="peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:ring-0 peer-checked:hover:bg-indigo-500
+              flex cursor-pointer items-center justify-center rounded-md px-3 py-3 text-sm font-semibold uppercase
+              ring-1 ring-gray-300 bg-white text-gray-900 hover:bg-gray-50
+              focus-visible:outline focus-visible:outline-2 sm:flex-1">
+
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="md:mr-2 inline size-6 fill-gray-900">
+                <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                <path d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z"/>
+              </svg>
+              <span class="hidden md:inline">
+                削除
+              </span>
+            </label>
             </div>
           </div>
         </fieldset>
       </div>
-      <div id="simulation">
-        <button type="button" id="isConsistency" data-action="simulationmode#startSimulation" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">シミュレーション開始</button>
-        <button type="button" id="play" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:bg-gray-300" disabled>再生</button>
-        <button type="button" id="pause" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:bg-gray-300" disabled>停止</button>
-        <input id="progress" class="progress" step=".001" min="0" max="100" value="0" type="range" disabled></input>
-        <div id="JSobjectProp">
-          <pre class="count">{総生産数}</pre>
-        </div>
-      </div>
     </fieldset>
-  </div>
+    <div class="flex mt-3">
+      <h2 class="text-lg font-semibold text-gray-900">シミュレーション画面</h2>
+      <button type="button" id="help-btn2"
+      data-help-targetid="helpDialog2"
+      class="help-button inline rounded-full bg-white p-1 text-gray-900 shadow-sm hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+        </svg>
+      </button>
+    </div>
+    <div class="mt-2 w-full overflow-scroll rounded-md border border-gray-200">
+      <svg id="svg02" class="h-[500px] w-[500px] md:w-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr" refX="0" refY="1" orient="auto">
+            <path d="M0,0 L2,1 0,2 Z" fill="#eab942" />
+          </marker>
+        </defs>
+      </svg>
+    </div>
+    <div class="flex mt-3">
+      <h2 class="text-lg font-semibold text-gray-900">シミュレーション操作</h2>
+      <button type="button" id="help-btn3"
+      data-help-targetid="helpDialog3"
+      class="help-button inline rounded-full bg-white p-1 text-gray-900 shadow-sm hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+        </svg>
+      </button>
+    </div>
+    <div id="simulation" class="py-2 grid w-full grid-cols-5 md:w-4/5 md:grid-cols-9 gap-3">
+      <div class="flex items-center md:col-span-2">
+        <button type="button" id="isConsistency" data-action="simulationmode#startSimulation" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="md:mr-2 inline size-6 fill-gray-900">
+            <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+            <path d="M64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-384c0-35.3-28.7-64-64-64L64 0zM96 64l192 0c17.7 0 32 14.3 32 32l0 32c0 17.7-14.3 32-32 32L96 160c-17.7 0-32-14.3-32-32l0-32c0-17.7 14.3-32 32-32zm32 160a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM96 352a32 32 0 1 1 0-64 32 32 0 1 1 0 64zM64 416c0-17.7 14.3-32 32-32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-96 0c-17.7 0-32-14.3-32-32zM192 256a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm32 64a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zm64-64a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm32 64a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM288 448a32 32 0 1 1 0-64 32 32 0 1 1 0 64z"/>
+          </svg>
+          <span class="hidden md:inline">
+            シミュレーション開始
+          </span>
+        </button>
+      </div>
+      <div class="flex items-center">
+        <button type="button" id="play" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:bg-gray-300" disabled>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="md:mr-2 inline size-6 fill-gray-900">
+            <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+            <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80L0 432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/>
+          </svg>
+          <span class="hidden md:inline">
+          再生
+        </span>
+        </button>
+      </div>
+      <div class="flex items-center">
+        <button type="button" id="pause" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:bg-gray-300" disabled>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="md:mr-2 inline size-6 fill-gray-900">
+            <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+            <path d="M48 64C21.5 64 0 85.5 0 112L0 400c0 26.5 21.5 48 48 48l32 0c26.5 0 48-21.5 48-48l0-288c0-26.5-21.5-48-48-48L48 64zm192 0c-26.5 0-48 21.5-48 48l0 288c0 26.5 21.5 48 48 48l32 0c26.5 0 48-21.5 48-48l0-288c0-26.5-21.5-48-48-48l-32 0z"/>
+          </svg>
+          <span class="hidden md:inline">
+        停止</span>
+        </button>
+      </div>
+      <div class="flex items-center md:col-span-3 px-2">
+      <input id="progress" class="progress" step=".001" min="0" max="100" value="0" type="range" disabled></input>
+      </div>
+      <div id="JSobjectProp" class="flex items-center justify-center col-span-2 border border-gray-300 rounded-md">
+        <pre class="count"><p class="text-gray-400 text-center">--時刻/生産数--</p></pre>
+      </div>
+    </div>
+    <div class ="py-6 w-full md:w-1/2 ">
+      <% if !user_signed_in? %>
+        <button id="result" type="button"
+          class="rounded-md bg-white px-3.5 py-2.5 w-full font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+          data-action="simulationmode#showDetail">
+          <span class="inline-flex items-center gap-x-1.5  px-1.5 py-0.5">
+          結果確認
+            <svg class="size-4 fill-red-400" viewBox="0 0 6 6" aria-hidden="true">
+              <circle cx="3" cy="3" r="2" />
+            </svg>
 
-  <div class="w-full overflow-scroll">
-    <svg id="svg02" class="h-[500px] w-[500px] md:w-full" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <marker id="arr" refX="0" refY="1" orient="auto">
-          <path d="M0,0 L2,1 0,2 Z" fill="#eab942" />
-        </marker>
-      </defs>
-    </svg>
+          </span>
+          </button>
+      <% else %>
+        <button id="result" type="button"
+          class="rounded-md bg-white px-3.5 py-2.5 w-full font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+          data-action="simulationmode#showDetail">結果確認/保存へ</button>
+      <% end %>
+    </div>
   </div>
 </div>
