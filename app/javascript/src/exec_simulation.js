@@ -1,6 +1,8 @@
 import anime from "animejs";
 import { routes, facilities } from "src/set_simulation_params";
 import { drawLink } from "src/canvas";
+import { displayResultBadge } from "src/simulation";
+
 import { displayOperator, displayRaiseOperator } from "src/canvas";
 
 class Location {
@@ -359,6 +361,7 @@ export async function countStart() {
     bottleneck_process;
   document.getElementById("simulation_waiting_time").value = waitingTime;
   displayRaiseOperator();
+  displayResultBadge();
   alert("シミュレーション終了");
 }
 

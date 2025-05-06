@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
 import { changeActiveObject, drawLink, activePlayButtons } from "src/canvas";
-import { setClickEventToObject } from "src/simulation";
+import { setClickEventToObject, removeResultBadge } from "src/simulation";
 import { routes } from "src/set_simulation_params";
 import { findInvalidRouteIds } from "src/consistency_check";
 import { countStart } from "src/exec_simulation";
@@ -30,6 +30,7 @@ export default class extends Controller {
   }
 
   showDetail() {
+    removeResultBadge();
     this.detailTarget.showModal();
   }
 
