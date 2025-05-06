@@ -316,6 +316,20 @@ export function setRouteDataToModal(route) {
   length.value = route.routeLength;
 }
 
+export function displayResultBadge() {
+  const badge = document.getElementById("simulation-result-badge");
+  if (badge.classList.contains("hidden")) {
+    badge.classList.remove("hidden");
+  }
+}
+
+export function removeResultBadge() {
+  const badge = document.getElementById("simulation-result-badge");
+  if (!badge.classList.contains("hidden")) {
+    badge.classList.add("hidden");
+  }
+}
+
 export async function setSimulationSaveEvent() {
   const saveSimulationButton = document.getElementById("savesimulation");
   if (saveSimulationButton) {
