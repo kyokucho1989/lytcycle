@@ -1,12 +1,15 @@
 <% set_meta_tags title: 'トップページ' %>
 <% set_meta_tags description: 'トップページです' %>
 <main class="container mx-auto px-4">
-    <h1 class="font-bold text-4xl pt-5">工場最適化の第一歩を、もっと手軽に。</h1>
+  <div class="container mx-auto  sm:px-6 lg:px-8">
+    <%= image_tag("icon2.png", class: "w-96") %>
+    <h1 class="font-bold text-6xl pt-5">工場最適化の第一歩を、もっと手軽に。</h1>
     <p class="mt-4 text-sm/6">lytcycle （ライトサイクル）は、製造業向けの簡易な生産ラインシミュレータです。</p>
 
     <%= button_to "早速使ってみる", demo_path ,method: :get, class:"rounded-md bg-white my-4 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
     <%= button_to "新規登録", new_user_registration_path, method: :get, class:"rounded-md bg-white my-4 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
-
+  </div>
+  <div class="container mx-auto  sm:px-6 lg:px-8">
     <h1 class="font-bold text-4xl pt-12 pb-4">よくある課題</h1>
     <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
         <div class="flex flex-col">
@@ -40,5 +43,5 @@
 
     <%= button_to "早速使ってみる", demo_path ,method: :get, class:"rounded-md bg-white my-4 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
     <%= button_to "新規登録", new_user_registration_path, method: :get, class:"rounded-md bg-white my-4 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
-
+  </div>
 </main>
