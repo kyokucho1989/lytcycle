@@ -1,105 +1,142 @@
 <% set_meta_tags title: 'トップページ' %>
 <% set_meta_tags description: 'トップページです' %>
 <div class="relative w-full">
-  <div class="absolute inset-0 -z-0 bg-[url('anime.gif')] bg-contain bg-no-repeat bg-right">
-    <div class="w-full h-full"></div>
-  </div>
-  <div class="bg-white/30 backdrop-blur-[2px]">
   <div class="container mx-auto relative z-10 px-4 sm:px-6 lg:px-8 py-16">
     <%= image_tag("icon2.png", class: "mb-16 w-24 sm:w-40 md:w-60") %>
     <h1 class="font-bold my-16 text-3xl md:text-5xl ">工場最適化の第一歩を、<br class="inline md:hidden">もっと手軽に。</h1>
     <p class="mt-4 mb-16 text-lg">lytcycle （ライトサイクル）は、製造業向けの簡易な生産ラインシミュレータです。</p>
-    <div class="max-w-xl">
-      <div class="grid grid-cols-2">
-        <%= button_to "デモを試す", demo_path ,method: :get,
-          class:"rounded-md bg-white md:w-64 px-5 py-3 font-semibold text-gray-900
-            shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
+      <div class="max-w-xl">
+        <div class="grid grid-cols-2">
+          <%= button_to "デモを試す", demo_path ,method: :get,
+            class:"rounded-md bg-white md:w-64 px-5 py-3 font-semibold text-gray-900
+              shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
 
-        <%= button_to "会員登録して使う", new_user_registration_path, method: :get,
-          class:"rounded-md bg-indigo-600 md:w-64 px-5 py-3 text-white
-            font-semibold shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
-      </div>
-    </div>
+          <%= button_to "会員登録して使う", new_user_registration_path, method: :get,
+            class:"rounded-md bg-indigo-600 md:w-64 px-5 py-3 text-white
+              font-semibold shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
+        </div>
       </div>
   </div>
 </div>
 <main class="container mx-auto px-4 sm:px-6 lg:px-8">
-  <h1 class="font-bold text-3xl md:text-4xl pt-12 pb-4">こんなお悩み、ありませんか？</h1>
+  <h1 class="font-bold text-3xl md:text-4xl pt-12 pb-4">こんなお悩み、lytcycleなら解決できます！</h1>
 
-  <div class="divide-y divide-gray-300 rounded-md border border-gray-300 md:flex md:divide-y-0">
-    <div class="relative md:flex md:flex-1 flex-col md:flex-row border-b-0 md:border-b">
-      <!-- Completed Step -->
-        <div class="items-center px-6 py-4 text-sm font-medium">
-          <dt class="my-4 text-base font-semibold">
-            <span class="flex items-center gap-3">
-              <span class="flex size-10 shrink-0 items-center justify-center rounded-full border-2 border-gray-300 group-hover:border-gray-400">
-                <span class="text-gray-500 group-hover:text-gray-900">?</span>
-              </span>
-              <span class="text-lg">ボトルネックが分からない</span>
-            </span>
-          </dt>
-          <dd class="text-base p-4">どの工程が全体の効率を下げているか、直感では判断しづらいことがあります。</dd>
+  <div class="my-12 md:my-5 grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-center border-none">
+  <!-- 1 -->
+    <div class="px-0 py-0 text-sm font-medium">
+      <div class="my-4 text-base font-semibold flex items-center gap-3">
+        <div class="flex size-10 shrink-0 items-center justify-center rounded-full border-2 border-gray-300">
+          <span class="text-gray-500">?</span>
         </div>
+        <span class="text-lg">ボトルネックが分からない</span>
+      </div>
+      <div class="text-base py-0 px-4 md:p-4">
+        どの工程が全体の効率を下げているか、直感では判断しづらいことがあります。
+      </div>
+    </div>
       <!-- Arrow separator for lg screens and up -->
-      <div class="abusolute right-0 top-0 md:right-0 md:top-0 h-full w-5 flex-shrink-0 transform rotate-90 md:rotate-0">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-          <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
-          <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/>
-        </svg>
-      </div>
+    <div class="flex justify-center items-center w-full p-4 md:w-16 h-full">
+      <svg class="w-12 h-12 text-gray-500 rotate-0 md:-rotate-90 fill-gray-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/>
+      </svg>
     </div>
-    <div class="relative md:flex md:flex-1">
+    <div class="px-0 py-0 text-sm font-medium">
       <!-- Upcoming Step -->
-        <div class="items-center px-6 py-4 text-sm font-medium">
-          <dt class="my-4 text-base font-semibold">
-          <span class="flex items-center gap-3">
-            <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-indigo-600 group-hover:bg-indigo-800">
-              <svg class="size-6 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-                <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd" />
-              </svg>
-            </span>
-            <span class="text-lg">ボタン一つでボトルネックがすぐ分かる</span>
-            </span>
-            </dt>
-          <dd class="text-base p-4">パラメータを設定しシミュレーション実行ボタンを押せば、ボトルネックがすぐに分かります。</dd>
+      <div class="my-4 text-base font-semibold flex items-center gap-3">
+        <div class="flex size-10 shrink-0 items-center justify-center rounded-full bg-indigo-600">
+          <svg class="size-6 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+            <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd" />
+          </svg>
         </div>
+        <span class="text-lg">ボタン一つでボトルネックがすぐ分かる</span>
+      </div>
+      <div class="text-base py-0 px-4 md:p-4">
+        パラメータを設定しシミュレーション実行ボタンを押せば、ボトルネックがすぐに分かります。
+      </div>
+    </div>
+  </div>
+
+  <div class="my-12 md:my-5 grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-center border-none">
+  <!-- 2 -->
+    <div class="px-0 py-0 text-sm font-medium">
+      <div class="my-4 text-base font-semibold flex items-center gap-3">
+        <div class="flex size-10 shrink-0 items-center justify-center rounded-full border-2 border-gray-300">
+          <span class="text-gray-500">?</span>
+        </div>
+        <span class="text-lg">シミュレーターが高額</span>
+      </div>
+      <div class="text-base py-0 px-4 md:p-4">
+      市販のシミュレーターはコストが高く、導入に踏み切れない場合があります。
+      </div>
+    </div>
+      <!-- Arrow separator for lg screens and up -->
+    <div class="flex justify-center items-center w-full p-4 md:w-16 h-full">
+      <svg class="w-12 h-12 text-gray-500 rotate-0 md:-rotate-90 fill-gray-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/>
+      </svg>
+    </div>
+    <div class="px-0 py-0 text-sm font-medium">
+      <!-- Upcoming Step -->
+      <div class="my-4 text-base font-semibold flex items-center gap-3">
+        <div class="flex size-10 shrink-0 items-center justify-center rounded-full bg-indigo-600">
+          <svg class="size-6 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+            <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <span class="text-lg">無料で導入可能</span>
+      </div>
+      <div class="text-base py-0 px-4 md:p-4">
+      ユーザー登録後、無料で始めることができます。（現在無料版のみ公開中）
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-12 md:mt-5 mb-16 grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-center border-none">
+  <!-- 3 -->
+    <div class="px-0 py-0 text-sm font-medium">
+      <div class="my-4 text-base font-semibold flex items-center gap-3">
+        <div class="flex size-10 shrink-0 items-center justify-center rounded-full border-2 border-gray-300">
+          <span class="text-gray-500">?</span>
+        </div>
+        <span class="text-lg">表計算ソフトでは流れが見えない</span>
+      </div>
+      <div class="text-base py-0 px-4 md:p-4">
+      エクセルの表計算だけでは設備の流れや関係性がイメージしにくいことが多いです。
+      </div>
+    </div>
+      <!-- Arrow separator for lg screens and up -->
+    <div class="flex justify-center items-center w-full p-4 md:w-16 h-full">
+      <svg class="w-12 h-12 text-gray-500 rotate-0 md:-rotate-90 fill-gray-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/>
+      </svg>
+    </div>
+    <div class="px-0 py-0 text-sm font-medium">
+      <!-- Upcoming Step -->
+      <div class="my-4 text-base font-semibold flex items-center gap-3">
+        <div class="flex size-10 shrink-0 items-center justify-center rounded-full bg-indigo-600">
+          <svg class="size-6 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+            <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <span class="text-lg">直感操作で生産の流れ可視化</span>
+      </div>
+      <div class="text-base py-0 px-4 md:p-4">
+      設備や人の流れを可視化し、表計算だけでは分かりづらい関係も理解できます。
+      </div>
     </div>
   </div>
 
 
+  <div class="mt-16 max-w-xl">
+    <div class="grid grid-cols-2">
+      <%= button_to "デモを試す", demo_path ,method: :get,
+        class:"rounded-md bg-white md:w-64 px-5 py-3 font-semibold text-gray-900
+          shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
 
-
-
-  <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
-      <div class="flex flex-col">
-          <dt class="mt-4 text-base font-semibold">ボトルネックが分からない</dt>
-          <dd class="text-base">どの工程が全体の効率を下げているか、直感では判断しづらいことがあります。</dd>
-      </div>
-      <div class="flex flex-col">
-          <dt class="mt-4 text-base font-semibold">シミュレーターが高額</dt>
-          <dd class="text-base">市販のシミュレーターはコストが高く、導入に踏み切れない場合があります。</dd>
-      </div>
-      <div class="flex flex-col">
-          <dt class="mt-4 text-base font-semibold">表計算ソフトでは流れが見えない</dt>
-          <dd class="text-base">エクセルの表計算だけでは設備の流れや関係性がイメージしにくいことが多いです。</dd>
-      </div>
+      <%= button_to "会員登録して使う", new_user_registration_path, method: :get,
+        class:"rounded-md bg-indigo-600 md:w-64 px-5 py-3 text-white
+          font-semibold shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
+    </div>
   </div>
-  <h1 class="font-bold text-3xl md:text-4xl pt-12 pb-4">lytcycleでできること</h1>
-  <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
-      <div class="flex flex-col">
-          <dt class="mt-4 text-base font-semibold">ボタン一つでボトルネックがすぐ分かる</dt>
-          <dd class="text-base">パラメータを設定しシミュレーション実行ボタンを押せば、ボトルネックがすぐに分かります。</dd>
-      </div>
-      <div class="flex flex-col">
-          <dt class="mt-4 text-base font-semibold">無料で導入可能</dt>
-          <dd class="text-base">ユーザー登録後、無料で始めることができます。（現在無料版のみ公開中）</dd>
-      </div>
-      <div class="flex flex-col">
-          <dt class="mt-4 text-base font-semibold">直感操作で生産の流れ可視化</dt>
-          <dd class="text-base">設備や人の流れを可視化し、表計算だけでは分かりづらい関係も理解できます。</dd>
-      </div>
-  </div>
-
-  <%= button_to "早速使ってみる", demo_path ,method: :get, class:"rounded-md bg-white my-4 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
-  <%= button_to "新規登録", new_user_registration_path, method: :get, class:"rounded-md bg-white my-4 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
+  <p class="mt-4 text-md text-gray-600">会員登録すると、シミュレーションデータの保存や編集ができます。</p>
 </main>
