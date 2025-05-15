@@ -9,7 +9,7 @@ RSpec.describe 'VisitPage', type: :system do
 
   it 'visiting the demo page' do
     visit demo_path
-    assert_selector 'h1', text: 'デモページ'
+    assert_selector 'h1', text: 'デモ'
   end
 
   it 'visiting the index simulation when sign in' do
