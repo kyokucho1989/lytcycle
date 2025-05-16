@@ -1,13 +1,13 @@
-<% set_meta_tags title: 'アカウント編集' %>
-<% set_meta_tags description: 'アカウント情報の編集ページです' %>
+<% set_meta_tags title: '会員編集' %>
+<% set_meta_tags description: '会員情報の編集ページです' %>
 <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-  <h1 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">アカウント編集</h1>
+  <h1 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">会員情報編集</h1>
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
     <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
       <%= render "devise/shared/error_messages", resource: resource %>
 
       <div class="mb-8">
-        <%= f.label :email ,class: "block text-sm font-medium leading-6 text-gray-900" %>
+        <%= f.label :メールアドレス ,class: "block text-sm font-medium leading-6 text-gray-900" %>
         <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "block w-full mt-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"%>
       </div>
 
@@ -16,32 +16,32 @@
       <% end %>
 
       <div class="mb-4">
-        <%= f.label :password ,class: "block text-sm font-medium leading-6 text-gray-900"%> <i>(leave blank if you don't want to change it)</i><br />
+        <%= f.label :パスワード ,class: "block text-sm font-medium leading-6 text-gray-900"%> <i>(変更しない場合は空欄にしてください)</i><br />
         <%= f.password_field :password, autocomplete: "new-password" ,class: "block w-full mt-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"%>
         <% if @minimum_password_length %>
-          <em><%= @minimum_password_length %> characters minimum</em>
+          <em><%= @minimum_password_length %> 文字以上にしてください</em>
         <% end %>
       </div>
 
       <div class="mb-5">
-        <%= f.label :password_confirmation ,class: "block text-sm font-medium leading-6 text-gray-900"%>
+        <%= f.label :確認用パスワード ,class: "block text-sm font-medium leading-6 text-gray-900"%>
         <%= f.password_field :password_confirmation, autocomplete: "new-password" ,class: "block w-full mt-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"%>
       </div>
 
       <div class="mb-5">
-        <%= f.label :current_password ,class: "block text-sm font-medium leading-6 text-gray-900"%> <i>(we need your current password to confirm your changes)</i>
+        <%= f.label :現在利用しているパスワード ,class: "block text-sm font-medium leading-6 text-gray-900"%> <i>(確認のため現在設定しているパスワードを入力してください)</i>
         <%= f.password_field :current_password, autocomplete: "current-password" ,class: "block w-full mt-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"%>
       </div>
 
       <div class="actions">
-        <%= f.submit "Update" ,class: "flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"%>
+        <%= f.submit "会員情報を更新する" ,class: "flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"%>
       </div>
     <% end %>
 
-    <h2 class="mt-10 text-center text-xl leading-9 tracking-tight text-gray-900">アカウント登録解除</h2>
+    <h2 class="mt-10 mb-3 text-center text-xl leading-9 tracking-tight text-gray-900">退会</h2>
 
-    <div>Unhappy? <%= button_to "退会する", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete ,class: "flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %></div>
+    <div> <%= button_to "退会する", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "本当に退会しますか？ シミュレーションデータは全て削除されます。" }, method: :delete ,class: "flex w-full justify-center rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %></div>
 
-    <%= link_to "Back", :back %>
+    <%= link_to "戻る", :back ,class: "my-3"%>
   </div>
 </div>
