@@ -23,15 +23,13 @@
             <p class="font-semibold text-gray-900">タイトル：<%= simulation.title %></p>
             <p class="mt-1 truncate text-xs/5 text-gray-500">ボトルネック工程:<%= simulation.bottleneck_process %></p>
             <p class="mt-1 truncate text-xs/5 text-gray-500">サイクルタイム:<%= simulation.cycle_time %></p>
+            <p class="mt-1 truncate text-xs/5 text-gray-500">待ち時間:<%= simulation.waiting_time %></p>
           </div>
           <div class="flex shrink-0 items-center gap-x-4">
-            <%= link_to user_simulation_path(current_user, simulation) ,class: "rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" do %>
-              詳細
-            <% end %>
             <%= link_to edit_user_simulation_path(current_user, simulation) ,class: "rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" do %>
               編集
             <% end %>
-            <%= link_to user_simulation_path(current_user, simulation), data: { turbo_method: :delete } ,class: "rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" do %>
+            <%= link_to user_simulation_path(current_user, simulation), data: { turbo_method: :delete ,turbo_confirm: "本当に削除しますか？" } ,class: "rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" do %>
               削除
             <% end %>
           </div>
