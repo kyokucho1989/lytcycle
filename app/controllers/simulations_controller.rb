@@ -1,6 +1,6 @@
 class SimulationsController < ApplicationController
   before_action :authenticate_user!, except: :demo
-  before_action :set_simulation, only: %i[show edit update destroy]
+  before_action :set_simulation, only: %i[edit update destroy]
 
   def index
     @simulations = Simulation.all
@@ -20,13 +20,6 @@ class SimulationsController < ApplicationController
 
   def new
     @simulation = Simulation.new
-  end
-
-  def show
-    respond_to do |format|
-      format.html
-      format.json { render json: @simulation }
-    end
   end
 
   def create
