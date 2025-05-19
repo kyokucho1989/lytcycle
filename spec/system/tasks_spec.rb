@@ -46,7 +46,7 @@ RSpec.describe 'EditObjects', type: :system do
   end
 end
 
-RSpec.describe 'ChangeMode', type: :system do
+RSpec.describe 'AddDeleteObjects', type: :system do
   before do
     @confirmed_user = User.create!(name: 'satou2', email: 'satou2@example.com', password: 'password',
                                    confirmed_at: DateTime.now)
@@ -78,30 +78,20 @@ RSpec.describe 'ChangeMode', type: :system do
   end
 end
 
-RSpec.describe 'DeleteMode', type: :system do
+RSpec.describe 'DeletionErrors', type: :system do
   before do
     @confirmed_user = User.create!(name: 'satou2', email: 'satou2@example.com', password: 'password',
                                    confirmed_at: DateTime.now)
   end
 
-  it 'cannot delete start and goal and link', js: true do
+  it 'cannot add dupulicate goal and link', js: true do
     sign_in @confirmed_user
     visit new_user_simulation_path(@confirmed_user)
-    find("label[for='delete-object']").click
+    find("label[for='add-link']").click
     find('circle#start').click
+    find('circle#n1').click
+    page.accept_confirm 'すでにリンクが作成されています'
 
-    accept_alert
-    expect(page).to have_css 'circle#start'
-    find('circle#goal').click
-    accept_alert
-
-    expect(page).to have_css 'circle#goal'
-
-    # startとgoal間のlineが真横だとクリック判定ができないのでドラッグしてlineを斜めにする
-    find('circle#start').drag_to(find('circle#n1'))
-    find('line#root-10').click
-    accept_alert
-
-    expect(page).to have_css 'line#root-10'
+    expect(page.text).to have_content 'lytcycle'
   end
 end

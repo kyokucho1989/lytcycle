@@ -94,7 +94,7 @@ export function addRoute(targetId, sourceId) {
     (route.target.id == sourceId && route.source.id == targetId);
 
   if (routes.some(dupicatedLogic)) {
-    console.log("重複");
+    alert("すでにリンクが作成されています");
   } else {
     routes = routes.concat(route);
     drawLink(routes, facilities);
