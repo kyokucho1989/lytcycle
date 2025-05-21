@@ -16,10 +16,11 @@
       <% end %>
 
       <div class="mb-4">
-        <%= f.label :パスワード ,class: "block text-sm font-medium leading-6 text-gray-900"%> <i>(変更しない場合は空欄にしてください)</i><br />
+        <%= f.label :パスワード ,class: "block text-sm font-medium leading-6 text-gray-900"%>
+        <i>(変更しない場合は空欄にしてください)</i><br />
         <%= f.password_field :password, autocomplete: "new-password" ,class: "block w-full mt-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"%>
         <% if @minimum_password_length %>
-          <em><%= @minimum_password_length %> 文字以上にしてください</em>
+          <p><%= @minimum_password_length %>文字以上にしてください</p>
         <% end %>
       </div>
 
