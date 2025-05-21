@@ -92,6 +92,6 @@ RSpec.describe 'DeletionErrors', type: :system do
     find('circle#n1').click
     page.accept_confirm 'すでにリンクが作成されています'
 
-    expect(page.text).to have_content 'lytcycle'
+    expect(page.text).to have_content 'シミュレーション一覧'
   end
 end
