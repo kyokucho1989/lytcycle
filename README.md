@@ -58,7 +58,7 @@ lytcycle （ライトサイクル）は、製造業向けの簡易な生産ラ�
 
 - Ruby 3.2.2
 - Ruby on Rails 7.0.8.1
-- RSpeck
+- RSpec
 - TailwindCSS
 - anime.js
 - d3.js
