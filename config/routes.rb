@@ -1,11 +1,13 @@
 Rails.application.routes.draw do
-  get 'pages/privacy'
-  get 'welcome/index'
+  resource :privacy, only: [:show], controller: 'pages'
+  resource :welcome, only: [:show], controller: 'welcome'
+
   devise_for :users
   resources :users do
     resources :simulations, except: :show
   end
-  get 'demo' , to: 'simulations#demo'
+  resource :demo, only: [:new]
+
   resource :term, only: [:show]
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

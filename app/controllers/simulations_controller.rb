@@ -1,14 +1,9 @@
 class SimulationsController < ApplicationController
-  before_action :authenticate_user!, except: :demo
+  before_action :authenticate_user!, except: :new
   before_action :set_simulation, only: %i[edit update destroy]
 
   def index
     @simulations = Simulation.all
-  end
-
-  def demo
-    redirect_to new_user_simulation_path(current_user.id) if user_signed_in?
-    @simulation = Simulation.new
   end
 
   def edit
