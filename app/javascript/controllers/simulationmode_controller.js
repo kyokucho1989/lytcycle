@@ -16,15 +16,10 @@ export default class extends Controller {
     LINK: "link",
   };
 
-  connect() {
-    //   this.state = this.STATES.EDIT;
-    //   // console.log(`Stimuls:${this.state}`);
-    //   // setClickEventToObject(this);
-  }
+  connect() {}
 
   edit() {
     this.state = this.STATES.EDIT;
-    console.log(this.state);
     changeActiveObject();
     setClickEventToObject(this);
   }
@@ -73,7 +68,6 @@ export default class extends Controller {
 
   isConsistency() {
     let result = findInvalidRouteIds(routes);
-    console.log(`整合性チェックの結果: ${result.ids}`);
     if (result.ids.length == 0) {
       this.readyForExecution = true;
       return true;

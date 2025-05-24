@@ -78,7 +78,6 @@ class Controller {
         (machine) => machine.id == route.target.id && !machine.isProcessing
       );
       if (notProcessingMachine) {
-        // console.log(`停止中マシンあり ${notProcessingMachine.id}`);
         return route;
       }
     });
@@ -266,19 +265,15 @@ export async function countStart() {
 
   let machine;
   while (t < endTime) {
-    // console.log(`:t= ${t}`);
     if (operator1.isMoving) {
       operator1.addStateToHistory(t, "移動中");
       if (operator1.arrivalTime == t) {
         operator1.isMoving = false;
         operator1.currentLocation = operator1.destination;
-      } else {
-        // operator1.arrivalTime = operator1.arrivalTime - 1;
       }
     } else {
       switch (operator1.currentLocation.type) {
         case "machine":
-          // console.log(`加工地点 :t=${t}`);
           machine = nodesData1.find(
             (elemnt) => elemnt.id == operator1.currentLocation.id
           );
@@ -302,22 +297,18 @@ export async function countStart() {
             tl.add(litingAnime, (t * 1000) / simulationSpeedRatio).add(
               lightOutAnime
             );
-            // console.log(tl);
           } else {
             operator1.isWaiting = true;
             operator1.addStateToHistory(t, "待機中");
-            console.log("待機中");
           }
           break;
 
         case "start":
           operator1.hasMaterial = true;
           operator1.addStateToHistory(t, "脱着中");
-          // console.log(`start :t= ${t}`);
           break;
 
         case "goal":
-          // console.log(`goal :t=${t}`);
           operator1.addStateToHistory(t, "脱着中");
           operator1.hasMaterial = false;
           totalCount = totalCount + 1;
@@ -342,7 +333,6 @@ export async function countStart() {
     nodesData1.forEach((machine) => {
       if (machine.isProcessing) {
         if (Number(machine.processingEndTime) == t) {
-          // console.log(`machine:${machine.id}  加工終了  t: ${t}`);
           machine.isProcessing = false;
         }
       }
