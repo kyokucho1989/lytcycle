@@ -222,11 +222,6 @@ export function nodeClicked() {
 }
 
 export function linkClicked() {
-  const canvasController = document.querySelector(
-    "[data-controller='simulationmode']"
-  ).controller;
-  console.log(canvasController);
-
   let routeForEdit = routes.find((route) => route.id == this.id);
   setRouteDataToModal(routeForEdit);
   routeDialog.showModal();
