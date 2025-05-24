@@ -1,4 +1,3 @@
-// import { routes } from "src/set_simulation_params";
 export let invalidRoutesIds = { ids: [] };
 export function findInvalidRouteIds(routes) {
   const copiedRoutes = JSON.parse(JSON.stringify(routes));

@@ -16,7 +16,6 @@ import {
   deleteRoute,
   deleteFacility,
 } from "src/set_simulation_params";
-// import { changeInactiveObject } from "src/canvas";
 import {
   linkClicked,
   nodeClicked,
@@ -30,7 +29,6 @@ export async function setClickEventToObject(object) {
   const svg = d3.select("#svg02");
   switch (object.state) {
     case "edit":
-      console.log("edit");
       clearGhostObjects();
       removeSelectAttribute();
 
@@ -45,19 +43,15 @@ export async function setClickEventToObject(object) {
       break;
     case "add-operator":
       svg.on("click", null);
-      console.log("add-operator");
       break;
     case "add-facility":
       switchAddFacilityMode();
-      console.log("add-facility");
       break;
     case "delete":
       switchDeleteObjectMode();
-      console.log("delete");
       break;
     case "link":
       switchAddRouteMode();
-      console.log("link");
       break;
   }
 }
@@ -256,9 +250,7 @@ document.addEventListener("turbo:load", () => {
   setSimulationSaveEvent();
 
   // ヘルプボタンの実装
-  // const closeBtn = document.getElementById("help-close");
   const helpDialog = document.getElementById("helpDialog");
-
   const helpDialogs = document.querySelectorAll(".help-button");
   const helpBtns = document.querySelectorAll(".help-button");
   const closeBtns = document.querySelectorAll(".close-button");

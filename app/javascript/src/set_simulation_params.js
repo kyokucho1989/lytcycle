@@ -1,6 +1,5 @@
 export let routes, operators, facilities;
 import { drawLink } from "src/canvas";
-// import { setClickEventToObject } from "src/simulation";
 
 const routesInitial = [
   { source: "start", target: "n1", routeLength: 20, id: "root10" },
@@ -142,39 +141,12 @@ document.addEventListener("turbo:load", async () => {
   if (simulationParameters) {
     let simulationId = simulationParameters.dataset.id;
 
-    // const selectMode = document.querySelector(
-    //   'fieldset#modeSelection  input[type="radio"]:checked'
-    // );
-    // let selectModeName;
-
-    // if (selectMode !== null) {
-    //   selectModeName = selectMode.id;
-    // }
-    // const modeState = {};
-
-    // switch (selectModeName) {
-    //   case "add-facility":
-    //     modeState.state = "add-facility";
-    //     break;
-    //   case "edit":
-    //     modeState.state = "edit";
-    //     break;
-    //   case "add-link":
-    //     modeState.state = "link";
-    //     break;
-    //   case "delete-object":
-    //     modeState.state = "delete";
-    //     break;
-    // }
-
     if (simulationId == "") {
       // 初期値設定
       routes = routesInitial;
       operators = operatorsInitial;
       facilities = facilitiesInitial;
-      console.log("初期値設定終了");
       drawLink(routes, facilities);
-      // await setClickEventToObject(modeState);
     } else {
       try {
         const response = await fetch("edit.json");
@@ -197,17 +169,10 @@ document.addEventListener("turbo:load", async () => {
         });
 
         drawLink(routes, facilities);
-        // await setClickEventToObject(modeState);
         return json;
       } catch (error) {
         console.error(error.message);
       }
-
-      console.log("ロード完了");
     }
-
-    // シミュレーション画面の描画
   }
-
-  // データ整形
 });
