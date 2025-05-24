@@ -1,3 +1,5 @@
 class PagesController < ApplicationController
-  def privacy; end
+  def show
+    render 'pages/privacy'
+  end
 end
