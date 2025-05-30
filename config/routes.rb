@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   resource :privacy, only: [:show], controller: 'pages'
-  resource :welcome, only: [:show], controller: 'welcome'
+  resource :welcome, only: [:index], controller: 'welcome'
 
   devise_for :users
   resources :users do
