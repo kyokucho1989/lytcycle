@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  resource :privacy, only: [:show], controller: 'pages'
-  resource :welcome, only: [:index], controller: 'welcome'
+  resource :privacies, only: [:show]
+  resource :welcomes, only: [:show]
 
   devise_for :users
   resources :users do
@@ -12,5 +12,5 @@ Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
-  root "welcome#index"
+  root "welcomes#show"
 end
