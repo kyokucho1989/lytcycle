@@ -356,3 +356,15 @@ export async function setSimulationSaveEvent() {
     });
   }
 }
+
+function toggleUserMenu() {
+  let userMenu = document.getElementById("userMenu");
+  userMenu.classList.toggle("hidden");
+}
+
+document.addEventListener("turbo:load", () => {
+  const userMenu = document.getElementById("user-menu-button");
+  if (userMenu) {
+    userMenu.addEventListener("click", toggleUserMenu, false);
+  }
+});
