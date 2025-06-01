@@ -1,6 +1,7 @@
 class SimulationsController < ApplicationController
   before_action :authenticate_user!, except: :new
   before_action :set_simulation, only: %i[edit update destroy]
+  before_action :correct_user
 
   def index
     @simulations = Simulation.all
@@ -74,5 +75,13 @@ class SimulationsController < ApplicationController
   def create_failure_response(format)
     format.html { render :new, status: :unprocessable_entity }
     format.json { render json: @simulation.errors, status: :unprocessable_entity }
+  end
+
+  def correct_user
+    @user = User.find(params[:user_id])
+    return unless @user != current_user
+
+    flash[:alert] = '他のユーザーのページにはアクセスできません。'
+    redirect_to(root_url)
   end
 end
