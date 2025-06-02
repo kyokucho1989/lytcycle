@@ -116,7 +116,7 @@ export function addFacility([x, y]) {
   }
 
   lastId = lastId + 1;
-  facilities[0] = { lastId: lastId };
+  facilities[0] = { lastId: lastId, x: 0, y: 0 };
   let facility = {
     index: lastId,
     x: x,
