@@ -10,13 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_04_13_003919) do
+ActiveRecord::Schema[7.0].define(version: 2025_06_02_201639) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
+  end
+
   create_table "simulations", force: :cascade do |t|
     t.bigint "user_id"
-    t.string "title"
+    t.string "title", null: false
     t.string "bottleneck_process"
     t.float "waiting_time"
     t.jsonb "routes"
