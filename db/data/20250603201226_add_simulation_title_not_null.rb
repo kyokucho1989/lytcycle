@@ -2,7 +2,7 @@
 
 class AddSimulationTitleNotNull < ActiveRecord::Migration[7.0]
   def up
-     Simulation.where(title: "").update_all(title: "Untitle")
+    Simulation.where(title: '').update_all(title: 'Untitle')
   end
 
   def down
