@@ -73,6 +73,8 @@ group :test do
 end
 gem 'cssbundling-rails'
 
+gem 'data_migrate', '~> 9.1.0'
+
 gem "dockerfile-rails", ">= 1.6", :group => :development
 
 gem "meta-tags"
