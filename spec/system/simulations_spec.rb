@@ -72,3 +72,19 @@ RSpec.describe 'UpdateAndDeleteSimulation', type: :system do
     expect(page).to have_content 'シミュレーションが削除されました。'
   end
 end
+
+RSpec.describe 'LimitSimulation', type: :system do
+  before do
+    @user = User.create!(name: 'alice', email: 'alice@example.com', password: 'password',
+                         confirmed_at: DateTime.now)
+    @user.simulations.create!(title: 'test-simulation1')
+    @user.simulations.create!(title: 'test-simulation2')
+    @user.simulations.create!(title: 'test-simulation3')
+  end
+
+  it 'cannot create simulation beyond the limit ', js: true do
+    sign_in @user
+    visit user_simulations_path(@user)
+    expect(page).to have_content 'シミュレーション数が上限に達しています。'
+  end
+end
