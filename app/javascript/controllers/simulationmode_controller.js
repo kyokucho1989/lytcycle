@@ -1,6 +1,10 @@
 import { Controller } from "@hotwired/stimulus";
 import { changeActiveObject, drawLink, activePlayButtons } from "src/canvas";
-import { setClickEventToObject, removeResultBadge } from "src/simulation";
+import {
+  setClickEventToObject,
+  removeResultBadge,
+  setObjectparamsOnDetailModal,
+} from "src/simulation";
 import { routes } from "src/set_simulation_params";
 import { findInvalidRouteIds } from "src/consistency_check";
 import { countStart } from "src/exec_simulation";
@@ -18,6 +22,15 @@ export default class extends Controller {
 
   connect() {}
 
+  close(event) {
+    if (event.detail.success) {
+      this.closeDetail();
+      const url = event.detail.fetchResponse.response.url;
+      const redirectUrl = url.replace(/\/\d+$/, "");
+      window.Turbo.visit(redirectUrl);
+    }
+  }
+
   edit() {
     this.state = this.STATES.EDIT;
     changeActiveObject();
@@ -26,6 +39,7 @@ export default class extends Controller {
 
   showDetail() {
     removeResultBadge();
+    setObjectparamsOnDetailModal();
     this.detailTarget.showModal();
   }
 

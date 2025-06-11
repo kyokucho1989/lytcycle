@@ -245,10 +245,23 @@ document.addEventListener("turbo:load", async () => {
   await setParamsToRouteOnModal();
 });
 
-document.addEventListener("turbo:load", () => {
-  // シミュレーション保存ボタンを押したときの処理
-  setSimulationSaveEvent();
+export async function setObjectparamsOnDetailModal() {
+  let routesInForm = document.getElementById("simulation-routes");
+  let facilitiesInForm = document.getElementById("simulation-facilities");
+  let operatorsInForm = document.getElementById("simulation-operators");
 
+  if (routesInForm) {
+    routesInForm.value = JSON.stringify(routes);
+  }
+  if (facilitiesInForm) {
+    facilitiesInForm.value = JSON.stringify(facilities);
+  }
+  if (operatorsInForm) {
+    operatorsInForm.value = JSON.stringify(operators);
+  }
+}
+
+document.addEventListener("turbo:load", () => {
   // ヘルプボタンの実装
   const helpDialog = document.getElementById("helpDialog");
   const helpDialogs = document.querySelectorAll(".help-button");
@@ -319,41 +332,6 @@ export function removeResultBadge() {
   const badge = document.getElementById("simulation-result-badge");
   if (!badge.classList.contains("hidden")) {
     badge.classList.add("hidden");
-  }
-}
-
-export async function setSimulationSaveEvent() {
-  const saveSimulationButton = document.getElementById("savesimulation");
-  if (saveSimulationButton) {
-    saveSimulationButton.addEventListener("click", (event) => {
-      event.preventDefault();
-      const form = document.getElementById("simulationForm");
-      const formData = new FormData(form);
-      formData.append("js_routes", JSON.stringify(routes));
-      formData.append("js_operators", JSON.stringify(operators));
-      formData.append("js_facilities", JSON.stringify(facilities));
-
-      fetch(form.action, {
-        method: "POST",
-        headers: {
-          "X-CSRF-Token": document
-            .querySelector("meta[name='csrf-token']")
-            .getAttribute("content"),
-          Accept: "application/json",
-        },
-        body: formData,
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Success:", data);
-          // 成功時の処理（ページ遷移など）
-          window.location.href = data.location;
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          // エラー時の処理
-        });
-    });
   }
 }
 

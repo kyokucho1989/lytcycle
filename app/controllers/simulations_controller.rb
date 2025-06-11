@@ -33,11 +33,12 @@ class SimulationsController < ApplicationController
   def update
     respond_to do |format|
       if @simulation.update(simulation_params)
-        format.html { redirect_to user_simulations_url, notice: 'Simurate was successfully updated.' }
+        flash[:notice] = 'シミュレーションが更新されました。'
+        format.html {}
         format.json { render json: { status: :ok, location: user_simulations_url } }
       else
         format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @simulation.errors, status: :unprocessable_entity }
+        format.json { render json: { status: 'error', errors: @simulation.errors.full_messages }, status: :ok }
       end
     end
   end
@@ -46,7 +47,7 @@ class SimulationsController < ApplicationController
     @simulation.destroy
 
     respond_to do |format|
-      format.html { redirect_to user_simulations_url, notice: 'Simurate was successfully destroyed.' }
+      format.html { redirect_to user_simulations_url, notice: 'シミュレーションが削除されました。' }
       format.json { head :no_content }
     end
   end
@@ -60,15 +61,13 @@ class SimulationsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def simulation_params
-    %w[routes facilities operators].each do |key|
-      params.require(:simulation)[key] = params.require("js_#{key}")
-    end
     params.require(:simulation).permit(:user_id, :title, :bottleneck_process, :waiting_time, :routes, :operators,
                                        :facilities, :cycle_time)
   end
 
   def create_success_response(format)
-    format.html { redirect_to user_simulations_url, notice: 'Simurate was successfully created.' }
+    flash[:notice] = 'シミュレーションが作成されました。'
+    format.html {}
     format.json { render json: { status: :ok, location: user_simulations_url } }
   end
 
