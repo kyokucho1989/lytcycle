@@ -63,7 +63,7 @@ data-facilities ="<%= @simulation.facilities %>">
   <div class="pt-4" data-controller="simulationmode" id="simulation-controller">
     <dialog data-simulationmode-target="detail" class="transform rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
       <%= turbo_frame_tag "simulation-modal" do %>
-        <%= render "modal" %>
+        <%= render "simulations/modal" %>
       <% end %>
     </dialog>
     <fieldset class="relative -space-y-px rounded-md bg-white">
