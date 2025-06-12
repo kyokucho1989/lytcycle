@@ -24,6 +24,7 @@ import {
   linkMouseOver,
   linkMouseOut,
 } from "src/canvas";
+import { drawLink } from "./canvas";
 let ghostNode, tempLine;
 export async function setClickEventToObject(object) {
   const svg = d3.select("#svg02");
@@ -200,6 +201,7 @@ export function setParamsToFacilityOnModal() {
       params.processingTime = document.getElementById("processingTime").value;
 
       setObjectparams(e, params, facilities);
+      drawLink(routes, facilities);
       facilityDialog.close();
     });
   }

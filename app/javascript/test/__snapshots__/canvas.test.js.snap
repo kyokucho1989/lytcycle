@@ -85,7 +85,7 @@ exports[`draw link and circle 1`] = `
         text-anchor="middle"
         y="25"
       >
-        start
+        startPoint
       </text>
     </g>
     <g
@@ -101,7 +101,7 @@ exports[`draw link and circle 1`] = `
         text-anchor="middle"
         y="25"
       >
-        1
+        machine-no-1
       </text>
     </g>
     <g
@@ -117,7 +117,7 @@ exports[`draw link and circle 1`] = `
         text-anchor="middle"
         y="25"
       >
-        goal
+        goalPoint
       </text>
     </g>
   </svg>
