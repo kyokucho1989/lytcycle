@@ -82,7 +82,7 @@ export async function drawLink(linksData = routes, nodesData = facilities) {
 
       node
         .append("text")
-        .text((d) => d.id)
+        .text((d) => d.name)
         .attr("text-anchor", "middle")
         .attr("y", 25);
 
