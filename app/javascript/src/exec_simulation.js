@@ -260,6 +260,7 @@ export async function countStart() {
   let endTime = 400;
   let t = 0;
   let object1;
+  let material;
   let totalCount = 0;
 
   let machine;
@@ -324,6 +325,8 @@ export async function countStart() {
         operator1.arrivalTime = t + Number(selectedRoute.routeLength);
         object1 = getAnimeObject(selectedRoute);
         tl.add(object1, (t * 1000) / simulationSpeedRatio);
+        material = toggleOperatorHasMaterial(operator1.hasMaterial);
+        tl.add(material, (t * 1000) / simulationSpeedRatio);
         operator1.destination = destination;
         operator1.isMoving = true;
       }
@@ -431,6 +434,15 @@ function getAnimeObject(root) {
     easing: "linear",
   };
 
+  return animeObject;
+}
+
+function toggleOperatorHasMaterial(hasState) {
+  let animeObject = {
+    targets: "#ob1 rect",
+    opacity: hasState ? 1 : 0,
+    easing: "steps(1)",
+  };
   return animeObject;
 }
 

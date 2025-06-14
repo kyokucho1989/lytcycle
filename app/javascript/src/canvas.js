@@ -13,7 +13,18 @@ import {
 } from "src/simulation";
 
 export async function displayOperator() {
-  d3.select("#svg02").append("text").attr("id", "ob1").text("作業者");
+  const operator = d3
+    .select("#svg02")
+    .append("g")
+    .attr("id", "ob1")
+    .attr("transform", "translate(20, 20)");
+  operator.append("text").text("作業者");
+  operator
+    .append("rect")
+    .attr("width", 20)
+    .attr("height", 20)
+    .attr("fill", "#fa0")
+    .attr("opacity", 0);
 }
 
 export async function displayRaiseOperator() {
@@ -28,7 +39,9 @@ export async function displayStartGoalName() {
 export async function drawLink(linksData = routes, nodesData = facilities) {
   return new Promise((resolve) => {
     d3.select("#svg02").selectAll("line").remove();
-    d3.select("#svg02").selectAll("g").remove();
+    d3.select("#routes-layer").selectAll("g").remove();
+    d3.select("#facilities-layer").selectAll("g").remove();
+    d3.select("#operators-layer").selectAll("g").remove();
     function ticked() {
       link
         .attr("x1", (d) => d.source.x)
@@ -55,7 +68,7 @@ export async function drawLink(linksData = routes, nodesData = facilities) {
     const simurateSvg = document.getElementById("svg02");
     if (simurateSvg) {
       link = d3
-        .select("#svg02")
+        .select("#routes-layer")
         .selectAll("line")
         .data(linksData)
         .enter()
@@ -67,7 +80,7 @@ export async function drawLink(linksData = routes, nodesData = facilities) {
         .attr("marker-end", (d) => (d.id.includes("re") ? "" : "url(#arr)"));
 
       node = d3
-        .select("#svg02")
+        .select("#facilities-layer")
         .selectAll("g")
         .data(nodesData)
         .enter()
