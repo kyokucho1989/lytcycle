@@ -21,8 +21,8 @@ export async function displayOperator() {
   operator.append("text").text("作業者");
   operator
     .append("rect")
-    .attr("width", 20)
-    .attr("height", 20)
+    .attr("width", 10)
+    .attr("height", 10)
     .attr("fill", "#fa0")
     .attr("opacity", 0);
 }
@@ -96,8 +96,8 @@ export async function drawLink(linksData = routes, nodesData = facilities) {
       node
         .append("rect")
         .attr("id", (d) => `material-${d.id}`)
-        .attr("width", 20)
-        .attr("height", 20)
+        .attr("width", 10)
+        .attr("height", 10)
         .attr("x", -20)
         .attr("fill", "#fa0")
         .attr("opacity", 0);
