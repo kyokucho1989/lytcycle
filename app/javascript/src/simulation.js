@@ -23,8 +23,8 @@ import {
   nodeMouseOut,
   linkMouseOver,
   linkMouseOut,
+  drawLink,
 } from "src/canvas";
-import { drawLink } from "./canvas";
 let ghostNode, tempLine;
 export async function setClickEventToObject(object) {
   const svg = d3.select("#svg02");

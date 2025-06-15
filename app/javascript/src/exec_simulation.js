@@ -251,7 +251,6 @@ export async function countStart() {
   await drawLink(linksData, nodesData1);
 
   contoller.setRoutes(linksData);
-  // let startPoint = locations.find((object) => object.type == "start");
   let goalPoint = locations.find((object) => object.type == "goal");
   const operator1 = new Operator({ name: "Alice" });
   operator1.currentLocation = nodesData1.find(
@@ -260,9 +259,21 @@ export async function countStart() {
   let endTime = 400;
   let t = 0;
   let object1;
+  let material;
+  let machineMaterial;
   let totalCount = 0;
 
   let machine;
+
+  tl.add({ targets: "#ob1 rect", opacity: 0 }, 0);
+
+  nodesData1.forEach((machine) => {
+    let object = toggleFacilityHasMaterial(machine);
+    let object2 = { targets: `circle#${machine.id}`, fill: "#99aaee" };
+    tl.add(object, 0);
+    tl.add(object2, 0);
+  });
+
   while (t < endTime) {
     if (operator1.isMoving) {
       operator1.addStateToHistory(t, "移動中");
@@ -276,6 +287,7 @@ export async function countStart() {
           machine = nodesData1.find(
             (elemnt) => elemnt.id == operator1.currentLocation.id
           );
+
           if (!machine.isProcessing || Number(machine.processingEndTime) < t) {
             operator1.addStateToHistory(t, "脱着中");
             if (!machine.hasMaterial) {
@@ -283,6 +295,8 @@ export async function countStart() {
             }
             machine.isProcessing = true;
             machine.hasMaterial = true;
+            machineMaterial = toggleFacilityHasMaterial(machine);
+            tl.add(machineMaterial, (t * 1000) / simulationSpeedRatio);
             operator1.isWaiting = false;
             machine.processingEndTime = t + Number(machine.processingTime);
             let litingAnime = getMachineLitingAnime(
@@ -324,6 +338,8 @@ export async function countStart() {
         operator1.arrivalTime = t + Number(selectedRoute.routeLength);
         object1 = getAnimeObject(selectedRoute);
         tl.add(object1, (t * 1000) / simulationSpeedRatio);
+        material = toggleOperatorHasMaterial(operator1.hasMaterial);
+        tl.add(material, (t * 1000) / simulationSpeedRatio);
         operator1.destination = destination;
         operator1.isMoving = true;
       }
@@ -431,6 +447,24 @@ function getAnimeObject(root) {
     easing: "linear",
   };
 
+  return animeObject;
+}
+
+function toggleOperatorHasMaterial(hasState) {
+  let animeObject = {
+    targets: "#ob1 rect",
+    opacity: hasState ? 1 : 0,
+    easing: "steps(1)",
+  };
+  return animeObject;
+}
+
+function toggleFacilityHasMaterial(machine) {
+  let animeObject = {
+    targets: `rect#material-${machine.id}`,
+    opacity: machine.hasMaterial ? 1 : 0,
+    easing: "steps(1)",
+  };
   return animeObject;
 }
 

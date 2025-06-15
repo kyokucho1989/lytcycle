@@ -61,6 +61,9 @@ test("draw link and circle", async () => {
   const div = document.createElement("div");
   div.innerHTML = `
     <svg id="svg02" xmlns="http://www.w3.org/2000/svg" width="700" height="800">
+        <g id="routes-layer"></g>
+        <g id="facilities-layer"></g>
+        <g id="operators-layer"></g>
     </svg>
   `;
   document.body.appendChild(div); // これを追加して、Jest の仮想 DOM に反映
@@ -68,7 +71,7 @@ test("draw link and circle", async () => {
   await drawLink(routesInitial, facilitiesInitial);
 
   await waitFor(() => {
-    const group = document.querySelector("g");
+    const group = document.querySelector("#facilities-layer > g");
     expect(group).toHaveAttribute("transform");
   });
 
