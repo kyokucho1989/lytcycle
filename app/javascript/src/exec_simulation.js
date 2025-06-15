@@ -251,7 +251,6 @@ export async function countStart() {
   await drawLink(linksData, nodesData1);
 
   contoller.setRoutes(linksData);
-  // let startPoint = locations.find((object) => object.type == "start");
   let goalPoint = locations.find((object) => object.type == "goal");
   const operator1 = new Operator({ name: "Alice" });
   operator1.currentLocation = nodesData1.find(
@@ -311,7 +310,6 @@ export async function countStart() {
             tl.add(litingAnime, (t * 1000) / simulationSpeedRatio).add(
               lightOutAnime
             );
-            // console.log(`machine:hasMaterial:${machine.hasMaterial}`);
           } else {
             operator1.isWaiting = true;
             operator1.addStateToHistory(t, "待機中");
