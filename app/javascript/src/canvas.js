@@ -94,6 +94,15 @@ export async function drawLink(linksData = routes, nodesData = facilities) {
         .attr("id", (d) => d.id);
 
       node
+        .append("rect")
+        .attr("id", (d) => `material-${d.id}`)
+        .attr("width", 20)
+        .attr("height", 20)
+        .attr("x", -20)
+        .attr("fill", "#fa0")
+        .attr("opacity", 0);
+
+      node
         .append("text")
         .text((d) => d.name)
         .attr("text-anchor", "middle")
