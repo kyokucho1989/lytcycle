@@ -70,12 +70,12 @@ class Controller {
     currentLocation = operator.currentLocation;
     linkedRoutes = routes.filter(
       (route) =>
-        route.source.index == currentLocation.index && !route.id.includes("re")
+        route.source.index === currentLocation.index && !route.id.includes("re")
     );
 
     selectedRoute = linkedRoutes.find((route) => {
       let notProcessingMachine = locations.find(
-        (machine) => machine.id == route.target.id && !machine.isProcessing
+        (machine) => machine.id === route.target.id && !machine.isProcessing
       );
       if (notProcessingMachine) {
         return route;
@@ -90,7 +90,7 @@ class Controller {
         break;
       case "goal":
         selectedRoute = routes.find(
-          (element) => element.source.index == currentLocation.index
+          (element) => element.source.index === currentLocation.index
         );
         destination = selectedRoute.target;
         break;
@@ -100,7 +100,7 @@ class Controller {
         } else {
           selectedRoute = routes.find(
             (element) =>
-              element.source.id == currentLocation.id &&
+              element.source.id === currentLocation.id &&
               element.id.includes("re")
           );
           destination = selectedRoute.target;
@@ -126,7 +126,7 @@ function generatePairRoutes(routes) {
     };
   });
   routesWithPairs = filterdRoutes.concat(converdRoutes);
-  if (lastIds.length == 0) {
+  if (lastIds.length === 0) {
     return routesWithPairs;
   } else {
     return routesWithPairs.unshift(lastIds);
@@ -197,7 +197,8 @@ function dispCount(t) {
         return a;
       }
     });
-    count = countHistory.filter((el) => el.t == closestTime)[0].productionCount;
+    count = countHistory.filter((el) => el.t === closestTime)[0]
+      .productionCount;
   }
 
   let el = document.querySelector("#JSobjectProp pre");
@@ -241,8 +242,8 @@ export async function countStart() {
   let linksData2 = copyLinks.map((route) => {
     return {
       ...route,
-      source: nodesData1.find((facility) => facility.id == route.source.id),
-      target: nodesData1.find((facility) => facility.id == route.target.id),
+      source: nodesData1.find((facility) => facility.id === route.source.id),
+      target: nodesData1.find((facility) => facility.id === route.target.id),
       id: `${route.id}`,
     };
   });
@@ -251,10 +252,10 @@ export async function countStart() {
   await drawLink(linksData, nodesData1);
 
   contoller.setRoutes(linksData);
-  let goalPoint = locations.find((object) => object.type == "goal");
+  let goalPoint = locations.find((object) => object.type === "goal");
   const operator1 = new Operator({ name: "Alice" });
   operator1.currentLocation = nodesData1.find(
-    (object) => object.type == "start"
+    (object) => object.type === "start"
   );
   let endTime = 400;
   let t = 0;
@@ -277,7 +278,7 @@ export async function countStart() {
   while (t < endTime) {
     if (operator1.isMoving) {
       operator1.addStateToHistory(t, "移動中");
-      if (operator1.arrivalTime == t) {
+      if (operator1.arrivalTime === t) {
         operator1.isMoving = false;
         operator1.currentLocation = operator1.destination;
       }
@@ -285,7 +286,7 @@ export async function countStart() {
       switch (operator1.currentLocation.type) {
         case "machine":
           machine = nodesData1.find(
-            (elemnt) => elemnt.id == operator1.currentLocation.id
+            (elemnt) => elemnt.id === operator1.currentLocation.id
           );
 
           if (!machine.isProcessing || Number(machine.processingEndTime) < t) {
@@ -347,7 +348,7 @@ export async function countStart() {
 
     nodesData1.forEach((machine) => {
       if (machine.isProcessing) {
-        if (Number(machine.processingEndTime) == t) {
+        if (Number(machine.processingEndTime) === t) {
           machine.isProcessing = false;
         }
       }
@@ -378,7 +379,7 @@ function formatStateHistory(operator) {
   let array = Array.from(statesEachLocation);
   let waitingArray = array.map((element) => {
     let states = element[1];
-    let filterdStates = states.filter((element) => element.state == "待機中");
+    let filterdStates = states.filter((element) => element.state === "待機中");
     return [element[0], filterdStates.length];
   });
   return waitingArray;
@@ -402,10 +403,10 @@ export function judgeBottleneckProcess(waitingArray) {
   );
 
   let bottleneck_map = waitingArray.find(
-    (element) => element[1] == waitingTime
+    (element) => element[1] === waitingTime
   );
   let bottleneck_process = bottleneck_map[0];
-  if (bottleneck_process == "start") {
+  if (bottleneck_process === "start") {
     bottleneck_process = "なし(移動ネック)";
   }
   return bottleneck_process;
@@ -416,7 +417,7 @@ export function calculateCycleTime(goalPoint) {
   let timeSet = history.map((element) => element.t);
   let slicedSet;
   let cycleTime;
-  if (timeSet.length == 1) {
+  if (timeSet.length === 1) {
     cycleTime = timeSet;
     return cycleTime;
   } else {

@@ -89,7 +89,7 @@ test("button click and set params", async () => {
   await fireEvent.click(button);
 
   await waitFor(() => expect(screen.queryByText("設備名")).not.toBeVisible());
-  let selectedFacility = facilities.find((facility) => facility.id == "n0");
+  let selectedFacility = facilities.find((facility) => facility.id === "n0");
   expect(selectedFacility.processingTime).toBe("30");
   expect(selectedFacility.name).toBe("Test Facility");
 });

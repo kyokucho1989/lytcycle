@@ -23,6 +23,6 @@ module.exports = {
   },
   rules: {
     "no-fallthrough": "off",
-     "eqeqeq": "error",
+     "eqeqeq": ["error","smart"],
   },
 };
