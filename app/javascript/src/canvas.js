@@ -238,13 +238,13 @@ export function nodeMouseOut(event) {
 }
 
 export function nodeClicked() {
-  let facilityForEdit = facilities.find((facility) => facility.id == this.id);
+  let facilityForEdit = facilities.find((facility) => facility.id === this.id);
   setFacilityDataToModal(facilityForEdit);
   facilityDialog.showModal();
 }
 
 export function linkClicked() {
-  let routeForEdit = routes.find((route) => route.id == this.id);
+  let routeForEdit = routes.find((route) => route.id === this.id);
   setRouteDataToModal(routeForEdit);
   routeDialog.showModal();
 }

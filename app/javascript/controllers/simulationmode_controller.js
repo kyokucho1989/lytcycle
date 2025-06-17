@@ -82,7 +82,7 @@ export default class extends Controller {
 
   isConsistency() {
     let result = findInvalidRouteIds(routes);
-    if (result.ids.length == 0) {
+    if (result.ids.length === 0) {
       this.readyForExecution = true;
       return true;
     } else {

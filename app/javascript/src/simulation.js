@@ -143,7 +143,7 @@ export function switchAddRouteMode() {
       this.removeAttribute("selected");
     } else {
       this.setAttribute("selected", "");
-      if (sourceNode.length != 0) {
+      if (sourceNode.length !== 0) {
         sourceId = sourceNode[0].id;
         targetId = this.id;
         addRoute(targetId, sourceId);
@@ -173,9 +173,9 @@ function removeSelectAttribute() {
 }
 export function setObjectparams(e, params, objects) {
   let id = params.id;
-  let selectedObject = objects.find((object) => object.id == id);
+  let selectedObject = objects.find((object) => object.id === id);
   for (const [key, value] of Object.entries(params)) {
-    if (key != "id") {
+    if (key !== "id") {
       selectedObject[key] = value;
     }
   }
@@ -270,7 +270,7 @@ document.addEventListener("turbo:load", () => {
   const helpBtns = document.querySelectorAll(".help-button");
   const closeBtns = document.querySelectorAll(".close-button");
 
-  if (helpDialogs.length == 0) {
+  if (helpDialogs.length === 0) {
     return;
   } else {
     helpDialogs.forEach((dialog) => {
@@ -282,7 +282,7 @@ document.addEventListener("turbo:load", () => {
     });
   }
 
-  if (helpBtns.length == 0) {
+  if (helpBtns.length === 0) {
     return;
   } else {
     helpBtns.forEach((btn) => {
@@ -294,7 +294,7 @@ document.addEventListener("turbo:load", () => {
     });
   }
 
-  if (closeBtns.length != 0) {
+  if (closeBtns.length !== 0) {
     closeBtns.forEach((btn) => {
       btn.addEventListener("click", () => {
         const targetid = btn.dataset.targetid;

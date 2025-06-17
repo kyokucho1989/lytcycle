@@ -40,8 +40,8 @@ export function findInvalidRoutesSetByDFS(groupedRoutes, startNode, goalNode) {
     });
   });
   function dfs(node, startNode, path) {
-    if (path.includes(startNode) && node == startNode) {
-      path.length == 0;
+    if (path.includes(startNode) && node === startNode) {
+      path.length === 0;
       return;
     } else {
       path.push(node);
@@ -62,7 +62,7 @@ export function findInvalidRoutesSetByDFS(groupedRoutes, startNode, goalNode) {
         routesConvertFromPath.push(`${path[i]}->${el}`);
       });
 
-      if (neighbor == startNode && node == goalNode) {
+      if (neighbor === startNode && node === goalNode) {
         routesConvertFromPath.push(`${path.at(-1)}->${startNode}`);
         routesConvertFromPath.forEach((el) => {
           validRoutes.add(el);

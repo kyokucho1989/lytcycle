@@ -42,34 +42,37 @@ const facilitiesInitial = [
 ];
 
 export function deleteRoute() {
-  let selectedRoute = routes.find((route) => route.id == this.id);
-  if (selectedRoute.source.id == "goal" && selectedRoute.target.id == "start") {
+  let selectedRoute = routes.find((route) => route.id === this.id);
+  if (
+    selectedRoute.source.id === "goal" &&
+    selectedRoute.target.id === "start"
+  ) {
     alert("スタートとゴールの間のルートは削除できません。");
   } else {
     if (window.confirm("削除しますか？")) {
-      routes = routes.filter((route) => route.id != selectedRoute.id);
+      routes = routes.filter((route) => route.id !== selectedRoute.id);
       drawLink(routes, facilities);
     }
   }
 }
 
 export function deleteFacility() {
-  let selectedFacility = facilities.find((facility) => facility.id == this.id);
-  if (selectedFacility.id == "goal" || selectedFacility.id == "start") {
+  let selectedFacility = facilities.find((facility) => facility.id === this.id);
+  if (selectedFacility.id === "goal" || selectedFacility.id === "start") {
     alert("スタートとゴールは削除できません。");
     return;
   }
   let unConnectedRoutes = routes.filter(
     (route) =>
-      route.target.id != selectedFacility.id &&
-      route.source.id != selectedFacility.id
+      route.target.id !== selectedFacility.id &&
+      route.source.id !== selectedFacility.id
   );
 
   let unConnectedRoutesIds = unConnectedRoutes.map((route) => route.id);
 
   if (window.confirm("削除しますか？")) {
     facilities = facilities.filter(
-      (facility) => facility.id != selectedFacility.id
+      (facility) => facility.id !== selectedFacility.id
     );
     routes = routes.filter((route) => unConnectedRoutesIds.includes(route.id));
     drawLink(routes, facilities);
@@ -77,8 +80,8 @@ export function deleteFacility() {
 }
 
 export function addRoute(targetId, sourceId) {
-  let targetNode = facilities.find((element) => element.id == targetId);
-  let sourceNode = facilities.find((element) => element.id == sourceId);
+  let targetNode = facilities.find((element) => element.id === targetId);
+  let sourceNode = facilities.find((element) => element.id === sourceId);
   let idName = `root${sourceId}${targetId}`;
   let route = {
     source: sourceNode,
@@ -89,8 +92,8 @@ export function addRoute(targetId, sourceId) {
   };
 
   let dupicatedLogic = (route) =>
-    (route.target.id == targetId && route.source.id == sourceId) ||
-    (route.target.id == sourceId && route.source.id == targetId);
+    (route.target.id === targetId && route.source.id === sourceId) ||
+    (route.target.id === sourceId && route.source.id === targetId);
 
   if (routes.some(dupicatedLogic)) {
     alert("すでにリンクが作成されています");
@@ -141,7 +144,7 @@ document.addEventListener("turbo:load", async () => {
   if (simulationParameters) {
     let simulationId = simulationParameters.dataset.id;
 
-    if (simulationId == "") {
+    if (simulationId === "") {
       // 初期値設定
       routes = routesInitial;
       operators = operatorsInitial;

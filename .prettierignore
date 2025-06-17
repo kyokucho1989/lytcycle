@@ -1,0 +1,18 @@
+# Ignore artifacts:
+vendor
+coverage
+config
+.yarn
+.eslintrc.js
+.prettierrc.js
+app/assets
+app/javascript/application.js
+app/javascript/controllers/application.js
+app/javascript/controllers/index.js
+# Ignore all HTML files:
+**/*.html
+
+# Ignore all YAML files:
+**/*.yml
+
+*.config.js
