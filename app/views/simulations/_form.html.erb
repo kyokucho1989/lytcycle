@@ -7,7 +7,7 @@ data-facilities ="<%= @simulation.facilities %>">
   <div class="flex mt-3">
     <h2 class="text-lg font-semibold text-gray-900">ツールパレット</h2>
     <button type="button" id="help-btn"
-      data-help-targetid="helpDialog1"
+      data-help-target-id="helpDialog1"
       class="help-button inline rounded-full bg-white p-1 text-gray-900 shadow-sm hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
         <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
@@ -60,8 +60,8 @@ data-facilities ="<%= @simulation.facilities %>">
     </form>
   </dialog>
 
-  <div class="pt-4" data-controller="simulationmode" id="simulation-controller">
-    <dialog data-simulationmode-target="detail" class="transform rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+  <div class="pt-4" data-controller="simulation-mode" id="simulation-controller">
+    <dialog data-simulation-mode-target="detail" class="transform rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
       <%= turbo_frame_tag "simulation-modal" do %>
         <%= render "simulations/modal" %>
       <% end %>
@@ -72,7 +72,7 @@ data-facilities ="<%= @simulation.facilities %>">
           <div class="grid grid-cols-4 md:grid-cols-6 items-center gap-4">
             <div class="flex items-center">
               <input id="edit" name="edit-mode" type="radio" checked
-              data-simulationmode-target="editmode" data-action="simulationmode#edit"
+              data-simulation-mode-target="edit-mode" data-action="simulation-mode#edit"
               class="sr-only peer"
               value="パラメータ変更">
               <label for="edit"
@@ -81,7 +81,6 @@ data-facilities ="<%= @simulation.facilities %>">
               ring-1 ring-gray-300 bg-white text-gray-900 hover:bg-gray-50
               focus-visible:outline focus-visible:outline-2 sm:flex-1">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="md:mr-2 inline size-6 peer-checked:fill-white fill-gray-900">
-                    <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
                     <path d="M0 416c0 17.7 14.3 32 32 32l54.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 448c17.7 0 32-14.3 32-32s-14.3-32-32-32l-246.7 0c-12.3-28.3-40.5-48-73.3-48s-61 19.7-73.3 48L32 384c-17.7 0-32 14.3-32 32zm128 0a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zM320 256a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm32-80c-32.8 0-61 19.7-73.3 48L32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l246.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48l54.7 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-54.7 0c-12.3-28.3-40.5-48-73.3-48zM192 128a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm73.3-64C253 35.7 224.8 16 192 16s-61 19.7-73.3 48L32 64C14.3 64 0 78.3 0 96s14.3 32 32 32l86.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 128c17.7 0 32-14.3 32-32s-14.3-32-32-32L265.3 64z"/>
                   </svg>
                   <span class="hidden md:inline">パラメータ変更
@@ -92,15 +91,14 @@ data-facilities ="<%= @simulation.facilities %>">
               <input id="add-facility" name="edit-mode" type="radio"
                 class="sr-only peer"
                 value="設備追加"
-                data-simulationmode-target="editmode"
-                data-action="simulationmode#changeModeToAddFacility">
+                data-simulation-mode-target="editmode"
+                data-action="simulation-mode#changeModeToAddFacility">
               <label for="add-facility"
               class="peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:ring-0 peer-checked:hover:bg-indigo-500
                     flex cursor-pointer items-center justify-center rounded-md px-3 py-3 text-sm font-semibold uppercase
                     ring-1 ring-gray-300 bg-white text-gray-900 hover:bg-gray-50
                     focus-visible:outline focus-visible:outline-2 sm:flex-1">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="md:mr-2 inline size-6 fill-gray-900">
-                  <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
                   <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/>
                 </svg>
                 <span class="hidden md:inline">設備追加</span>
@@ -110,8 +108,8 @@ data-facilities ="<%= @simulation.facilities %>">
               <input id="add-link" name="edit-mode" type="radio"
               class="sr-only peer"
               value="リンク追加"
-              data-simulationmode-target="editmode"
-              data-action="simulationmode#changeModeToLink">
+              data-simulation-mode-target="editmode"
+              data-action="simulation-mode#changeModeToLink">
               <label for="add-link"
               class="peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:ring-0 peer-checked:hover:bg-indigo-500
                     flex cursor-pointer items-center justify-center rounded-md px-3 py-3 text-sm font-semibold uppercase
@@ -128,8 +126,8 @@ data-facilities ="<%= @simulation.facilities %>">
               <input id="delete-object" name="edit-mode" type="radio"
               class="sr-only peer"
               value="削除"
-              data-simulationmode-target="editmode"
-              data-action="simulationmode#changeModeToDelete">
+              data-simulation-mode-target="editmode"
+              data-action="simulation-mode#changeModeToDelete">
             <label for="delete-object"
             class="peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:ring-0 peer-checked:hover:bg-indigo-500
               flex cursor-pointer items-center justify-center rounded-md px-3 py-3 text-sm font-semibold uppercase
@@ -152,7 +150,7 @@ data-facilities ="<%= @simulation.facilities %>">
     <div class="flex mt-3">
       <h2 class="text-lg font-semibold text-gray-900">シミュレーション</h2>
       <button type="button" id="help-btn2"
-      data-help-targetid="helpDialog2"
+      data-help-target-id="helpDialog2"
       class="help-button inline rounded-full bg-white p-1 text-gray-900 shadow-sm hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
         <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
@@ -174,7 +172,7 @@ data-facilities ="<%= @simulation.facilities %>">
     <div class="flex mt-5">
       <h2 class="text-lg font-semibold text-gray-900">シミュレーション操作</h2>
       <button type="button" id="help-btn3"
-      data-help-targetid="helpDialog3"
+      data-help-target-id="helpDialog3"
       class="help-button inline rounded-full bg-white p-1 text-gray-900 shadow-sm hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
         <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
@@ -183,9 +181,8 @@ data-facilities ="<%= @simulation.facilities %>">
     </div>
     <div id="simulation" class="py-2 grid w-full grid-cols-9 xl:grid-cols-10 gap-2">
       <div class="flex items-center col-span-3 lg:col-span-3">
-        <button type="button" id="isConsistency" data-action="simulationmode#startSimulation" class="w-full rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+        <button type="button" id="isConsistency" data-action="simulation-mode#startSimulation" class="w-full rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="md:mr-2 inline size-6 fill-gray-900">
-            <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
             <path d="M64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-384c0-35.3-28.7-64-64-64L64 0zM96 64l192 0c17.7 0 32 14.3 32 32l0 32c0 17.7-14.3 32-32 32L96 160c-17.7 0-32-14.3-32-32l0-32c0-17.7 14.3-32 32-32zm32 160a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM96 352a32 32 0 1 1 0-64 32 32 0 1 1 0 64zM64 416c0-17.7 14.3-32 32-32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-96 0c-17.7 0-32-14.3-32-32zM192 256a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm32 64a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zm64-64a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm32 64a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM288 448a32 32 0 1 1 0-64 32 32 0 1 1 0 64z"/>
           </svg>
           <span class="hidden md:inline">
@@ -224,7 +221,7 @@ data-facilities ="<%= @simulation.facilities %>">
     <div class ="py-6 w-full md:w-1/2 ">
       <button id="result" type="button"
         class="rounded-md bg-white px-3.5 py-2.5 w-full font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-        data-action="simulationmode#showDetail">
+        data-action="simulation-mode#showDetail">
         <span class="inline-flex items-center gap-x-1.5  px-1.5 py-0.5">
           <% if !user_signed_in? %>
           結果確認

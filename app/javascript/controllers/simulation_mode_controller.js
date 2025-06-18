@@ -3,14 +3,14 @@ import { changeActiveObject, drawLink, activePlayButtons } from "src/canvas";
 import {
   setClickEventToObject,
   removeResultBadge,
-  setObjectparamsOnDetailModal,
+  setObjectParamsOnDetailModal,
 } from "src/simulation";
 import { routes } from "src/set_simulation_params";
 import { findInvalidRouteIds } from "src/consistency_check";
 import { countStart } from "src/exec_simulation";
 
 export default class extends Controller {
-  static targets = ["detail", "editbutton", "simulatebutton"];
+  static targets = ["detail", "editButton", "simulationButton"];
 
   STATES = {
     EDIT: "edit",
@@ -39,7 +39,7 @@ export default class extends Controller {
 
   showDetail() {
     removeResultBadge();
-    setObjectparamsOnDetailModal();
+    setObjectParamsOnDetailModal();
     this.detailTarget.showModal();
   }
 

@@ -171,7 +171,7 @@ function removeSelectAttribute() {
     el.removeAttribute("selected");
   });
 }
-export function setObjectparams(e, params, objects) {
+export function setObjectParams(e, params, objects) {
   let id = params.id;
   let selectedObject = objects.find((object) => object.id === id);
   for (const [key, value] of Object.entries(params)) {
@@ -200,7 +200,7 @@ export function setParamsToFacilityOnModal() {
       params.name = document.getElementById("name").value;
       params.processingTime = document.getElementById("processingTime").value;
 
-      setObjectparams(e, params, facilities);
+      setObjectParams(e, params, facilities);
       drawLink(routes, facilities);
       facilityDialog.close();
     });
@@ -230,7 +230,7 @@ export function setParamsToRouteOnModal() {
       params.id = document.getElementById("route-hidden-id").value;
       params.routeLength = document.getElementById("route-length").value;
 
-      setObjectparams(e, params, routes);
+      setObjectParams(e, params, routes);
       routeDialog.close();
     });
   }
@@ -247,7 +247,7 @@ document.addEventListener("turbo:load", async () => {
   await setParamsToRouteOnModal();
 });
 
-export async function setObjectparamsOnDetailModal() {
+export async function setObjectParamsOnDetailModal() {
   let routesInForm = document.getElementById("simulation-routes");
   let facilitiesInForm = document.getElementById("simulation-facilities");
   let operatorsInForm = document.getElementById("simulation-operators");
@@ -287,8 +287,8 @@ document.addEventListener("turbo:load", () => {
   } else {
     helpBtns.forEach((btn) => {
       btn.addEventListener("click", () => {
-        const targetid = btn.dataset.helpTargetid;
-        const dialog = document.getElementById(`${targetid}`);
+        const targetId = btn.dataset.helpTargetId;
+        const dialog = document.getElementById(`${targetId}`);
         dialog.showModal();
       });
     });
@@ -297,8 +297,8 @@ document.addEventListener("turbo:load", () => {
   if (closeBtns.length !== 0) {
     closeBtns.forEach((btn) => {
       btn.addEventListener("click", () => {
-        const targetid = btn.dataset.targetid;
-        const dialog = document.getElementById(`${targetid}`);
+        const targetId = btn.dataset.targetId;
+        const dialog = document.getElementById(`${targetId}`);
         dialog.close();
       });
     });

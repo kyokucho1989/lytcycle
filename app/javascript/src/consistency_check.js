@@ -1,9 +1,9 @@
 export let invalidRoutesIds = { ids: [] };
 export function findInvalidRouteIds(routes) {
   const copiedRoutes = JSON.parse(JSON.stringify(routes));
-  let filterdRoute = copiedRoutes.filter((el) => !el["lastId"]);
+  let filteredRoute = copiedRoutes.filter((el) => !el["lastId"]);
 
-  filterdRoute.forEach((route) => {
+  filteredRoute.forEach((route) => {
     if (typeof route.source === "object") {
       route.source = route.source.id;
     }
@@ -11,7 +11,7 @@ export function findInvalidRouteIds(routes) {
       route.target = route.target.id;
     }
   });
-  let groupedRoutes = formatBySource(filterdRoute);
+  let groupedRoutes = formatBySource(filteredRoute);
   let startNode = "start";
   let goalNode = "goal";
   let invalidRoutesSet = findInvalidRoutesSetByDFS(
@@ -19,7 +19,7 @@ export function findInvalidRouteIds(routes) {
     startNode,
     goalNode
   );
-  const invalidRoutes = filterdRoute.filter((route) =>
+  const invalidRoutes = filteredRoute.filter((route) =>
     invalidRoutesSet.has(`${route.source}->${route.target}`)
   );
   invalidRoutesIds.ids = invalidRoutes.map((route) => route["id"]);

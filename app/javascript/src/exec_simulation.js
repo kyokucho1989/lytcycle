@@ -114,10 +114,10 @@ class Controller {
 
 function generatePairRoutes(routes) {
   let lastIds = routes.filter((element) => element.lastId);
-  let filterdRoutes = routes.filter((element) => element.routeLength);
-  let routesWithPairs = filterdRoutes;
+  let filteredRoutes = routes.filter((element) => element.routeLength);
+  let routesWithPairs = filteredRoutes;
 
-  let converdRoutes = filterdRoutes.map((element) => {
+  let convertedRoutes = filteredRoutes.map((element) => {
     return {
       ...element,
       source: element.target,
@@ -125,7 +125,7 @@ function generatePairRoutes(routes) {
       id: `re-${element.id}`,
     };
   });
-  routesWithPairs = filterdRoutes.concat(converdRoutes);
+  routesWithPairs = filteredRoutes.concat(convertedRoutes);
   if (lastIds.length === 0) {
     return routesWithPairs;
   } else {
@@ -151,19 +151,19 @@ document.addEventListener("turbo:load", () => {
       easing: "easeOutExpo",
       autoplay: false,
       update: function () {
-        let targetAnimetionSecond =
+        let targetAnimationSecond =
           tl.duration * (controlsProgress.value / 100);
         let targetSecond =
-          (targetAnimetionSecond / 1000) * simulationSpeedRatio;
+          (targetAnimationSecond / 1000) * simulationSpeedRatio;
         controlsProgress.value = tl.progress;
         dispCount(targetSecond);
       },
     });
 
     controlsProgress.addEventListener("input", function () {
-      let targetAnimetionSecond = tl.duration * (controlsProgress.value / 100);
-      let targetSecond = (targetAnimetionSecond / 1000) * simulationSpeedRatio;
-      tl.seek(targetAnimetionSecond);
+      let targetAnimationSecond = tl.duration * (controlsProgress.value / 100);
+      let targetSecond = (targetAnimationSecond / 1000) * simulationSpeedRatio;
+      tl.seek(targetAnimationSecond);
       dispCount(targetSecond);
     });
   }
@@ -215,10 +215,10 @@ export async function countStart() {
       easing: "easeOutExpo",
       autoplay: false,
       update: function () {
-        let targetAnimetionSecond =
+        let targetAnimationSecond =
           tl.duration * (controlsProgress.value / 100);
         let targetSecond =
-          (targetAnimetionSecond / 1000) * simulationSpeedRatio;
+          (targetAnimationSecond / 1000) * simulationSpeedRatio;
         controlsProgress.value = tl.progress;
         dispCount(targetSecond);
       },
@@ -227,7 +227,7 @@ export async function countStart() {
 
   tl.children = [];
   let nodesData1 = facilities;
-  const contoller = new Controller();
+  const controller = new Controller();
   let locations = [];
 
   nodesData1.forEach((facility) => {
@@ -251,7 +251,7 @@ export async function countStart() {
   let linksData = generatePairRoutes(linksData2);
   await drawLink(linksData, nodesData1);
 
-  contoller.setRoutes(linksData);
+  controller.setRoutes(linksData);
   let goalPoint = locations.find((object) => object.type === "goal");
   const operator1 = new Operator({ name: "Alice" });
   operator1.currentLocation = nodesData1.find(
@@ -286,7 +286,7 @@ export async function countStart() {
       switch (operator1.currentLocation.type) {
         case "machine":
           machine = nodesData1.find(
-            (elemnt) => elemnt.id === operator1.currentLocation.id
+            (element) => element.id === operator1.currentLocation.id
           );
 
           if (!machine.isProcessing || Number(machine.processingEndTime) < t) {
@@ -300,7 +300,7 @@ export async function countStart() {
             tl.add(machineMaterial, (t * 1000) / simulationSpeedRatio);
             operator1.isWaiting = false;
             machine.processingEndTime = t + Number(machine.processingTime);
-            let litingAnime = getMachineLitingAnime(
+            let lightingAnime = getMachineLightingAnime(
               machine,
               simulationSpeedRatio
             );
@@ -308,7 +308,7 @@ export async function countStart() {
               machine,
               simulationSpeedRatio
             );
-            tl.add(litingAnime, (t * 1000) / simulationSpeedRatio).add(
+            tl.add(lightingAnime, (t * 1000) / simulationSpeedRatio).add(
               lightOutAnime
             );
           } else {
@@ -332,7 +332,7 @@ export async function countStart() {
       }
 
       if (!operator1.isWaiting) {
-        let { destination, selectedRoute } = contoller.determineRoute(
+        let { destination, selectedRoute } = controller.determineRoute(
           operator1,
           nodesData1
         );
@@ -379,8 +379,8 @@ function formatStateHistory(operator) {
   let array = Array.from(statesEachLocation);
   let waitingArray = array.map((element) => {
     let states = element[1];
-    let filterdStates = states.filter((element) => element.state === "待機中");
-    return [element[0], filterdStates.length];
+    let filteredStates = states.filter((element) => element.state === "待機中");
+    return [element[0], filteredStates.length];
   });
   return waitingArray;
 }
@@ -469,7 +469,7 @@ function toggleFacilityHasMaterial(machine) {
   return animeObject;
 }
 
-function getMachineLitingAnime(machine, simulationSpeedRatio) {
+function getMachineLightingAnime(machine, simulationSpeedRatio) {
   return {
     targets: `circle#${machine.id}`,
     easing: "steps(1)",
