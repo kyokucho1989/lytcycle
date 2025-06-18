@@ -65,8 +65,8 @@ export async function drawLink(linksData = routes, nodesData = facilities) {
       return { x: adjustedX, y: adjustedY };
     }
 
-    const simurateSvg = document.getElementById("svg02");
-    if (simurateSvg) {
+    const simulationSvg = document.getElementById("svg02");
+    if (simulationSvg) {
       link = d3
         .select("#routes-layer")
         .selectAll("line")
@@ -143,9 +143,9 @@ export async function drawLink(linksData = routes, nodesData = facilities) {
       node.call(
         d3
           .drag()
-          .on("start", dragstarted)
+          .on("start", dragStarted)
           .on("drag", dragged)
-          .on("end", dragended)
+          .on("end", dragEnded)
       );
 
       const selectMode = document.querySelector(
@@ -249,7 +249,7 @@ export function linkClicked() {
   routeDialog.showModal();
 }
 
-function dragstarted(event) {
+function dragStarted(event) {
   if (!event.active) simulation.alphaTarget(0.3).restart();
   event.subject.fx = event.subject.x;
   event.subject.fy = event.subject.y;
@@ -264,7 +264,7 @@ function dragged(event) {
   event.subject.fy = Math.max(0, Math.min(height, event.y));
 }
 
-function dragended(event) {
+function dragEnded(event) {
   if (!event.active) simulation.alphaTarget(0);
   event.subject.fx = null;
   event.subject.fy = null;

@@ -91,11 +91,11 @@ export function addRoute(targetId, sourceId) {
     index: routes.length,
   };
 
-  let dupicatedLogic = (route) =>
+  let duplicatedLogic = (route) =>
     (route.target.id === targetId && route.source.id === sourceId) ||
     (route.target.id === sourceId && route.source.id === targetId);
 
-  if (routes.some(dupicatedLogic)) {
+  if (routes.some(duplicatedLogic)) {
     alert("すでにリンクが作成されています");
   } else {
     routes = routes.concat(route);

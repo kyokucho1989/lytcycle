@@ -3,7 +3,7 @@ import { fireEvent, screen, waitFor } from "@testing-library/dom";
 // adds special assertions like toHaveTextContent
 import "@testing-library/jest-dom";
 
-import { setObjectparams } from "../src/simulation.js";
+import { setObjectParams } from "../src/simulation.js";
 import { setFacilityDataToModal } from "../src/simulation.js";
 let facilities;
 let facilitiesInitial;
@@ -84,7 +84,7 @@ test("button click and set params", async () => {
     params.name = document.getElementById("name").value;
     params.processingTime = document.getElementById("processingTime").value;
 
-    setObjectparams(e, params, facilities);
+    setObjectParams(e, params, facilities);
   });
   await fireEvent.click(button);
 
