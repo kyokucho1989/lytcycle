@@ -4,16 +4,7 @@ data-routes ="<%= @simulation.routes %>"
 data-operators ="<%= @simulation.operators %>"
 data-facilities ="<%= @simulation.facilities %>">
 
-  <div class="flex mt-3">
-    <h2 class="text-lg font-semibold text-gray-900">ツールパレット</h2>
-    <button type="button" id="help-btn"
-      data-help-target-id="helpDialog1"
-      class="help-button inline rounded-full bg-white p-1 text-gray-900 shadow-sm hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
-      </svg>
-    </button>
-  </div>
+
   <!-- モーダル -->
   <%= render 'simulations/help', simulation: @simulation %>
   <dialog id="helpDialog" class="transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
@@ -61,11 +52,18 @@ data-facilities ="<%= @simulation.facilities %>">
   </dialog>
 
   <div class="pt-4" data-controller="simulation-mode" id="simulation-controller">
-    <dialog data-simulation-mode-target="detail" class="transform rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
-      <%= turbo_frame_tag "simulation-modal" do %>
-        <%= render "simulations/modal" %>
-      <% end %>
-    </dialog>
+    <%= render "simulations/tool_palette" %>
+    <div class="flex mt-3">
+      <h2 class="text-lg font-semibold text-gray-900">ツールパレット</h2>
+      <button type="button" id="help-btn"
+        data-help-target-id="helpDialog1"
+        class="help-button inline rounded-full bg-white p-1 text-gray-900 shadow-sm hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+          <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+        </svg>
+      </button>
+    </div>
+
     <fieldset class="relative -space-y-px rounded-md bg-white">
       <div class="mb-5">
         <fieldset id="modeSelection">
@@ -234,5 +232,10 @@ data-facilities ="<%= @simulation.facilities %>">
         </span>
         </button>
     </div>
+    <dialog data-simulation-mode-target="detail" class="transform rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+      <%= turbo_frame_tag "simulation-modal" do %>
+        <%= render "simulations/result" %>
+      <% end %>
+    </dialog>
   </div>
 </div>
