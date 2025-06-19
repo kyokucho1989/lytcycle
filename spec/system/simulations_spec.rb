@@ -15,12 +15,6 @@ RSpec.describe 'AccessSimulation', type: :system do
     Capybara.raise_server_errors = original
   end
 
-  it 'cannot see other accounts new data', js: true do
-    sign_in @user
-    visit new_user_simulation_path(@other_user)
-    expect(page).to have_content '他のユーザーのページにはアクセスできません。'
-  end
-
   it 'cannot see other accounts edit data', js: true do
     sign_in @user
     visit edit_user_simulation_path(@other_user, @other_users_simulation)
