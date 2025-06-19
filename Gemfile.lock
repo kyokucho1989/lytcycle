@@ -302,7 +302,7 @@ DEPENDENCIES
   bootsnap
   capybara
   cssbundling-rails
-  data_migrate (~> 9.1.0)
+  data_migrate
   debug
   devise
   dockerfile-rails (>= 1.6)
