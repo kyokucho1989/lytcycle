@@ -1,0 +1,17 @@
+<div id ="simulation-data" data-id ="<%= @simulation.id %>"
+  data-user_id ="<%= @simulation.user_id %>"
+  data-routes ="<%= @simulation.routes %>"
+  data-operators ="<%= @simulation.operators %>"
+  data-facilities ="<%= @simulation.facilities %>">
+
+  <%= render 'simulations/help', simulation: @simulation %>
+  <%= render "simulations/parameter_window" %>
+
+  <div class="pt-4" data-controller="simulation-mode" id="simulation-controller">
+    <%= render "simulations/tool_palette" %>
+    <%= render "simulations/canvas" %>
+    <%= render "simulations/operation_panel" %>
+    <%= render "simulations/result_button" %>
+    <%= render "simulations/result_window" %>
+  </div>
+</div>

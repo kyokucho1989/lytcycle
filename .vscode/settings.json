@@ -7,6 +7,10 @@
     "fontawesome",
     "importmap",
     "lytcycle",
-    "maxlength"
+    "maxlength",
+    "stylesheet",
+    "aria-labelledby",
+    "tabindex",
+    "aria-haspopup"
   ]
 }

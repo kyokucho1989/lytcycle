@@ -8,123 +8,17 @@
 
     <%= javascript_importmap_tags %>
     <%= display_meta_tags(default_meta_tags) %>
-     <%= favicon_link_tag('favicon.ico') %>
+    <%= favicon_link_tag('favicon.ico') %>
   </head>
-
   <body class="h-full">
-  <% unless current_page?(root_path) %>
-    <nav class="bg-indigo-600 relative z-20">
-      <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-        <div class="flex h-16 items-center justify-between">
-          <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-            <div class="flex flex-shrink-0 items-center text-white">
-            <%= link_to root_url ,class: "nav-link2 text-white" do %>
-              <%= image_tag("logo-header.png", class: "w-32 block mx-auto", alt: "lytcycle （ライトサイクル）のロゴ") %>
-            <% end %>
-            </div>
-            <div class="hidden md:ml-6 md:block">
-              <div class="flex space-x-4">
-                <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-indigo-700 hover:text-white" -->
-                <% if user_signed_in? %>
-                  <%= link_to "シミュレーション一覧", user_simulations_path(current_user) ,class: "rounded-md px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white" %>
-                  <%= link_to "会員情報編集", edit_user_registration_path, class:"dropdown-item  rounded-md px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white" %>
-                  <%= button_to "ログアウト", destroy_user_session_path, method: :delete, data: { turbo_confirm: "ログアウトしますか？" } ,form_class: "rounded-md px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white"%>
-                  <span class="rounded-md px-3 py-2 text-gray-300"> <%= current_user.email %></span>
-                <% else %>
-                  <%= link_to "新規登録", new_user_registration_path ,class: "nav-link2 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-indigo-700 hover:text-white" %>
-                  <%= link_to "ログイン", new_user_session_path ,class: "nav-link2 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-indigo-700 hover:text-white" %>
-                <% end %>
-              </div>
-            </div>
-          </div>
-          <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-
-            <!-- Profile dropdown -->
-            <div class="relative ml-3 md:hidden">
-              <div>
-                <button type="button" class="relative flex rounded bg-indigo-900 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
-                  <span class="absolute -inset-1.5"></span>
-                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                </svg>
-                </button>
-              </div>
-
-              <!--
-                Dropdown menu, show/hide based on menu state.
-
-                Entering: "transition ease-out duration-100"
-                  From: "transform opacity-0 scale-95"
-                  To: "transform opacity-100 scale-100"
-                Leaving: "transition ease-in duration-75"
-                  From: "transform opacity-100 scale-100"
-                  To: "transform opacity-0 scale-95"
-              -->
-              <div class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none hidden" id= "userMenu" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
-                <% if user_signed_in? %>
-                <%= link_to "シミュレーション一覧", user_simulations_path(current_user) ,class: "block px-4 py-2 text-sm text-gray-700" %>
-                <%= link_to "会員情報編集", edit_user_registration_path, class:"block px-4 py-2 text-sm text-gray-700" %>
-                <%= button_to "ログアウト",destroy_user_session_path, {method: :delete, data: { turbo_confirm: "ログアウトしますか？" }, form_class: "block px-4 py-2 text-sm text-gray-700"} %>
-                <span class="block px-4 py-2 text-sm text-gray-700"><%= current_user.email %></span>
-              <% else %>
-                <%= link_to "会員登録", new_user_registration_path ,class: "block px-4 py-2 text-sm text-gray-700" %>
-                <%= link_to "ログイン", new_user_session_path ,class: "block px-4 py-2 text-sm text-gray-700" %>
-              <% end %>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
-  <% end %>
-  <% if flash[:alert] %>
-    <div class="alert alert-danger rounded-md bg-red-50 p-4">
-      <div class="flex">
-        <div class="shrink-0">
-          <svg class="size-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
-          </svg>
-        </div>
-        <div class="ml-3">
-          <p class="text-sm font-medium text-red-800"><%= flash[:alert] %></p>
-        </div>
-      </div>
-    </div>
-  <% end %>
-
-  <% if flash[:notice] %>
-  <div class="alert alert-info rounded-md bg-green-50 p-4">
-    <div class="flex">
-      <div class="shrink-0">
-        <svg class="size-5 text-green-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
-          <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
-        </svg>
-      </div>
-      <div class="ml-3">
-        <p class="text-sm font-medium text-green-800"><%= flash[:notice] %></p>
-      </div>
-    </div>
-  </div>
-  <% end %>
-  <%= yield %>
-  <% unless current_page?(root_path) %>
-  </div>
-  <% end %>
-  <hr class=" border-gray-200 mt-16" />
-  <footer class="bg-white py-10">
-    <nav class="w-full max-w-screen-xl mx-auto">
-      <ul class="flex justify-center gap-4">
-        <li>
-          <%= link_to "プライバシーポリシー", privacies_url ,class: "block text-sm text-gray-500 sm:text-center" %>
-        </li>
-        <li>
-          <%= link_to "利用規約", term_path ,class: "block text-sm text-gray-500 sm:text-center" %>
-        </li>
-      </ul>
-      <small class="block mt-6 text-sm text-gray-500 sm:text-center">
-        2025 Lytcycle All Rights Reserved.
-      </small>
-    </nav>
-  </footer>
+    <% unless current_page?(root_path) %>
+      <%= render 'layouts/navbar' %>
+    <% end %>
+    <%= render 'layouts/flash_message' %>
+    <%= yield %>
+    <% unless current_page?(root_path) %>
+    <% end %>
+    <hr class=" border-gray-200 mt-16" />
+    <%= render 'layouts/footer' %>
   </body>
 </html>
