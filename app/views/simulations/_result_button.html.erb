@@ -1,0 +1,16 @@
+<div class ="py-6 w-full md:w-1/2 ">
+  <button id="result" type="button"
+    class="rounded-md bg-white px-3.5 py-2.5 w-full font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+    data-action="simulation-mode#showDetail">
+    <span class="inline-flex items-center gap-x-1.5  px-1.5 py-0.5">
+      <% if !user_signed_in? %>
+      結果確認
+      <% else %>
+      結果確認/保存へ
+      <% end %>
+      <svg id="simulation-result-badge" class="size-4 fill-red-400 hidden" viewBox="0 0 6 6" aria-hidden="true">
+        <circle cx="3" cy="3" r="2" />
+      </svg>
+    </span>
+  </button>
+</div>
