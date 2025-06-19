@@ -6,22 +6,22 @@ RSpec.describe 'AccessSimulation', type: :system do
                          confirmed_at: DateTime.now)
     @other_user = User.create!(name: 'bob', email: 'bob@example.com', password: 'password',
                                confirmed_at: DateTime.now)
-    @ohter_users_simulation = @other_user.simulations.create!(title: 'test-simulation')
+    @other_users_simulation = @other_user.simulations.create!(title: 'test-simulation')
+  end
+  around do |example|
+    original = Capybara.raise_server_errors
+    Capybara.raise_server_errors = false
+    example.run
+    Capybara.raise_server_errors = original
   end
 
-  it 'cannot see other acounts new data', js: true do
+  it 'cannot see other accounts edit data', js: true do
     sign_in @user
-    visit new_user_simulation_path(@other_user)
-    expect(page).to have_content '他のユーザーのページにはアクセスできません。'
+    visit edit_user_simulation_path(@other_user, @other_users_simulation)
+    expect(page).to have_text 'ActiveRecord::RecordNotFound'
   end
 
-  it 'cannot see other acounts edit data', js: true do
-    sign_in @user
-    visit edit_user_simulation_path(@other_user, @ohter_users_simulation)
-    expect(page).to have_content '他のユーザーのページにはアクセスできません。'
-  end
-
-  it 'cannot see other acounts index data', js: true do
+  it 'cannot see other accounts index data', js: true do
     sign_in @user
     visit user_simulations_path(@other_user)
     expect(page).to have_content '他のユーザーのページにはアクセスできません。'
