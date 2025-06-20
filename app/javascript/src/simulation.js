@@ -125,7 +125,7 @@ export function switchAddRouteMode() {
   svg.selectAll("line").on("click", null);
   svg.selectAll("circle").on("click", function () {
     let targetId, sourceId;
-    let sourceNode = document.querySelectorAll("circle[selected]");
+    const sourceNode = document.querySelectorAll("circle[selected]");
     isLinking = true;
     const x = this.parentNode.getCTM().e;
     const y = this.parentNode.getCTM().f;
@@ -172,8 +172,8 @@ function removeSelectAttribute() {
   });
 }
 export function setObjectParams(e, params, objects) {
-  let id = params.id;
-  let selectedObject = objects.find((object) => object.id === id);
+  const id = params.id;
+  const selectedObject = objects.find((object) => object.id === id);
   for (const [key, value] of Object.entries(params)) {
     if (key !== "id") {
       selectedObject[key] = value;
@@ -195,7 +195,7 @@ export function setParamsToFacilityOnModal() {
         return;
       }
 
-      let params = {};
+      const params = {};
       params.id = document.getElementById("hidden-id").value;
       params.name = document.getElementById("name").value;
       params.processingTime = document.getElementById("processingTime").value;
@@ -226,7 +226,7 @@ export function setParamsToRouteOnModal() {
         return;
       }
 
-      let params = {};
+      const params = {};
       params.id = document.getElementById("route-hidden-id").value;
       params.routeLength = document.getElementById("route-length").value;
 
@@ -248,9 +248,9 @@ document.addEventListener("turbo:load", async () => {
 });
 
 export async function setObjectParamsOnDetailModal() {
-  let routesInForm = document.getElementById("simulation-routes");
-  let facilitiesInForm = document.getElementById("simulation-facilities");
-  let operatorsInForm = document.getElementById("simulation-operators");
+  const routesInForm = document.getElementById("simulation-routes");
+  const facilitiesInForm = document.getElementById("simulation-facilities");
+  const operatorsInForm = document.getElementById("simulation-operators");
 
   if (routesInForm) {
     routesInForm.value = JSON.stringify(routes);
@@ -306,9 +306,9 @@ document.addEventListener("turbo:load", () => {
 });
 
 export function setFacilityDataToModal(facility) {
-  let id = document.getElementById("hidden-id");
-  let name = document.getElementById("name");
-  let processingTime = document.getElementById("processingTime");
+  const id = document.getElementById("hidden-id");
+  const name = document.getElementById("name");
+  const processingTime = document.getElementById("processingTime");
 
   id.value = facility.id;
   name.value = facility.name;
@@ -316,8 +316,8 @@ export function setFacilityDataToModal(facility) {
 }
 
 export function setRouteDataToModal(route) {
-  let id = document.getElementById("route-hidden-id");
-  let length = document.getElementById("route-length");
+  const id = document.getElementById("route-hidden-id");
+  const length = document.getElementById("route-length");
 
   id.value = route.id;
   length.value = route.routeLength;
@@ -338,7 +338,7 @@ export function removeResultBadge() {
 }
 
 function toggleUserMenu() {
-  let userMenu = document.getElementById("userMenu");
+  const userMenu = document.getElementById("userMenu");
   userMenu.classList.toggle("hidden");
 }
 
