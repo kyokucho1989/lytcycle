@@ -68,7 +68,7 @@ export default class extends Controller {
   }
 
   async startSimulation() {
-    let isConsistency = this.isConsistency();
+    const isConsistency = this.isConsistency();
     drawLink();
     if (!isConsistency) {
       alert("異常なルートがあります。削除してください。");
@@ -81,7 +81,7 @@ export default class extends Controller {
   }
 
   isConsistency() {
-    let result = findInvalidRouteIds(routes);
+    const result = findInvalidRouteIds(routes);
     if (result.ids.length === 0) {
       this.readyForExecution = true;
       return true;

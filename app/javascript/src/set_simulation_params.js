@@ -42,7 +42,7 @@ const facilitiesInitial = [
 ];
 
 export function deleteRoute() {
-  let selectedRoute = routes.find((route) => route.id === this.id);
+  const selectedRoute = routes.find((route) => route.id === this.id);
   if (
     selectedRoute.source.id === "goal" &&
     selectedRoute.target.id === "start"
@@ -57,18 +57,20 @@ export function deleteRoute() {
 }
 
 export function deleteFacility() {
-  let selectedFacility = facilities.find((facility) => facility.id === this.id);
+  const selectedFacility = facilities.find(
+    (facility) => facility.id === this.id
+  );
   if (selectedFacility.id === "goal" || selectedFacility.id === "start") {
     alert("スタートとゴールは削除できません。");
     return;
   }
-  let unConnectedRoutes = routes.filter(
+  const unConnectedRoutes = routes.filter(
     (route) =>
       route.target.id !== selectedFacility.id &&
       route.source.id !== selectedFacility.id
   );
 
-  let unConnectedRoutesIds = unConnectedRoutes.map((route) => route.id);
+  const unConnectedRoutesIds = unConnectedRoutes.map((route) => route.id);
 
   if (window.confirm("削除しますか？")) {
     facilities = facilities.filter(
@@ -80,10 +82,10 @@ export function deleteFacility() {
 }
 
 export function addRoute(targetId, sourceId) {
-  let targetNode = facilities.find((element) => element.id === targetId);
-  let sourceNode = facilities.find((element) => element.id === sourceId);
-  let idName = `root${sourceId}${targetId}`;
-  let route = {
+  const targetNode = facilities.find((element) => element.id === targetId);
+  const sourceNode = facilities.find((element) => element.id === sourceId);
+  const idName = `root${sourceId}${targetId}`;
+  const route = {
     source: sourceNode,
     target: targetNode,
     routeLength: 20,
@@ -91,7 +93,7 @@ export function addRoute(targetId, sourceId) {
     index: routes.length,
   };
 
-  let duplicatedLogic = (route) =>
+  const duplicatedLogic = (route) =>
     (route.target.id === targetId && route.source.id === sourceId) ||
     (route.target.id === sourceId && route.source.id === targetId);
 
@@ -101,7 +103,7 @@ export function addRoute(targetId, sourceId) {
     routes = routes.concat(route);
     drawLink(routes, facilities);
   }
-  let selectedNodes = document.querySelectorAll("circle[selected]");
+  const selectedNodes = document.querySelectorAll("circle[selected]");
 
   [...selectedNodes].forEach((element) => {
     element.removeAttribute("selected");
@@ -109,7 +111,7 @@ export function addRoute(targetId, sourceId) {
 }
 
 export function addFacility([x, y]) {
-  let lastIdObject = facilities.find((el) => el.lastId);
+  const lastIdObject = facilities.find((el) => el.lastId);
   let lastId;
   if (lastIdObject === undefined) {
     lastId = facilities.length;
@@ -120,7 +122,7 @@ export function addFacility([x, y]) {
 
   lastId = lastId + 1;
   facilities[0] = { lastId: lastId, x: 0, y: 0 };
-  let facility = {
+  const facility = {
     index: lastId,
     x: x,
     y: y,
@@ -140,9 +142,9 @@ export function addFacility([x, y]) {
 }
 
 document.addEventListener("turbo:load", async () => {
-  let simulationParameters = document.getElementById("simulation-data");
+  const simulationParameters = document.getElementById("simulation-data");
   if (simulationParameters) {
-    let simulationId = simulationParameters.dataset.id;
+    const simulationId = simulationParameters.dataset.id;
 
     if (simulationId === "") {
       // 初期値設定

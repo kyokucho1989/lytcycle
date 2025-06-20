@@ -65,10 +65,10 @@ class Controller {
   }
 
   determineRoute(operator, locations) {
-    let selectedRoute, destination, routes, currentLocation, linkedRoutes;
-    routes = this.route;
-    currentLocation = operator.currentLocation;
-    linkedRoutes = routes.filter(
+    let selectedRoute, destination;
+    const routes = this.route;
+    const currentLocation = operator.currentLocation;
+    const linkedRoutes = routes.filter(
       (route) =>
         route.source.index === currentLocation.index && !route.id.includes("re")
     );
@@ -113,11 +113,11 @@ class Controller {
 }
 
 function generatePairRoutes(routes) {
-  let lastIds = routes.filter((element) => element.lastId);
-  let filteredRoutes = routes.filter((element) => element.routeLength);
+  const lastIds = routes.filter((element) => element.lastId);
+  const filteredRoutes = routes.filter((element) => element.routeLength);
   let routesWithPairs = filteredRoutes;
 
-  let convertedRoutes = filteredRoutes.map((element) => {
+  const convertedRoutes = filteredRoutes.map((element) => {
     return {
       ...element,
       source: element.target,
@@ -206,7 +206,7 @@ function dispCount(t) {
 }
 
 export async function countStart() {
-  let controlsProgress = document.querySelector("#simulation input.progress");
+  const controlsProgress = document.querySelector("#simulation input.progress");
   await displayOperator();
 
   if (controlsProgress) {
@@ -226,7 +226,7 @@ export async function countStart() {
   }
 
   tl.children = [];
-  let nodesData1 = facilities;
+  const nodesData1 = facilities;
   const controller = new Controller();
   let locations = [];
 
@@ -237,9 +237,9 @@ export async function countStart() {
   nodesData1.forEach((el) => (el.hasMaterial = false));
   nodesData1.forEach((el) => (el.isProcessing = false));
   nodesData1.forEach((el) => (el.processingEndTime = 0));
-  let copyLinks = routes;
+  const copyLinks = routes;
 
-  let linksData2 = copyLinks.map((route) => {
+  const linksData2 = copyLinks.map((route) => {
     return {
       ...route,
       source: nodesData1.find((facility) => facility.id === route.source.id),
@@ -248,16 +248,16 @@ export async function countStart() {
     };
   });
 
-  let linksData = generatePairRoutes(linksData2);
+  const linksData = generatePairRoutes(linksData2);
   await drawLink(linksData, nodesData1);
 
   controller.setRoutes(linksData);
-  let goalPoint = locations.find((object) => object.type === "goal");
+  const goalPoint = locations.find((object) => object.type === "goal");
   const operator1 = new Operator({ name: "Alice" });
   operator1.currentLocation = nodesData1.find(
     (object) => object.type === "start"
   );
-  let endTime = 400;
+  const endTime = 400;
   let t = 0;
   let object1;
   let material;
@@ -269,8 +269,8 @@ export async function countStart() {
   tl.add({ targets: "#ob1 rect", opacity: 0 }, 0);
 
   nodesData1.forEach((machine) => {
-    let object = toggleFacilityHasMaterial(machine);
-    let object2 = { targets: `circle#${machine.id}`, fill: "#99aaee" };
+    const object = toggleFacilityHasMaterial(machine);
+    const object2 = { targets: `circle#${machine.id}`, fill: "#99aaee" };
     tl.add(object, 0);
     tl.add(object2, 0);
   });
@@ -372,21 +372,23 @@ export async function countStart() {
 }
 
 function formatStateHistory(operator) {
-  let statesEachLocation = Map.groupBy(
+  const statesEachLocation = Map.groupBy(
     operator.history,
     ({ locationId }) => locationId
   );
-  let array = Array.from(statesEachLocation);
-  let waitingArray = array.map((element) => {
-    let states = element[1];
-    let filteredStates = states.filter((element) => element.state === "待機中");
+  const array = Array.from(statesEachLocation);
+  const waitingArray = array.map((element) => {
+    const states = element[1];
+    const filteredStates = states.filter(
+      (element) => element.state === "待機中"
+    );
     return [element[0], filteredStates.length];
   });
   return waitingArray;
 }
 
 export function calculateWaitingTime(waitingArray) {
-  let waitingTimeArray = waitingArray.map((element) => element[1]);
+  const waitingTimeArray = waitingArray.map((element) => element[1]);
   const waitingTime = waitingTimeArray.reduce(
     (a, b) => Math.max(a, b),
     -Infinity
@@ -396,13 +398,13 @@ export function calculateWaitingTime(waitingArray) {
 }
 
 export function judgeBottleneckProcess(waitingArray) {
-  let waitingTimeArray = waitingArray.map((element) => element[1]);
+  const waitingTimeArray = waitingArray.map((element) => element[1]);
   const waitingTime = waitingTimeArray.reduce(
     (a, b) => Math.max(a, b),
     -Infinity
   );
 
-  let bottleneck_map = waitingArray.find(
+  const bottleneck_map = waitingArray.find(
     (element) => element[1] === waitingTime
   );
   let bottleneck_process = bottleneck_map[0];
@@ -413,8 +415,8 @@ export function judgeBottleneckProcess(waitingArray) {
 }
 
 export function calculateCycleTime(goalPoint) {
-  let history = goalPoint.history;
-  let timeSet = history.map((element) => element.t);
+  const history = goalPoint.history;
+  const timeSet = history.map((element) => element.t);
   let slicedSet;
   let cycleTime;
   if (timeSet.length === 1) {
@@ -428,8 +430,8 @@ export function calculateCycleTime(goalPoint) {
     let answer = element - timeSet[index];
     return answer;
   });
-  let init = 0;
-  let totalTime = deferenceArray.reduce(
+  const init = 0;
+  const totalTime = deferenceArray.reduce(
     (sum, currentValue) => sum + currentValue,
     init
   );
@@ -438,8 +440,8 @@ export function calculateCycleTime(goalPoint) {
 }
 
 function getAnimeObject(root) {
-  let path = anime.path(`#svg02 line#${root.id}`);
-  let animeObject = {
+  const path = anime.path(`#svg02 line#${root.id}`);
+  const animeObject = {
     targets: "#ob1",
     translateX: path("x"),
     translateY: path("y"),
@@ -452,7 +454,7 @@ function getAnimeObject(root) {
 }
 
 function toggleOperatorHasMaterial(hasState) {
-  let animeObject = {
+  const animeObject = {
     targets: "#ob1 rect",
     opacity: hasState ? 1 : 0,
     easing: "steps(1)",
@@ -461,7 +463,7 @@ function toggleOperatorHasMaterial(hasState) {
 }
 
 function toggleFacilityHasMaterial(machine) {
-  let animeObject = {
+  const animeObject = {
     targets: `rect#material-${machine.id}`,
     opacity: machine.hasMaterial ? 1 : 0,
     easing: "steps(1)",

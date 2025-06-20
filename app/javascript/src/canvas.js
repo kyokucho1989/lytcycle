@@ -53,10 +53,10 @@ export async function drawLink(linksData = routes, nodesData = facilities) {
     }
 
     function adjustLinkEnd(link) {
-      let x1 = link.source.x;
-      let x2 = link.target.x;
-      let y1 = link.source.y;
-      let y2 = link.target.y;
+      const x1 = link.source.x;
+      const x2 = link.target.x;
+      const y1 = link.source.y;
+      const y2 = link.target.y;
       const offsetLength = 30;
       const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
       const ratio = (distance - offsetLength) / distance;
@@ -111,7 +111,7 @@ export async function drawLink(linksData = routes, nodesData = facilities) {
       setNodeColor(nodesData, "#99aaee");
       setLinkColor(linksData, "#aaa");
 
-      let invalidRoutes = linksData.filter((link) =>
+      const invalidRoutes = linksData.filter((link) =>
         invalidRoutesIds.ids.includes(link.id)
       );
       setLinkColor(invalidRoutes, "#faa");
@@ -238,13 +238,15 @@ export function nodeMouseOut(event) {
 }
 
 export function nodeClicked() {
-  let facilityForEdit = facilities.find((facility) => facility.id === this.id);
+  const facilityForEdit = facilities.find(
+    (facility) => facility.id === this.id
+  );
   setFacilityDataToModal(facilityForEdit);
   facilityDialog.showModal();
 }
 
 export function linkClicked() {
-  let routeForEdit = routes.find((route) => route.id === this.id);
+  const routeForEdit = routes.find((route) => route.id === this.id);
   setRouteDataToModal(routeForEdit);
   routeDialog.showModal();
 }

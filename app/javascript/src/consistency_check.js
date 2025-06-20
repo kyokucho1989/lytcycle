@@ -1,7 +1,7 @@
 export let invalidRoutesIds = { ids: [] };
 export function findInvalidRouteIds(routes) {
   const copiedRoutes = JSON.parse(JSON.stringify(routes));
-  let filteredRoute = copiedRoutes.filter((el) => !el["lastId"]);
+  const filteredRoute = copiedRoutes.filter((el) => !el["lastId"]);
 
   filteredRoute.forEach((route) => {
     if (typeof route.source === "object") {
@@ -32,14 +32,14 @@ export function findInvalidRoutesSetByDFS(groupedRoutes, startNode, goalNode) {
   let validRoutes = new Set();
 
   // すべてのルートを配列として保管
-  let keys = Object.keys(groupedRoutes);
+  const keys = Object.keys(groupedRoutes);
   let allRoutes = [];
   keys.forEach((key) => {
     groupedRoutes[key].forEach((el) => {
       allRoutes.push(`${key}->${el}`);
     });
   });
-  function dfs(node, startNode, path) {
+  function depthFirstSearch(node, startNode, path) {
     if (path.includes(startNode) && node === startNode) {
       path.length === 0;
       return;
@@ -54,7 +54,7 @@ export function findInvalidRoutesSetByDFS(groupedRoutes, startNode, goalNode) {
       routeKey = `${node}->${neighbor}`;
       if (!visitedRoutes.includes(routeKey)) {
         visitedRoutes.push(routeKey);
-        dfs(neighbor, startNode, path);
+        depthFirstSearch(neighbor, startNode, path);
       }
       // path -> routeに変換
       routesConvertFromPath = [];
@@ -73,7 +73,7 @@ export function findInvalidRoutesSetByDFS(groupedRoutes, startNode, goalNode) {
     path.pop();
   }
 
-  dfs(startNode, startNode, []);
+  depthFirstSearch(startNode, startNode, []);
 
   const allRoutesSet = new Set(allRoutes);
   invalidRoutes = allRoutesSet.difference(validRoutes);
@@ -81,7 +81,7 @@ export function findInvalidRoutesSetByDFS(groupedRoutes, startNode, goalNode) {
 }
 
 export function formatBySource(routes) {
-  let groupedRoutes = routes.reduce((a, x) => {
+  const groupedRoutes = routes.reduce((a, x) => {
     if (!a[x["source"]]) {
       a[x["source"]] = [];
     }
