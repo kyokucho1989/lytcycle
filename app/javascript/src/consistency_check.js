@@ -1,8 +1,8 @@
 export let invalidRoutesIds = { ids: [] };
+
 export function findInvalidRouteIds(routes) {
   const copiedRoutes = JSON.parse(JSON.stringify(routes));
   const filteredRoute = copiedRoutes.filter((el) => !el["lastId"]);
-
   filteredRoute.forEach((route) => {
     if (typeof route.source === "object") {
       route.source = route.source.id;
@@ -31,7 +31,6 @@ export function findInvalidRoutesSetByDFS(groupedRoutes, startNode, goalNode) {
   let invalidRoutes = new Set();
   let validRoutes = new Set();
 
-  // すべてのルートを配列として保管
   const keys = Object.keys(groupedRoutes);
   let allRoutes = [];
   keys.forEach((key) => {
@@ -46,7 +45,6 @@ export function findInvalidRoutesSetByDFS(groupedRoutes, startNode, goalNode) {
     } else {
       path.push(node);
     }
-
     const neighbors = groupedRoutes[node] || [];
     let routeKey;
     let routesConvertFromPath = [];
@@ -56,12 +54,10 @@ export function findInvalidRoutesSetByDFS(groupedRoutes, startNode, goalNode) {
         visitedRoutes.push(routeKey);
         depthFirstSearch(neighbor, startNode, path);
       }
-      // path -> routeに変換
       routesConvertFromPath = [];
       path.slice(1).forEach((el, i) => {
         routesConvertFromPath.push(`${path[i]}->${el}`);
       });
-
       if (neighbor === startNode && node === goalNode) {
         routesConvertFromPath.push(`${path.at(-1)}->${startNode}`);
         routesConvertFromPath.forEach((el) => {
@@ -69,7 +65,6 @@ export function findInvalidRoutesSetByDFS(groupedRoutes, startNode, goalNode) {
         });
       }
     }
-
     path.pop();
   }
 

@@ -2,7 +2,6 @@ import anime from "animejs";
 import { routes, facilities } from "src/set_simulation_params";
 import { drawLink } from "src/canvas";
 import { displayResultBadge } from "src/simulation";
-
 import { displayOperator, displayRaiseOperator } from "src/canvas";
 
 class Location {
@@ -30,7 +29,6 @@ class Location {
 class Operator {
   constructor(parameters) {
     this.name = parameters.name;
-
     this.destination = 0;
     this.hasMaterial = false;
     this.arriveUpToDuration = 20;
@@ -238,7 +236,6 @@ export async function countStart() {
   nodesData1.forEach((el) => (el.isProcessing = false));
   nodesData1.forEach((el) => (el.processingEndTime = 0));
   const copyLinks = routes;
-
   const linksData2 = copyLinks.map((route) => {
     return {
       ...route,
@@ -257,17 +254,13 @@ export async function countStart() {
   operator1.currentLocation = nodesData1.find(
     (object) => object.type === "start"
   );
+
   const endTime = 400;
   let t = 0;
-  let object1;
-  let material;
-  let machineMaterial;
+  let object1, material, machineMaterial, machine;
   let totalCount = 0;
 
-  let machine;
-
   tl.add({ targets: "#ob1 rect", opacity: 0 }, 0);
-
   nodesData1.forEach((machine) => {
     const object = toggleFacilityHasMaterial(machine);
     const object2 = { targets: `circle#${machine.id}`, fill: "#99aaee" };
@@ -288,7 +281,6 @@ export async function countStart() {
           machine = nodesData1.find(
             (element) => element.id === operator1.currentLocation.id
           );
-
           if (!machine.isProcessing || Number(machine.processingEndTime) < t) {
             operator1.addStateToHistory(t, "脱着中");
             if (!machine.hasMaterial) {
@@ -356,7 +348,6 @@ export async function countStart() {
     t = t + 1;
   }
 
-  // 結果出力
   countHistory = goalPoint.history;
   let cycleTime = calculateCycleTime(goalPoint);
   let waitingArray = formatStateHistory(operator1);
@@ -449,7 +440,6 @@ function getAnimeObject(root) {
     direction: "reverse",
     easing: "linear",
   };
-
   return animeObject;
 }
 

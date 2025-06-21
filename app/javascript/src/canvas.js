@@ -1,9 +1,6 @@
 import * as d3 from "d3";
 import { routes, facilities } from "src/set_simulation_params";
 import { invalidRoutesIds } from "src/consistency_check";
-// データの初期値をロード
-
-export let link, node, simulation;
 import {
   setFacilityDataToModal,
   setRouteDataToModal,
@@ -11,6 +8,8 @@ import {
   facilityDialog,
   routeDialog,
 } from "src/simulation";
+
+export let link, node, simulation;
 
 export async function displayOperator() {
   const operator = d3
@@ -115,7 +114,6 @@ export async function drawLink(linksData = routes, nodesData = facilities) {
         invalidRoutesIds.ids.includes(link.id)
       );
       setLinkColor(invalidRoutes, "#faa");
-      // シミュレーション描画
       simulation = d3
         .forceSimulation()
         .force(
@@ -261,7 +259,6 @@ function dragged(event) {
   const svg = document.getElementById("svg02");
   const width = svg.clientWidth;
   const height = svg.clientHeight;
-
   event.subject.fx = Math.max(0, Math.min(width, event.x));
   event.subject.fy = Math.max(0, Math.min(height, event.y));
 }
