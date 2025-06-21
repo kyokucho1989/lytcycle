@@ -1,15 +1,6 @@
 import * as d3 from "d3";
 import { inactivePlayButtons } from "src/canvas";
 import { routes, operators, facilities } from "src/set_simulation_params";
-// データの初期値をロード
-
-export let link, node, simulation;
-export let facilityDialog,
-  confirmBtn,
-  routeDialog,
-  routeConfirmBtn,
-  facilityForm,
-  routeForm;
 import {
   addFacility,
   addRoute,
@@ -25,7 +16,17 @@ import {
   linkMouseOut,
   drawLink,
 } from "src/canvas";
+
+export let link, node, simulation;
+export let facilityDialog,
+  confirmBtn,
+  routeDialog,
+  routeConfirmBtn,
+  facilityForm,
+  routeForm;
+
 let ghostNode, tempLine;
+
 export async function setClickEventToObject(object) {
   const svg = d3.select("#svg02");
   switch (object.state) {
@@ -225,7 +226,6 @@ export function setParamsToRouteOnModal() {
         routeForm.reportValidity();
         return;
       }
-
       const params = {};
       params.id = document.getElementById("route-hidden-id").value;
       params.routeLength = document.getElementById("route-length").value;
@@ -264,7 +264,6 @@ export async function setObjectParamsOnDetailModal() {
 }
 
 document.addEventListener("turbo:load", () => {
-  // ヘルプボタンの実装
   const helpDialog = document.getElementById("helpDialog");
   const helpDialogs = document.querySelectorAll(".help-button");
   const helpBtns = document.querySelectorAll(".help-button");

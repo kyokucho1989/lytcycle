@@ -1,5 +1,6 @@
-export let routes, operators, facilities;
 import { drawLink } from "src/canvas";
+
+export let routes, operators, facilities;
 
 const routesInitial = [
   { source: "start", target: "n1", routeLength: 20, id: "root10" },
@@ -147,7 +148,6 @@ document.addEventListener("turbo:load", async () => {
     const simulationId = simulationParameters.dataset.id;
 
     if (simulationId === "") {
-      // 初期値設定
       routes = routesInitial;
       operators = operatorsInitial;
       facilities = facilitiesInitial;
@@ -163,7 +163,6 @@ document.addEventListener("turbo:load", async () => {
         facilities = JSON.parse(json.facilities);
         operators = JSON.parse(json.operators);
 
-        // routesのsourceとtargetをインデックスに修正
         routes.forEach((route) => {
           if (typeof route.source === "object") {
             route.source = route.source.id;
