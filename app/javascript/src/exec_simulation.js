@@ -300,9 +300,13 @@ export async function countStart() {
               machine,
               simulationSpeedRatio
             );
-            tl.add(lightingAnime, (t * 1000) / simulationSpeedRatio).add(
-              lightOutAnime
-            );
+
+            let processingMaterial = getProcessingMaterial(machine);
+            let processedMaterial = getProcessedMaterial(machine);
+            tl.add(processingMaterial, (t * 1000) / simulationSpeedRatio)
+              .add(lightingAnime, "-=1000")
+              .add(lightOutAnime)
+              .add(processedMaterial);
           } else {
             operator1.isWaiting = true;
             operator1.addStateToHistory(t, "待機中");
@@ -457,6 +461,24 @@ function toggleFacilityHasMaterial(machine) {
     targets: `rect#material-${machine.id}`,
     opacity: machine.hasMaterial ? 1 : 0,
     easing: "steps(1)",
+  };
+  return animeObject;
+}
+
+function getProcessedMaterial(machine) {
+  const animeObject = {
+    targets: `rect#material-${machine.id}`,
+    translateX: +30,
+    duration: 10,
+  };
+  return animeObject;
+}
+
+function getProcessingMaterial(machine) {
+  const animeObject = {
+    targets: `rect#material-${machine.id}`,
+    translateX: -10,
+    duration: 10,
   };
   return animeObject;
 }
