@@ -69,7 +69,7 @@
     <% end %>
 
     <% if user_signed_in? %>
-      <%= form_with(model: @simulation ,url: [current_user , @simulation] ,data: { turbo_frame: "simulation-modal" ,action: "turbo:submit-end->simulation-mode#close" }, id: "simulationForm") do |form| %>
+      <%= form_with(model: @simulation ,url: @simulation ,data: { turbo_frame: "simulation-modal" ,action: "turbo:submit-end->simulation-mode#close" }, id: "simulationForm") do |form| %>
         <div class="">
           <div class="flex">
             <%= form.hidden_field :routes , id: "simulation-routes" %>

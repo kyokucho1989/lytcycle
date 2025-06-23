@@ -9,7 +9,7 @@ RSpec.describe 'VisitSimulationPage', type: :system do
 
   it 'visiting the index simulation when sign in' do
     sign_in @confirmed_user
-    visit user_simulations_path(@confirmed_user)
+    visit simulations_path(@confirmed_user)
     assert_selector 'h1', text: 'シミュレーション一覧'
   end
 
