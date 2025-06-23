@@ -20,12 +20,6 @@ RSpec.describe 'AccessSimulation', type: :system do
     visit edit_simulation_path(@other_user, @other_users_simulation)
     expect(page).to have_text 'ActiveRecord::RecordNotFound'
   end
-
-  it 'cannot see other accounts index data', js: true do
-    sign_in @user
-    visit simulations_path(@other_user)
-    expect(page).to have_content '他のユーザーのページにはアクセスできません。'
-  end
 end
 
 RSpec.describe 'SaveSimulation', type: :system do

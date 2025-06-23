@@ -57,5 +57,4 @@ class SimulationsController < ApplicationController
     params.require(:simulation).permit(:user_id, :title, :bottleneck_process, :waiting_time, :routes, :operators,
                                        :facilities, :cycle_time)
   end
-
 end
