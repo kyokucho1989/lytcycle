@@ -17,14 +17,8 @@ RSpec.describe 'AccessSimulation', type: :system do
 
   it 'cannot see other accounts edit data', js: true do
     sign_in @user
-    visit edit_user_simulation_path(@other_user, @other_users_simulation)
+    visit edit_simulation_path(@other_user, @other_users_simulation)
     expect(page).to have_text 'ActiveRecord::RecordNotFound'
-  end
-
-  it 'cannot see other accounts index data', js: true do
-    sign_in @user
-    visit user_simulations_path(@other_user)
-    expect(page).to have_content '他のユーザーのページにはアクセスできません。'
   end
 end
 
@@ -37,7 +31,7 @@ RSpec.describe 'SaveSimulation', type: :system do
 
   it 'can create new simulation', js: true do
     sign_in @user
-    visit user_simulations_path(@user)
+    visit simulations_path(@user)
     click_on('新規作成')
     click_on('結果確認/保存へ')
     fill_in 'simulation[title]', with: '生産ラインA'
@@ -55,7 +49,7 @@ RSpec.describe 'UpdateAndDeleteSimulation', type: :system do
 
   it 'can update simulation', js: true do
     sign_in @user
-    visit user_simulations_path(@user)
+    visit simulations_path(@user)
     click_on('編集')
     click_on('結果確認/保存へ')
     fill_in 'simulation[title]', with: '生産ラインB'
@@ -65,7 +59,7 @@ RSpec.describe 'UpdateAndDeleteSimulation', type: :system do
 
   it 'can delete simulation', js: true do
     sign_in @user
-    visit user_simulations_path(@user)
+    visit simulations_path(@user)
     accept_confirm do
       click_on('削除')
     end
@@ -84,7 +78,7 @@ RSpec.describe 'LimitSimulation', type: :system do
 
   it 'cannot create simulation beyond the limit ', js: true do
     sign_in @user
-    visit user_simulations_path(@user)
+    visit simulations_path(@user)
     expect(page).to have_content 'シミュレーション数が上限に達しています。'
   end
 end

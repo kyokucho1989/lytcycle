@@ -10,7 +10,7 @@
         <div class="hidden md:ml-6 md:block">
           <div class="flex space-x-4">
             <% if user_signed_in? %>
-              <%= link_to "シミュレーション一覧", user_simulations_path(current_user) ,class: "rounded-md px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white" %>
+              <%= link_to "シミュレーション一覧", simulations_path ,class: "rounded-md px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white" %>
               <%= link_to "会員情報編集", edit_user_registration_path, class:"dropdown-item  rounded-md px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white" %>
               <%= button_to "ログアウト", destroy_user_session_path, method: :delete, data: { turbo_confirm: "ログアウトしますか？" } ,form_class: "rounded-md px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white"%>
               <span class="rounded-md px-3 py-2 text-gray-300"> <%= current_user.email %></span>
@@ -33,7 +33,7 @@
           </div>
           <div class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none hidden" id= "userMenu" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
             <% if user_signed_in? %>
-              <%= link_to "シミュレーション一覧", user_simulations_path(current_user) ,class: "block px-4 py-2 text-sm text-gray-700" %>
+              <%= link_to "シミュレーション一覧", simulations_path ,class: "block px-4 py-2 text-sm text-gray-700" %>
               <%= link_to "会員情報編集", edit_user_registration_path, class:"block px-4 py-2 text-sm text-gray-700" %>
               <%= button_to "ログアウト",destroy_user_session_path, {method: :delete, data: { turbo_confirm: "ログアウトしますか？" }, form_class: "block px-4 py-2 text-sm text-gray-700"} %>
               <span class="block px-4 py-2 text-sm text-gray-700"><%= current_user.email %></span>

@@ -8,7 +8,7 @@ RSpec.describe 'RenderSVG', type: :system do
 
   it 'can see facility objects', js: true do
     sign_in @confirmed_user
-    visit new_user_simulation_path(@confirmed_user)
+    visit new_simulation_path(@confirmed_user)
     click_on '結果確認'
     fill_in 'simulation[title]', with: 'machine'
     click_on 'データを保存'
@@ -28,7 +28,7 @@ RSpec.describe 'EditObjects', type: :system do
 
   it 'can edit facility attributes', js: true do
     sign_in @confirmed_user
-    visit new_user_simulation_path(@confirmed_user)
+    visit new_simulation_path(@confirmed_user)
     find('circle#n1').click
     fill_in '設備名', with: '変更後の設備名', fill_options: { clear: :backspace }
     fill_in '加工時間', with: '30', fill_options: { clear: :backspace }
@@ -38,7 +38,7 @@ RSpec.describe 'EditObjects', type: :system do
 
   it 'can edit link attributes', js: true do
     sign_in @confirmed_user
-    visit new_user_simulation_path(@confirmed_user)
+    visit new_simulation_path(@confirmed_user)
     find('line#root1-1').click
     fill_in '距離', with: '30', fill_options: { clear: :backspace }
     click_on '保存'
@@ -54,7 +54,7 @@ RSpec.describe 'AddDeleteObjects', type: :system do
 
   it 'can add and link facility', js: true do
     sign_in @confirmed_user
-    visit new_user_simulation_path(@confirmed_user)
+    visit new_simulation_path(@confirmed_user)
     find("label[for='add-facility']").click
     find('svg#svg02').click(x: 0, y: 0)
 
@@ -69,7 +69,7 @@ RSpec.describe 'AddDeleteObjects', type: :system do
 
   it 'can delete facility', js: true do
     sign_in @confirmed_user
-    visit new_user_simulation_path(@confirmed_user)
+    visit new_simulation_path(@confirmed_user)
     find("label[for='delete-object']").click
     find('circle#n1').click
     accept_alert
@@ -84,9 +84,9 @@ RSpec.describe 'DeletionErrors', type: :system do
                                    confirmed_at: DateTime.now)
   end
 
-  it 'cannot add dupulicate goal and link', js: true do
+  it 'cannot add duplicate goal and link', js: true do
     sign_in @confirmed_user
-    visit new_user_simulation_path(@confirmed_user)
+    visit new_simulation_path(@confirmed_user)
     find("label[for='add-link']").click
     find('circle#start').click
     find('circle#n1').click

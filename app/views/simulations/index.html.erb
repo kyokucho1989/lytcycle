@@ -11,7 +11,7 @@
       </button>
       シミュレーション数が上限に達しています。
     <% else %>
-      <%= link_to "新規作成", new_user_simulation_path(current_user), class: "rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
+      <%= link_to "新規作成", new_simulation_path, class: "rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
     <% end %>
   </div>
   <% end %>
@@ -20,7 +20,7 @@
       <% if @simulations.length == 0 %>
       シミュレーションデータがありません。データの新規作成を行ってください。
       <div class="mx-auto max-w-7xl pt-4 px-4 sm:px-6 lg:px-8 text-right">
-        <%= link_to "新規作成", new_user_simulation_path(current_user), class: "rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
+        <%= link_to "新規作成", new_simulation_path, class: "rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
       </div>
 
       <% else %>
@@ -33,8 +33,8 @@
             <p class="mt-1 truncate text-xs/5 text-gray-500">待ち時間:<%= simulation.waiting_time %></p>
           </div>
           <div class="flex shrink-0 items-center gap-x-4">
-            <%= link_to "編集", edit_user_simulation_path(current_user, simulation) ,class: "rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
-            <%= link_to "削除", user_simulation_path(current_user, simulation), data: { turbo_method: :delete ,turbo_confirm: "本当に削除しますか？" } ,class: "rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
+            <%= link_to "編集", edit_simulation_path(simulation) ,class: "rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
+            <%= link_to "削除", simulation_path(simulation), data: { turbo_method: :delete ,turbo_confirm: "本当に削除しますか？" } ,class: "rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
           </div>
         </li>
       <% end %>
