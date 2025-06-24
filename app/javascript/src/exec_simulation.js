@@ -199,7 +199,7 @@ function dispCount(t) {
       .productionCount;
   }
 
-  let el = document.querySelector("#JSobjectProp pre");
+  let el = document.querySelector("#count-window pre");
   el.innerHTML = JSON.stringify(`t: ${Math.trunc(t)} / total:${count}`);
 }
 
