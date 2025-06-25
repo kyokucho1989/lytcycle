@@ -1,4 +1,4 @@
-import { drawLink } from "src/canvas";
+import { drawLink } from "../render";
 
 export let routes, operators, facilities;
 

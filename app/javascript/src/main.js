@@ -1,12 +1,12 @@
 import * as d3 from "d3";
-import { inactivePlayButtons } from "src/canvas";
-import { routes, operators, facilities } from "src/set_simulation_params";
+import { inactivePlayButtons } from "./render";
+import { routes, operators, facilities } from "./simulation/params_setter";
 import {
   addFacility,
   addRoute,
   deleteRoute,
   deleteFacility,
-} from "src/set_simulation_params";
+} from "./simulation/params_setter";
 import {
   linkClicked,
   nodeClicked,
@@ -15,7 +15,7 @@ import {
   linkMouseOver,
   linkMouseOut,
   drawLink,
-} from "src/canvas";
+} from "./render";
 
 export let link, node, simulation;
 export let facilityDialog,

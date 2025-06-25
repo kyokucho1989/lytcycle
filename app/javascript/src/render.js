@@ -1,13 +1,13 @@
 import * as d3 from "d3";
-import { routes, facilities } from "src/set_simulation_params";
-import { invalidRoutesIds } from "src/consistency_check";
+import { routes, facilities } from "./simulation/params_setter";
+import { invalidRoutesIds } from "./error_detector";
 import {
   setFacilityDataToModal,
   setRouteDataToModal,
   setClickEventToObject,
   facilityDialog,
   routeDialog,
-} from "src/simulation";
+} from "./main";
 
 export let link, node, simulation;
 

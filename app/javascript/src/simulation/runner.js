@@ -1,8 +1,8 @@
 import anime from "animejs";
-import { routes, facilities } from "src/set_simulation_params";
-import { drawLink } from "src/canvas";
-import { displayResultBadge } from "src/simulation";
-import { displayOperator, displayRaiseOperator } from "src/canvas";
+import { routes, facilities } from "./params_setter";
+import { drawLink } from "../render";
+import { displayResultBadge } from "../main";
+import { displayOperator, displayRaiseOperator } from "../render";
 
 class Location {
   constructor(parameters) {
