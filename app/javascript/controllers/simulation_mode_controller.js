@@ -1,13 +1,13 @@
 import { Controller } from "@hotwired/stimulus";
-import { changeActiveObject, drawLink, activePlayButtons } from "src/render";
+import { changeActiveObject, drawLink, activePlayButtons } from "../src/render";
 import {
   setClickEventToObject,
   removeResultBadge,
   setObjectParamsOnDetailModal,
-} from "src/main";
-import { routes } from "src/simulation/params_setter";
+} from "../src/main";
+import { routes } from "../src/simulation/params_setter";
 import { findInvalidRouteIds } from "../src/error_detector";
-import { countStart } from "src/simulation/runner";
+import { countStart } from "../src/simulation/runner";
 
 export default class extends Controller {
   static targets = ["detail", "editButton", "simulationButton"];
