@@ -142,41 +142,48 @@ export function addFacility([x, y]) {
   drawLink(routes, facilities);
 }
 
-document.addEventListener("turbo:load", async () => {
-  const simulationParameters = document.getElementById("simulation-data");
-  if (simulationParameters) {
-    const simulationId = simulationParameters.dataset.id;
+export function setInitial() {
+  routes = routesInitial;
+  operators = operatorsInitial;
+  facilities = facilitiesInitial;
+  return { routes, operators, facilities };
+}
 
-    if (simulationId === "") {
-      routes = routesInitial;
-      operators = operatorsInitial;
-      facilities = facilitiesInitial;
-      drawLink(routes, facilities);
-    } else {
-      try {
-        const response = await fetch("edit.json");
-        if (!response.ok) {
-          throw new Error(`レスポンスステータス: ${response.status}`);
-        }
-        const json = await response.json();
-        routes = JSON.parse(json.routes);
-        facilities = JSON.parse(json.facilities);
-        operators = JSON.parse(json.operators);
+// document.addEventListener("turbo:load", async () => {
+//   const simulationParameters = document.getElementById("simulation-data");
+//   if (simulationParameters) {
+//     const simulationId = simulationParameters.dataset.id;
 
-        routes.forEach((route) => {
-          if (typeof route.source === "object") {
-            route.source = route.source.id;
-          }
-          if (typeof route.target === "object") {
-            route.target = route.target.id;
-          }
-        });
+//     if (simulationId === "") {
+//       routes = routesInitial;
+//       operators = operatorsInitial;
+//       facilities = facilitiesInitial;
+//       drawLink(routes, facilities);
+//     } else {
+//       try {
+//         const response = await fetch("edit.json");
+//         if (!response.ok) {
+//           throw new Error(`レスポンスステータス: ${response.status}`);
+//         }
+//         const json = await response.json();
+//         routes = JSON.parse(json.routes);
+//         facilities = JSON.parse(json.facilities);
+//         operators = JSON.parse(json.operators);
 
-        drawLink(routes, facilities);
-        return json;
-      } catch (error) {
-        console.error(error.message);
-      }
-    }
-  }
-});
+//         routes.forEach((route) => {
+//           if (typeof route.source === "object") {
+//             route.source = route.source.id;
+//           }
+//           if (typeof route.target === "object") {
+//             route.target = route.target.id;
+//           }
+//         });
+
+//         drawLink(routes, facilities);
+//         return json;
+//       } catch (error) {
+//         console.error(error.message);
+//       }
+//     }
+//   }
+// });

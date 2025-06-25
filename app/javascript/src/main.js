@@ -1,13 +1,17 @@
 import * as d3 from "d3";
-import { inactivePlayButtons } from "./render";
-import { routes, operators, facilities } from "./simulation/params_setter";
+import { loadObjects } from "./loader";
 import {
+  routes,
+  operators,
+  facilities,
   addFacility,
   addRoute,
   deleteRoute,
   deleteFacility,
+  setInitial,
 } from "./simulation/params_setter";
 import {
+  inactivePlayButtons,
   linkClicked,
   nodeClicked,
   nodeMouseOver,
@@ -345,5 +349,46 @@ document.addEventListener("turbo:load", () => {
   const userMenu = document.getElementById("user-menu-button");
   if (userMenu) {
     userMenu.addEventListener("click", toggleUserMenu, false);
+  }
+});
+
+document.addEventListener("turbo:load", async () => {
+  const simulationParameters = document.getElementById("simulation-data");
+  if (simulationParameters) {
+    const simulationId = simulationParameters.dataset.id;
+    if (simulationId === "") {
+      // routes = routesInitial;
+      // operators = operatorsInitial;
+      // facilities = facilitiesInitial;
+      const ob2 = setInitial();
+      console.log(ob2);
+      // drawLink(routes, facilities);
+    } else {
+      try {
+        const ob = loadObjects();
+        // const response = await fetch("edit.json");
+        // if (!response.ok) {
+        //   throw new Error(`レスポンスステータス: ${response.status}`);
+        // }
+        // const json = await response.json();
+        // routes = JSON.parse(json.routes);
+        // facilities = JSON.parse(json.facilities);
+        // operators = JSON.parse(json.operators);
+
+        // routes.forEach((route) => {
+        //   if (typeof route.source === "object") {
+        //     route.source = route.source.id;
+        //   }
+        //   if (typeof route.target === "object") {
+        //     route.target = route.target.id;
+        //   }
+        // });
+        console.log(ob);
+        // drawLink(routes, facilities);
+        // return json;
+      } catch (error) {
+        console.error(error.message);
+      }
+    }
   }
 });
