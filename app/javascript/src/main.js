@@ -1,5 +1,13 @@
 import * as d3 from "d3";
 import { loadObjects } from "./loader";
+import { findInvalidRouteIds } from "./error_detector";
+import {
+  countStart,
+  addAnimationPlayEvent,
+  addProgressEvent,
+  initializeSimulation,
+  generatePairRoutes,
+} from "./simulation/runner";
 import {
   routes,
   operators,
@@ -9,6 +17,7 @@ import {
   deleteRoute,
   deleteFacility,
   setInitial,
+  setParams,
 } from "./simulation/params_setter";
 import {
   inactivePlayButtons,
@@ -19,6 +28,9 @@ import {
   linkMouseOver,
   linkMouseOut,
   drawLink,
+  activePlayButtons,
+  changeActiveObject,
+  displayOperator,
 } from "./render";
 
 export let link, node, simulation;
@@ -37,7 +49,7 @@ export async function setClickEventToObject(object) {
     case "edit":
       clearGhostObjects();
       removeSelectAttribute();
-
+      changeActiveObject();
       svg.on("click", null);
       svg.on("mousemove", null);
       svg.selectAll("line").on("click", linkClicked);
@@ -73,8 +85,14 @@ export function switchDeleteObjectMode() {
   svg.selectAll("line").on("mouseout", linkMouseOut);
   svg.selectAll("circle").on("mouseover", nodeMouseOver);
   svg.selectAll("circle").on("mouseout", nodeMouseOut);
-  svg.selectAll("line").on("click", deleteRoute);
-  svg.selectAll("circle").on("click", deleteFacility);
+  svg.selectAll("line").on("click", function () {
+    const params = deleteRoute(this);
+    drawLink(params["routes"], params["facilities"]);
+  });
+  svg.selectAll("circle").on("click", function () {
+    const params = deleteFacility(this);
+    drawLink(params["routes"], params["facilities"]);
+  });
 }
 
 export function switchAddFacilityMode() {
@@ -91,7 +109,8 @@ export function switchAddFacilityMode() {
   svg.on("click", null);
   svg.on("click", function (e) {
     const [x, y] = d3.pointer(e, this);
-    addFacility([x, y]);
+    const params = addFacility([x, y]);
+    drawLink(params["routes"], params["facilities"]);
   });
 
   svg.on("mousemove", function (e) {
@@ -151,7 +170,8 @@ export function switchAddRouteMode() {
       if (sourceNode.length !== 0) {
         sourceId = sourceNode[0].id;
         targetId = this.id;
-        addRoute(targetId, sourceId);
+        const params = addRoute(targetId, sourceId);
+        drawLink(params["routes"], params["facilities"]);
         isLinking = false;
       } else {
         sourceId = this.id;
@@ -246,11 +266,6 @@ export function setParamsToRouteOnModal() {
   }
 }
 
-document.addEventListener("turbo:load", async () => {
-  await setParamsToFacilityOnModal();
-  await setParamsToRouteOnModal();
-});
-
 export async function setObjectParamsOnDetailModal() {
   const routesInForm = document.getElementById("simulation-routes");
   const facilitiesInForm = document.getElementById("simulation-facilities");
@@ -267,7 +282,7 @@ export async function setObjectParamsOnDetailModal() {
   }
 }
 
-document.addEventListener("turbo:load", () => {
+export function addOpenHelpDialogEvent() {
   const helpDialog = document.getElementById("helpDialog");
   const helpDialogs = document.querySelectorAll(".help-button");
   const helpBtns = document.querySelectorAll(".help-button");
@@ -306,7 +321,7 @@ document.addEventListener("turbo:load", () => {
       });
     });
   }
-});
+}
 
 export function setFacilityDataToModal(facility) {
   const id = document.getElementById("hidden-id");
@@ -345,13 +360,15 @@ function toggleUserMenu() {
   userMenu.classList.toggle("hidden");
 }
 
-document.addEventListener("turbo:load", () => {
+function addToggleMenuEvent() {
   const userMenu = document.getElementById("user-menu-button");
   if (userMenu) {
     userMenu.addEventListener("click", toggleUserMenu, false);
   }
-});
-document.addEventListener("turbo:load", async () => {
+}
+
+// 画面更新時のパラメータ再設定と描画を行う
+export async function setupScene() {
   const simulationParameters = document.getElementById("simulation-data");
   if (simulationParameters) {
     const simulationId = simulationParameters.dataset.id;
@@ -360,7 +377,58 @@ document.addEventListener("turbo:load", async () => {
       drawLink(params["routes"], params["facilities"]);
     } else {
       const params = await loadObjects();
+      setParams(params);
       drawLink(params["routes"], params["facilities"]);
     }
   }
-});
+}
+
+export async function setupEventListeners() {
+  setupScene();
+  await setParamsToFacilityOnModal();
+  await setParamsToRouteOnModal();
+  addToggleMenuEvent();
+  addOpenHelpDialogEvent();
+  const start = document.getElementById("startSimulation2");
+  if (start) {
+    start.addEventListener("click", startSimulation, false);
+  }
+  addAnimationPlayEvent();
+}
+
+export function isConsistency() {
+  const result = findInvalidRouteIds(routes);
+  if (result.ids.length === 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+async function startSimulation() {
+  const validRoute = isConsistency();
+  drawLink();
+  if (!validRoute) {
+    alert("異常なルートがあります。削除してください。");
+    return;
+  }
+  // await countStart();
+
+  /*
+  オペレータ描画
+  進捗バーset
+  初期化
+  帰り道を生成
+  オブジェクト群を描画
+  startCount
+  */
+  await displayOperator();
+  addProgressEvent();
+  const params = initializeSimulation({ routes, facilities });
+  const linksData = generatePairRoutes(params["formattedRoutes"]);
+
+  await drawLink(linksData, params["copiedFacilities"]);
+  await countStart(linksData, params["copiedFacilities"]);
+
+  activePlayButtons();
+}
