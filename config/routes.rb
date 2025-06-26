@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   resource :welcomes, only: [:show]
 
   devise_for :users
-  resources :simulations, except: :show
+  resources :simulations
   resource :demo, only: [:new]
   resource :term, only: [:show]
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
