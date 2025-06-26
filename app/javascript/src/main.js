@@ -21,17 +21,19 @@ import {
 } from "./simulation/params_setter";
 import {
   inactivePlayButtons,
-  linkClicked,
-  nodeClicked,
+  // linkClicked,
+  // nodeClicked,
+  findClickedFacility,
   nodeMouseOver,
   nodeMouseOut,
   linkMouseOver,
   linkMouseOut,
   drawLink,
   activePlayButtons,
-  changeActiveObject,
+  // changeActiveObject,
   displayOperator,
   displayRaiseOperator,
+  findClickedRoute,
 } from "./render";
 
 export let link, node, simulation;
@@ -50,11 +52,19 @@ export async function setClickEventToObject(object) {
     case "edit":
       clearGhostObjects();
       removeSelectAttribute();
-      changeActiveObject();
+      changeActiveObject({ routes, facilities });
       svg.on("click", null);
       svg.on("mousemove", null);
-      svg.selectAll("line").on("click", linkClicked);
-      svg.selectAll("circle").on("click", nodeClicked);
+      svg.selectAll("line").on("click", function () {
+        const routeForEdit = findClickedRoute(this, routes);
+        setRouteDataToModal(routeForEdit);
+        routeDialog.showModal();
+      });
+      svg.selectAll("circle").on("click", function () {
+        const facilityForEdit = findClickedFacility(this, facilities);
+        setFacilityDataToModal(facilityForEdit);
+        facilityDialog.showModal();
+      });
       svg.selectAll("line").on("mouseover", linkMouseOver);
       svg.selectAll("line").on("mouseout", linkMouseOut);
       svg.selectAll("circle").on("mouseover", nodeMouseOver);
@@ -73,6 +83,25 @@ export async function setClickEventToObject(object) {
       switchAddRouteMode();
       break;
   }
+}
+
+function changeActiveObject(params) {
+  const routes = params["routes"];
+  const facilities = params["facilities"];
+  d3.select("#svg02")
+    .selectAll("line")
+    .on("click", function () {
+      const routeForEdit = findClickedRoute(this, routes);
+      setRouteDataToModal(routeForEdit);
+      routeDialog.showModal();
+    });
+  d3.select("#svg02")
+    .selectAll("circle")
+    .on("click", function () {
+      const facilityForEdit = findClickedFacility(this, facilities);
+      setFacilityDataToModal(facilityForEdit);
+      facilityDialog.showModal();
+    });
 }
 
 export function switchDeleteObjectMode() {
@@ -407,13 +436,15 @@ export function isConsistency() {
 }
 
 async function startSimulation() {
-  const validRoute = isConsistency();
-  drawLink();
-  if (!validRoute) {
+  const invalidRoutesIds = findInvalidRouteIds(routes);
+
+  if (invalidRoutesIds["ids"].length !== 0) {
     alert("異常なルートがあります。削除してください。");
+    drawLink(routes, facilities, invalidRoutesIds);
     return;
   }
 
+  drawLink(routes, facilities);
   await displayOperator();
   addProgressEvent();
   const params = initializeSimulation({ routes, facilities });
