@@ -351,44 +351,16 @@ document.addEventListener("turbo:load", () => {
     userMenu.addEventListener("click", toggleUserMenu, false);
   }
 });
-
 document.addEventListener("turbo:load", async () => {
   const simulationParameters = document.getElementById("simulation-data");
   if (simulationParameters) {
     const simulationId = simulationParameters.dataset.id;
     if (simulationId === "") {
-      // routes = routesInitial;
-      // operators = operatorsInitial;
-      // facilities = facilitiesInitial;
-      const ob2 = setInitial();
-      console.log(ob2);
-      // drawLink(routes, facilities);
+      const params = setInitial();
+      drawLink(params["routes"], params["facilities"]);
     } else {
-      try {
-        const ob = loadObjects();
-        // const response = await fetch("edit.json");
-        // if (!response.ok) {
-        //   throw new Error(`レスポンスステータス: ${response.status}`);
-        // }
-        // const json = await response.json();
-        // routes = JSON.parse(json.routes);
-        // facilities = JSON.parse(json.facilities);
-        // operators = JSON.parse(json.operators);
-
-        // routes.forEach((route) => {
-        //   if (typeof route.source === "object") {
-        //     route.source = route.source.id;
-        //   }
-        //   if (typeof route.target === "object") {
-        //     route.target = route.target.id;
-        //   }
-        // });
-        console.log(ob);
-        // drawLink(routes, facilities);
-        // return json;
-      } catch (error) {
-        console.error(error.message);
-      }
+      const params = await loadObjects();
+      drawLink(params["routes"], params["facilities"]);
     }
   }
 });
