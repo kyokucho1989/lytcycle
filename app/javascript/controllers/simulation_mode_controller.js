@@ -25,9 +25,8 @@ export default class extends Controller {
   close(event) {
     if (event.detail.success) {
       this.closeDetail();
-      // const url = event.detail.fetchResponse.response.url;
-      // const redirectUrl = url.replace(/\/\d+$/, "");
-      // window.Turbo.visit(redirectUrl);
+      const url = event.detail.fetchResponse.response.url;
+      window.Turbo.visit(url);
     }
   }
 
