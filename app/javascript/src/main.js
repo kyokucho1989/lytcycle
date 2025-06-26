@@ -31,6 +31,7 @@ import {
   activePlayButtons,
   changeActiveObject,
   displayOperator,
+  displayRaiseOperator,
 } from "./render";
 
 export let link, node, simulation;
@@ -412,16 +413,7 @@ async function startSimulation() {
     alert("異常なルートがあります。削除してください。");
     return;
   }
-  // await countStart();
 
-  /*
-  オペレータ描画
-  進捗バーset
-  初期化
-  帰り道を生成
-  オブジェクト群を描画
-  startCount
-  */
   await displayOperator();
   addProgressEvent();
   const params = initializeSimulation({ routes, facilities });
@@ -429,6 +421,8 @@ async function startSimulation() {
 
   await drawLink(linksData, params["copiedFacilities"]);
   await countStart(linksData, params["copiedFacilities"]);
-
+  displayRaiseOperator();
+  displayResultBadge();
   activePlayButtons();
+  alert("シミュレーション終了");
 }

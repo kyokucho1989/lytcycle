@@ -1,6 +1,4 @@
 import anime from "animejs";
-import { displayResultBadge } from "../main";
-import { displayRaiseOperator } from "../render";
 
 class Location {
   constructor(parameters) {
@@ -243,12 +241,6 @@ export function initializeSimulation(params) {
 }
 
 export async function countStart(linksData, facilities) {
-  // await displayOperator();
-
-  // const params = initializeSimulation({ routes, facilities });
-  // const linksData = generatePairRoutes(params["formattedRoutes"]);
-
-  // await drawLink(linksData, params["copiedFacilities"]);
   let locations = [];
 
   const copiedFacilities = facilities;
@@ -371,9 +363,6 @@ export async function countStart(linksData, facilities) {
   document.getElementById("simulation_bottleneck_process").value =
     bottleneck_process;
   document.getElementById("simulation_waiting_time").value = waitingTime;
-  displayRaiseOperator();
-  displayResultBadge();
-  alert("シミュレーション終了");
 }
 
 function formatStateHistory(operator) {
