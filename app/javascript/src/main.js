@@ -115,13 +115,13 @@ export function switchDeleteObjectMode() {
   svg.selectAll("line").on("mouseout", linkMouseOut);
   svg.selectAll("circle").on("mouseover", nodeMouseOver);
   svg.selectAll("circle").on("mouseout", nodeMouseOut);
-  svg.selectAll("line").on("click", function () {
+  svg.selectAll("line").on("click", async function () {
     const params = deleteRoute(this);
-    renderScene(params["routes"], params["facilities"]);
+    await renderScene(params["routes"], params["facilities"]);
   });
-  svg.selectAll("circle").on("click", function () {
+  svg.selectAll("circle").on("click", async function () {
     const params = deleteFacility(this);
-    renderScene(params["routes"], params["facilities"]);
+    await renderScene(params["routes"], params["facilities"]);
   });
 }
 
@@ -137,10 +137,10 @@ export function switchAddFacilityMode() {
   svg.selectAll("circle").on("mouseover", null);
   svg.selectAll("circle").on("mouseout", null);
   svg.on("click", null);
-  svg.on("click", function (e) {
+  svg.on("click", async function (e) {
     const [x, y] = d3.pointer(e, this);
     const params = addFacility([x, y]);
-    renderScene(params["routes"], params["facilities"]);
+    await renderScene(params["routes"], params["facilities"]);
   });
 
   svg.on("mousemove", function (e) {
@@ -177,7 +177,7 @@ export function switchAddRouteMode() {
   });
 
   svg.selectAll("line").on("click", null);
-  svg.selectAll("circle").on("click", function () {
+  svg.selectAll("circle").on("click", async function () {
     let targetId, sourceId;
     const sourceNode = document.querySelectorAll("circle[selected]");
     isLinking = true;
@@ -201,7 +201,7 @@ export function switchAddRouteMode() {
         sourceId = sourceNode[0].id;
         targetId = this.id;
         const params = addRoute(targetId, sourceId);
-        renderScene(params["routes"], params["facilities"]);
+        await renderScene(params["routes"], params["facilities"]);
         isLinking = false;
       } else {
         sourceId = this.id;
@@ -244,7 +244,7 @@ export function setParamsToFacilityOnModal() {
   const cancelBtn = document.getElementById("cancel-btn");
 
   if (confirmBtn) {
-    confirmBtn.addEventListener("click", (e) => {
+    confirmBtn.addEventListener("click", async (e) => {
       if (!facilityForm.checkValidity()) {
         facilityForm.reportValidity();
         return;
@@ -256,7 +256,7 @@ export function setParamsToFacilityOnModal() {
       params.processingTime = document.getElementById("processingTime").value;
 
       setObjectParams(e, params, facilities);
-      renderScene(routes, facilities);
+      await renderScene(routes, facilities);
       facilityDialog.close();
     });
   }
@@ -440,7 +440,7 @@ async function startSimulation() {
 
   if (invalidRoutesIds["ids"].length !== 0) {
     alert("異常なルートがあります。削除してください。");
-    renderScene(routes, facilities, invalidRoutesIds);
+    await renderScene(routes, facilities, invalidRoutesIds);
     return;
   }
 
