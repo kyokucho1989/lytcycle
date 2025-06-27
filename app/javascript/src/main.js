@@ -117,11 +117,11 @@ export function switchDeleteObjectMode() {
   svg.selectAll("circle").on("mouseout", nodeMouseOut);
   svg.selectAll("line").on("click", function () {
     const params = deleteRoute(this);
-    drawLink(params["routes"], params["facilities"]);
+    renderScene(params["routes"], params["facilities"]);
   });
   svg.selectAll("circle").on("click", function () {
     const params = deleteFacility(this);
-    drawLink(params["routes"], params["facilities"]);
+    renderScene(params["routes"], params["facilities"]);
   });
 }
 
@@ -140,7 +140,7 @@ export function switchAddFacilityMode() {
   svg.on("click", function (e) {
     const [x, y] = d3.pointer(e, this);
     const params = addFacility([x, y]);
-    drawLink(params["routes"], params["facilities"]);
+    renderScene(params["routes"], params["facilities"]);
   });
 
   svg.on("mousemove", function (e) {
@@ -201,7 +201,7 @@ export function switchAddRouteMode() {
         sourceId = sourceNode[0].id;
         targetId = this.id;
         const params = addRoute(targetId, sourceId);
-        drawLink(params["routes"], params["facilities"]);
+        renderScene(params["routes"], params["facilities"]);
         isLinking = false;
       } else {
         sourceId = this.id;
@@ -256,7 +256,7 @@ export function setParamsToFacilityOnModal() {
       params.processingTime = document.getElementById("processingTime").value;
 
       setObjectParams(e, params, facilities);
-      drawLink(routes, facilities);
+      renderScene(routes, facilities);
       facilityDialog.close();
     });
   }
@@ -404,11 +404,11 @@ export async function setupScene() {
     const simulationId = simulationParameters.dataset.id;
     if (simulationId === "") {
       const params = setInitial();
-      drawLink(params["routes"], params["facilities"]);
+      await renderScene(params["routes"], params["facilities"]);
     } else {
       const params = await loadObjects();
       setParams(params);
-      drawLink(params["routes"], params["facilities"]);
+      await renderScene(params["routes"], params["facilities"]);
     }
   }
 }
@@ -440,20 +440,48 @@ async function startSimulation() {
 
   if (invalidRoutesIds["ids"].length !== 0) {
     alert("異常なルートがあります。削除してください。");
-    drawLink(routes, facilities, invalidRoutesIds);
+    renderScene(routes, facilities, invalidRoutesIds);
     return;
   }
 
-  drawLink(routes, facilities);
   await displayOperator();
   addProgressEvent();
   const params = initializeSimulation({ routes, facilities });
   const linksData = generatePairRoutes(params["formattedRoutes"]);
 
-  await drawLink(linksData, params["copiedFacilities"]);
+  await renderScene(linksData, params["copiedFacilities"]);
   await countStart(linksData, params["copiedFacilities"]);
   displayRaiseOperator();
   displayResultBadge();
   activePlayButtons();
   alert("シミュレーション終了");
+}
+
+async function renderScene(routes, facilities, invalidRoutesIds = { ids: [] }) {
+  await drawLink(routes, facilities, invalidRoutesIds);
+  const selectMode = document.querySelector(
+    'fieldset#modeSelection  input[type="radio"]:checked'
+  );
+  let selectModeName;
+
+  if (selectMode !== null) {
+    selectModeName = selectMode.id;
+  }
+  const modeState = {};
+
+  switch (selectModeName) {
+    case "add-facility":
+      modeState.state = "add-facility";
+      break;
+    case "edit":
+      modeState.state = "edit";
+      break;
+    case "add-link":
+      modeState.state = "link";
+      break;
+    case "delete-object":
+      modeState.state = "delete";
+      break;
+  }
+  setClickEventToObject(modeState);
 }

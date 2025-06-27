@@ -1,13 +1,4 @@
 import * as d3 from "d3";
-
-import {
-  // setFacilityDataToModal,
-  // setRouteDataToModal,
-  setClickEventToObject,
-  // facilityDialog,
-  // routeDialog,
-} from "./main";
-
 export let link, node, simulation;
 
 export async function displayOperator() {
@@ -149,31 +140,6 @@ export async function drawLink(
           .on("end", dragEnded)
       );
 
-      const selectMode = document.querySelector(
-        'fieldset#modeSelection  input[type="radio"]:checked'
-      );
-      let selectModeName;
-
-      if (selectMode !== null) {
-        selectModeName = selectMode.id;
-      }
-      const modeState = {};
-
-      switch (selectModeName) {
-        case "add-facility":
-          modeState.state = "add-facility";
-          break;
-        case "edit":
-          modeState.state = "edit";
-          break;
-        case "add-link":
-          modeState.state = "link";
-          break;
-        case "delete-object":
-          modeState.state = "delete";
-          break;
-      }
-      setClickEventToObject(modeState);
       simulation.force("link").links(linksData);
 
       setTimeout(() => {
