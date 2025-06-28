@@ -17,6 +17,10 @@ class SimulationsController < ApplicationController
     @simulation = Simulation.new
   end
 
+  def show
+    redirect_to simulations_path
+  end
+
   def create
     @simulation = current_user.simulations.new(simulation_params)
     respond_to do |format|

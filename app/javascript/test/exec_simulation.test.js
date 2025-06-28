@@ -2,7 +2,7 @@ import {
   calculateCycleTime,
   calculateWaitingTime,
   judgeBottleneckProcess,
-} from "../src/exec_simulation.js";
+} from "../src/simulation/runner.js";
 // adds special assertions like toHaveTextContent
 import "@testing-library/jest-dom";
 

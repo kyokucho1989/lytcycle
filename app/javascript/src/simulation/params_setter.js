@@ -1,5 +1,3 @@
-import { drawLink } from "src/canvas";
-
 export let routes, operators, facilities;
 
 const routesInitial = [
@@ -42,8 +40,8 @@ const facilitiesInitial = [
   },
 ];
 
-export function deleteRoute() {
-  const selectedRoute = routes.find((route) => route.id === this.id);
+export function deleteRoute(element) {
+  const selectedRoute = routes.find((route) => route.id === element.id);
   if (
     selectedRoute.source.id === "goal" &&
     selectedRoute.target.id === "start"
@@ -52,14 +50,14 @@ export function deleteRoute() {
   } else {
     if (window.confirm("削除しますか？")) {
       routes = routes.filter((route) => route.id !== selectedRoute.id);
-      drawLink(routes, facilities);
     }
   }
+  return { routes, facilities };
 }
 
-export function deleteFacility() {
+export function deleteFacility(element) {
   const selectedFacility = facilities.find(
-    (facility) => facility.id === this.id
+    (facility) => facility.id === element.id
   );
   if (selectedFacility.id === "goal" || selectedFacility.id === "start") {
     alert("スタートとゴールは削除できません。");
@@ -78,8 +76,8 @@ export function deleteFacility() {
       (facility) => facility.id !== selectedFacility.id
     );
     routes = routes.filter((route) => unConnectedRoutesIds.includes(route.id));
-    drawLink(routes, facilities);
   }
+  return { routes, facilities };
 }
 
 export function addRoute(targetId, sourceId) {
@@ -102,13 +100,13 @@ export function addRoute(targetId, sourceId) {
     alert("すでにリンクが作成されています");
   } else {
     routes = routes.concat(route);
-    drawLink(routes, facilities);
   }
   const selectedNodes = document.querySelectorAll("circle[selected]");
 
   [...selectedNodes].forEach((element) => {
     element.removeAttribute("selected");
   });
+  return { routes, facilities };
 }
 
 export function addFacility([x, y]) {
@@ -139,44 +137,18 @@ export function addFacility([x, y]) {
   };
 
   facilities.push(facility);
-  drawLink(routes, facilities);
+  return { routes, facilities };
 }
 
-document.addEventListener("turbo:load", async () => {
-  const simulationParameters = document.getElementById("simulation-data");
-  if (simulationParameters) {
-    const simulationId = simulationParameters.dataset.id;
+export function setInitial() {
+  routes = routesInitial;
+  operators = operatorsInitial;
+  facilities = facilitiesInitial;
+  return { routes, operators, facilities };
+}
 
-    if (simulationId === "") {
-      routes = routesInitial;
-      operators = operatorsInitial;
-      facilities = facilitiesInitial;
-      drawLink(routes, facilities);
-    } else {
-      try {
-        const response = await fetch("edit.json");
-        if (!response.ok) {
-          throw new Error(`レスポンスステータス: ${response.status}`);
-        }
-        const json = await response.json();
-        routes = JSON.parse(json.routes);
-        facilities = JSON.parse(json.facilities);
-        operators = JSON.parse(json.operators);
-
-        routes.forEach((route) => {
-          if (typeof route.source === "object") {
-            route.source = route.source.id;
-          }
-          if (typeof route.target === "object") {
-            route.target = route.target.id;
-          }
-        });
-
-        drawLink(routes, facilities);
-        return json;
-      } catch (error) {
-        console.error(error.message);
-      }
-    }
-  }
-});
+export function setParams(params) {
+  routes = params["routes"];
+  operators = params["operators"];
+  facilities = params["facilities"];
+}

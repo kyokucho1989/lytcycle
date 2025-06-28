@@ -1,21 +1,40 @@
 import * as d3 from "d3";
-import { inactivePlayButtons } from "src/canvas";
-import { routes, operators, facilities } from "src/set_simulation_params";
+import { loadObjects } from "./loader";
+import { findInvalidRouteIds } from "./error_detector";
 import {
+  countStart,
+  addAnimationPlayEvent,
+  addProgressEvent,
+  initializeSimulation,
+  generatePairRoutes,
+} from "./simulation/runner";
+import {
+  routes,
+  operators,
+  facilities,
   addFacility,
   addRoute,
   deleteRoute,
   deleteFacility,
-} from "src/set_simulation_params";
+  setInitial,
+  setParams,
+} from "./simulation/params_setter";
 import {
-  linkClicked,
-  nodeClicked,
+  inactivePlayButtons,
+  // linkClicked,
+  // nodeClicked,
+  findClickedFacility,
   nodeMouseOver,
   nodeMouseOut,
   linkMouseOver,
   linkMouseOut,
   drawLink,
-} from "src/canvas";
+  activePlayButtons,
+  // changeActiveObject,
+  displayOperator,
+  displayRaiseOperator,
+  findClickedRoute,
+} from "./render";
 
 export let link, node, simulation;
 export let facilityDialog,
@@ -33,11 +52,19 @@ export async function setClickEventToObject(object) {
     case "edit":
       clearGhostObjects();
       removeSelectAttribute();
-
+      changeActiveObject({ routes, facilities });
       svg.on("click", null);
       svg.on("mousemove", null);
-      svg.selectAll("line").on("click", linkClicked);
-      svg.selectAll("circle").on("click", nodeClicked);
+      svg.selectAll("line").on("click", function () {
+        const routeForEdit = findClickedRoute(this, routes);
+        setRouteDataToModal(routeForEdit);
+        routeDialog.showModal();
+      });
+      svg.selectAll("circle").on("click", function () {
+        const facilityForEdit = findClickedFacility(this, facilities);
+        setFacilityDataToModal(facilityForEdit);
+        facilityDialog.showModal();
+      });
       svg.selectAll("line").on("mouseover", linkMouseOver);
       svg.selectAll("line").on("mouseout", linkMouseOut);
       svg.selectAll("circle").on("mouseover", nodeMouseOver);
@@ -58,6 +85,25 @@ export async function setClickEventToObject(object) {
   }
 }
 
+function changeActiveObject(params) {
+  const routes = params["routes"];
+  const facilities = params["facilities"];
+  d3.select("#svg02")
+    .selectAll("line")
+    .on("click", function () {
+      const routeForEdit = findClickedRoute(this, routes);
+      setRouteDataToModal(routeForEdit);
+      routeDialog.showModal();
+    });
+  d3.select("#svg02")
+    .selectAll("circle")
+    .on("click", function () {
+      const facilityForEdit = findClickedFacility(this, facilities);
+      setFacilityDataToModal(facilityForEdit);
+      facilityDialog.showModal();
+    });
+}
+
 export function switchDeleteObjectMode() {
   const svg = d3.select("#svg02");
   clearGhostObjects();
@@ -69,8 +115,14 @@ export function switchDeleteObjectMode() {
   svg.selectAll("line").on("mouseout", linkMouseOut);
   svg.selectAll("circle").on("mouseover", nodeMouseOver);
   svg.selectAll("circle").on("mouseout", nodeMouseOut);
-  svg.selectAll("line").on("click", deleteRoute);
-  svg.selectAll("circle").on("click", deleteFacility);
+  svg.selectAll("line").on("click", async function () {
+    const params = deleteRoute(this);
+    await renderScene(params["routes"], params["facilities"]);
+  });
+  svg.selectAll("circle").on("click", async function () {
+    const params = deleteFacility(this);
+    await renderScene(params["routes"], params["facilities"]);
+  });
 }
 
 export function switchAddFacilityMode() {
@@ -85,9 +137,10 @@ export function switchAddFacilityMode() {
   svg.selectAll("circle").on("mouseover", null);
   svg.selectAll("circle").on("mouseout", null);
   svg.on("click", null);
-  svg.on("click", function (e) {
+  svg.on("click", async function (e) {
     const [x, y] = d3.pointer(e, this);
-    addFacility([x, y]);
+    const params = addFacility([x, y]);
+    await renderScene(params["routes"], params["facilities"]);
   });
 
   svg.on("mousemove", function (e) {
@@ -124,7 +177,7 @@ export function switchAddRouteMode() {
   });
 
   svg.selectAll("line").on("click", null);
-  svg.selectAll("circle").on("click", function () {
+  svg.selectAll("circle").on("click", async function () {
     let targetId, sourceId;
     const sourceNode = document.querySelectorAll("circle[selected]");
     isLinking = true;
@@ -147,7 +200,8 @@ export function switchAddRouteMode() {
       if (sourceNode.length !== 0) {
         sourceId = sourceNode[0].id;
         targetId = this.id;
-        addRoute(targetId, sourceId);
+        const params = addRoute(targetId, sourceId);
+        await renderScene(params["routes"], params["facilities"]);
         isLinking = false;
       } else {
         sourceId = this.id;
@@ -190,7 +244,7 @@ export function setParamsToFacilityOnModal() {
   const cancelBtn = document.getElementById("cancel-btn");
 
   if (confirmBtn) {
-    confirmBtn.addEventListener("click", (e) => {
+    confirmBtn.addEventListener("click", async (e) => {
       if (!facilityForm.checkValidity()) {
         facilityForm.reportValidity();
         return;
@@ -202,7 +256,7 @@ export function setParamsToFacilityOnModal() {
       params.processingTime = document.getElementById("processingTime").value;
 
       setObjectParams(e, params, facilities);
-      drawLink(routes, facilities);
+      await renderScene(routes, facilities);
       facilityDialog.close();
     });
   }
@@ -221,7 +275,7 @@ export function setParamsToRouteOnModal() {
   const routeCancelBtn = document.getElementById("route-cancel-btn");
 
   if (routeConfirmBtn) {
-    routeConfirmBtn.addEventListener("click", (e) => {
+    routeConfirmBtn.addEventListener("click", async (e) => {
       if (!routeForm.checkValidity()) {
         routeForm.reportValidity();
         return;
@@ -231,6 +285,7 @@ export function setParamsToRouteOnModal() {
       params.routeLength = document.getElementById("route-length").value;
 
       setObjectParams(e, params, routes);
+      await renderScene(routes, facilities);
       routeDialog.close();
     });
   }
@@ -241,11 +296,6 @@ export function setParamsToRouteOnModal() {
     });
   }
 }
-
-document.addEventListener("turbo:load", async () => {
-  await setParamsToFacilityOnModal();
-  await setParamsToRouteOnModal();
-});
 
 export async function setObjectParamsOnDetailModal() {
   const routesInForm = document.getElementById("simulation-routes");
@@ -263,7 +313,7 @@ export async function setObjectParamsOnDetailModal() {
   }
 }
 
-document.addEventListener("turbo:load", () => {
+export function addOpenHelpDialogEvent() {
   const helpDialog = document.getElementById("helpDialog");
   const helpDialogs = document.querySelectorAll(".help-button");
   const helpBtns = document.querySelectorAll(".help-button");
@@ -302,7 +352,7 @@ document.addEventListener("turbo:load", () => {
       });
     });
   }
-});
+}
 
 export function setFacilityDataToModal(facility) {
   const id = document.getElementById("hidden-id");
@@ -341,9 +391,98 @@ function toggleUserMenu() {
   userMenu.classList.toggle("hidden");
 }
 
-document.addEventListener("turbo:load", () => {
+function addToggleMenuEvent() {
   const userMenu = document.getElementById("user-menu-button");
   if (userMenu) {
     userMenu.addEventListener("click", toggleUserMenu, false);
   }
-});
+}
+
+// 画面更新時のパラメータ再設定と描画を行う
+export async function setupScene() {
+  const simulationParameters = document.getElementById("simulation-data");
+  if (simulationParameters) {
+    const simulationId = simulationParameters.dataset.id;
+    if (simulationId === "") {
+      const params = setInitial();
+      await renderScene(params["routes"], params["facilities"]);
+    } else {
+      const params = await loadObjects();
+      setParams(params);
+      await renderScene(params["routes"], params["facilities"]);
+    }
+  }
+}
+
+export async function setupEventListeners() {
+  setupScene();
+  await setParamsToFacilityOnModal();
+  await setParamsToRouteOnModal();
+  addToggleMenuEvent();
+  addOpenHelpDialogEvent();
+  const start = document.getElementById("startSimulation2");
+  if (start) {
+    start.addEventListener("click", startSimulation, false);
+  }
+  addAnimationPlayEvent();
+}
+
+export function isConsistency() {
+  const result = findInvalidRouteIds(routes);
+  if (result.ids.length === 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+async function startSimulation() {
+  const invalidRoutesIds = findInvalidRouteIds(routes);
+
+  if (invalidRoutesIds["ids"].length !== 0) {
+    alert("異常なルートがあります。削除してください。");
+    await renderScene(routes, facilities, invalidRoutesIds);
+    return;
+  }
+
+  await displayOperator();
+  addProgressEvent();
+  const params = initializeSimulation({ routes, facilities });
+  const linksData = generatePairRoutes(params["formattedRoutes"]);
+
+  await renderScene(linksData, params["copiedFacilities"]);
+  await countStart(linksData, params["copiedFacilities"]);
+  displayRaiseOperator();
+  displayResultBadge();
+  activePlayButtons();
+  alert("シミュレーション終了");
+}
+
+async function renderScene(routes, facilities, invalidRoutesIds = { ids: [] }) {
+  await drawLink(routes, facilities, invalidRoutesIds);
+  const selectMode = document.querySelector(
+    'fieldset#modeSelection  input[type="radio"]:checked'
+  );
+  let selectModeName;
+
+  if (selectMode !== null) {
+    selectModeName = selectMode.id;
+  }
+  const modeState = {};
+
+  switch (selectModeName) {
+    case "add-facility":
+      modeState.state = "add-facility";
+      break;
+    case "edit":
+      modeState.state = "edit";
+      break;
+    case "add-link":
+      modeState.state = "link";
+      break;
+    case "delete-object":
+      modeState.state = "delete";
+      break;
+  }
+  setClickEventToObject(modeState);
+}

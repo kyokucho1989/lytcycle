@@ -1,8 +1,4 @@
 import anime from "animejs";
-import { routes, facilities } from "src/set_simulation_params";
-import { drawLink } from "src/canvas";
-import { displayResultBadge } from "src/simulation";
-import { displayOperator, displayRaiseOperator } from "src/canvas";
 
 class Location {
   constructor(parameters) {
@@ -110,7 +106,7 @@ class Controller {
   }
 }
 
-function generatePairRoutes(routes) {
+export function generatePairRoutes(routes) {
   const lastIds = routes.filter((element) => element.lastId);
   const filteredRoutes = routes.filter((element) => element.routeLength);
   let routesWithPairs = filteredRoutes;
@@ -138,8 +134,7 @@ let tl = anime.timeline({
 let countHistory = [{ t: 0, productionCount: 0 }];
 const simulationSpeedRatio = 10;
 
-document.addEventListener("turbo:load", () => {
-  const start = document.getElementById("startSimulation2");
+export function addAnimationPlayEvent() {
   const play = document.getElementById("play");
   const pause = document.getElementById("pause");
 
@@ -166,9 +161,6 @@ document.addEventListener("turbo:load", () => {
     });
   }
 
-  if (start) {
-    start.addEventListener("click", countStart, false);
-  }
   if (play) {
     play.addEventListener("click", function () {
       tl.play();
@@ -179,7 +171,7 @@ document.addEventListener("turbo:load", () => {
       tl.pause();
     });
   }
-});
+}
 
 function dispCount(t) {
   let closestTime, count;
@@ -202,11 +194,8 @@ function dispCount(t) {
   let el = document.querySelector("#count-window pre");
   el.innerHTML = JSON.stringify(`t: ${Math.trunc(t)} / total:${count}`);
 }
-
-export async function countStart() {
+export function addProgressEvent() {
   const controlsProgress = document.querySelector("#simulation input.progress");
-  await displayOperator();
-
   if (controlsProgress) {
     controlsProgress.value = 0;
     tl = anime.timeline({
@@ -222,32 +211,45 @@ export async function countStart() {
       },
     });
   }
+}
+
+export function initializeSimulation(params) {
+  const routes = params["routes"];
+  const facilities = params["facilities"];
 
   tl.children = [];
-  const nodesData1 = facilities;
-  const controller = new Controller();
-  let locations = [];
+  const copiedFacilities = facilities;
 
-  nodesData1.forEach((facility) => {
-    locations.push(new Location(facility));
-  });
-
-  nodesData1.forEach((el) => (el.hasMaterial = false));
-  nodesData1.forEach((el) => (el.isProcessing = false));
-  nodesData1.forEach((el) => (el.processingEndTime = 0));
-  const copyLinks = routes;
-  const linksData2 = copyLinks.map((route) => {
+  copiedFacilities.forEach((el) => (el.hasMaterial = false));
+  copiedFacilities.forEach((el) => (el.isProcessing = false));
+  copiedFacilities.forEach((el) => (el.processingEndTime = 0));
+  const copiedRoutes = routes;
+  const formattedRoutes = copiedRoutes.map((route) => {
     return {
       ...route,
-      source: nodesData1.find((facility) => facility.id === route.source.id),
-      target: nodesData1.find((facility) => facility.id === route.target.id),
+      source: copiedFacilities.find(
+        (facility) => facility.id === route.source.id
+      ),
+      target: copiedFacilities.find(
+        (facility) => facility.id === route.target.id
+      ),
       id: `${route.id}`,
     };
   });
 
-  const linksData = generatePairRoutes(linksData2);
-  await drawLink(linksData, nodesData1);
+  return { copiedFacilities, formattedRoutes };
+}
 
+export async function countStart(linksData, facilities) {
+  let locations = [];
+
+  const copiedFacilities = facilities;
+  copiedFacilities.forEach((facility) => {
+    locations.push(new Location(facility));
+  });
+
+  const nodesData1 = copiedFacilities;
+  const controller = new Controller();
   controller.setRoutes(linksData);
   const goalPoint = locations.find((object) => object.type === "goal");
   const operator1 = new Operator({ name: "Alice" });
@@ -361,9 +363,6 @@ export async function countStart() {
   document.getElementById("simulation_bottleneck_process").value =
     bottleneck_process;
   document.getElementById("simulation_waiting_time").value = waitingTime;
-  displayRaiseOperator();
-  displayResultBadge();
-  alert("シミュレーション終了");
 }
 
 function formatStateHistory(operator) {

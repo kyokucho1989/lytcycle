@@ -14,7 +14,7 @@
       <div class="grid grid-cols-4 md:grid-cols-6 items-center gap-4">
         <div class="flex items-center">
           <input id="edit" name="edit-mode" type="radio" checked
-          data-simulation-mode-target="edit-mode" data-action="simulation-mode#edit"
+          data-mode-target="edit-mode" data-action="mode#edit"
           class="sr-only peer"
           value="パラメータ変更">
           <label for="edit"
@@ -33,8 +33,8 @@
           <input id="add-facility" name="edit-mode" type="radio"
             class="sr-only peer"
             value="設備追加"
-            data-simulation-mode-target="editMode"
-            data-action="simulation-mode#changeModeToAddFacility">
+            data-mode-target="editMode"
+            data-action="mode#changeModeToAddFacility">
           <label for="add-facility"
           class="peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:ring-0 peer-checked:hover:bg-indigo-500
                 flex cursor-pointer items-center justify-center rounded-md px-3 py-3 text-sm font-semibold uppercase
@@ -50,8 +50,8 @@
           <input id="add-link" name="edit-mode" type="radio"
           class="sr-only peer"
           value="リンク追加"
-          data-simulation-mode-target="editMode"
-          data-action="simulation-mode#changeModeToLink">
+          data-mode-target="editMode"
+          data-action="mode#changeModeToLink">
           <label for="add-link"
           class="peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:ring-0 peer-checked:hover:bg-indigo-500
                 flex cursor-pointer items-center justify-center rounded-md px-3 py-3 text-sm font-semibold uppercase
@@ -68,8 +68,8 @@
           <input id="delete-object" name="edit-mode" type="radio"
           class="sr-only peer"
           value="削除"
-          data-simulation-mode-target="editMode"
-          data-action="simulation-mode#changeModeToDelete">
+          data-mode-target="editMode"
+          data-action="mode#changeModeToDelete">
         <label for="delete-object"
         class="peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:ring-0 peer-checked:hover:bg-indigo-500
           flex cursor-pointer items-center justify-center rounded-md px-3 py-3 text-sm font-semibold uppercase

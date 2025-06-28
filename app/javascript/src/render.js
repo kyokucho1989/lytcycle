@@ -1,14 +1,4 @@
 import * as d3 from "d3";
-import { routes, facilities } from "src/set_simulation_params";
-import { invalidRoutesIds } from "src/consistency_check";
-import {
-  setFacilityDataToModal,
-  setRouteDataToModal,
-  setClickEventToObject,
-  facilityDialog,
-  routeDialog,
-} from "src/simulation";
-
 export let link, node, simulation;
 
 export async function displayOperator() {
@@ -35,7 +25,11 @@ export async function displayStartGoalName() {
   d3.select("#svg02").selectAll("circle").select("#goal").text("ゴール");
 }
 
-export async function drawLink(linksData = routes, nodesData = facilities) {
+export async function drawLink(
+  linksData,
+  nodesData,
+  invalidRoutesIds = { ids: [] }
+) {
   return new Promise((resolve) => {
     d3.select("#svg02").selectAll("line").remove();
     d3.select("#routes-layer").selectAll("g").remove();
@@ -146,31 +140,6 @@ export async function drawLink(linksData = routes, nodesData = facilities) {
           .on("end", dragEnded)
       );
 
-      const selectMode = document.querySelector(
-        'fieldset#modeSelection  input[type="radio"]:checked'
-      );
-      let selectModeName;
-
-      if (selectMode !== null) {
-        selectModeName = selectMode.id;
-      }
-      const modeState = {};
-
-      switch (selectModeName) {
-        case "add-facility":
-          modeState.state = "add-facility";
-          break;
-        case "edit":
-          modeState.state = "edit";
-          break;
-        case "add-link":
-          modeState.state = "link";
-          break;
-        case "delete-object":
-          modeState.state = "delete";
-          break;
-      }
-      setClickEventToObject(modeState);
       simulation.force("link").links(linksData);
 
       setTimeout(() => {
@@ -235,18 +204,12 @@ export function nodeMouseOut(event) {
   d3.select(event.currentTarget).attr("fill", "#99aaee");
 }
 
-export function nodeClicked() {
-  const facilityForEdit = facilities.find(
-    (facility) => facility.id === this.id
-  );
-  setFacilityDataToModal(facilityForEdit);
-  facilityDialog.showModal();
+export function findClickedFacility(element, facilities) {
+  return facilities.find((facility) => facility.id === element.id);
 }
 
-export function linkClicked() {
-  const routeForEdit = routes.find((route) => route.id === this.id);
-  setRouteDataToModal(routeForEdit);
-  routeDialog.showModal();
+export function findClickedRoute(element, routes) {
+  return routes.find((route) => route.id === element.id);
 }
 
 function dragStarted(event) {
@@ -272,9 +235,4 @@ function dragEnded(event) {
 export function changeInactiveObject() {
   d3.select("#svg02").selectAll("line").on("click", null);
   d3.select("#svg02").selectAll("circle").on("click", null);
-}
-
-export function changeActiveObject() {
-  d3.select("#svg02").selectAll("line").on("click", linkClicked);
-  d3.select("#svg02").selectAll("circle").on("click", nodeClicked);
 }
