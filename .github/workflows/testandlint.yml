@@ -45,6 +45,8 @@ jobs:
           node-version: "22.x"
       - name: Install dependencies
         run: yarn --frozen-lockfile
+      - name: clobber precompile
+        run: bundle exec rake assets:clobber
       - name: assets precompile
         run: bundle exec rake assets:precompile
       - name: Build TailwindCSS
