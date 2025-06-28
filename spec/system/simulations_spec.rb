@@ -52,6 +52,7 @@ RSpec.describe 'UpdateAndDeleteSimulation', type: :system do
     visit simulations_path(@user)
     click_on('編集')
     click_on('結果確認/保存へ')
+    sleep 3
     fill_in 'simulation[title]', with: '生産ラインB'
     click_on('データを保存')
     expect(page).to have_content 'シミュレーションが更新されました。'

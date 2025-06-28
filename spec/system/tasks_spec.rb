@@ -10,6 +10,7 @@ RSpec.describe 'RenderSVG', type: :system do
     sign_in @confirmed_user
     visit new_simulation_path(@confirmed_user)
     click_on '結果確認'
+    sleep 3
     fill_in 'simulation[title]', with: 'machine'
     click_on 'データを保存'
     assert_selector 'h1', text: 'シミュレーション一覧'
@@ -30,6 +31,7 @@ RSpec.describe 'EditObjects', type: :system do
     sign_in @confirmed_user
     visit new_simulation_path(@confirmed_user)
     find('circle#n1').click
+    sleep 3
     fill_in '設備名', with: '変更後の設備名', fill_options: { clear: :backspace }
     fill_in '加工時間', with: '30', fill_options: { clear: :backspace }
     click_on '保存'
@@ -40,6 +42,7 @@ RSpec.describe 'EditObjects', type: :system do
     sign_in @confirmed_user
     visit new_simulation_path(@confirmed_user)
     find('line#root1-1').click
+    sleep 3
     fill_in '距離', with: '30', fill_options: { clear: :backspace }
     click_on '保存'
     expect(page).to have_css 'line#root1-1'
@@ -57,7 +60,7 @@ RSpec.describe 'AddDeleteObjects', type: :system do
     visit new_simulation_path(@confirmed_user)
     find("label[for='add-facility']").click
     find('svg#svg02').click(x: 0, y: 0)
-
+    sleep 3
     expect(page).to have_css 'circle#n4'
 
     find("label[for='add-link']").click
@@ -72,6 +75,7 @@ RSpec.describe 'AddDeleteObjects', type: :system do
     visit new_simulation_path(@confirmed_user)
     find("label[for='delete-object']").click
     find('circle#n1').click
+    sleep 3
     accept_alert
 
     expect(page).to have_no_css 'circle#n1'
@@ -90,6 +94,7 @@ RSpec.describe 'DeletionErrors', type: :system do
     find("label[for='add-link']").click
     find('circle#start').click
     find('circle#n1').click
+    sleep 3
     page.accept_confirm 'すでにリンクが作成されています'
 
     expect(page.text).to have_content 'シミュレーション一覧'
