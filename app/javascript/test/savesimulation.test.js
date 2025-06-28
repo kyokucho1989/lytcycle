@@ -3,8 +3,8 @@ import { fireEvent, screen, waitFor } from "@testing-library/dom";
 // adds special assertions like toHaveTextContent
 import "@testing-library/jest-dom";
 
-import { setObjectParams } from "../src/simulation.js";
-import { setFacilityDataToModal } from "../src/simulation.js";
+import { setObjectParams } from "../src/main.js";
+import { setFacilityDataToModal } from "../src/main.js";
 let facilities;
 let facilitiesInitial;
 

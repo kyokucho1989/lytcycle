@@ -11,7 +11,7 @@ import {
   formatBySource,
   findInvalidRoutesSetByDFS,
   findInvalidRouteIds,
-} from "../src/consistency_check";
+} from "../src/error_detector";
 
 let routesInitial;
 beforeEach(() => {

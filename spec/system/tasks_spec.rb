@@ -54,11 +54,9 @@ RSpec.describe 'AddDeleteObjects', type: :system do
     @confirmed_user = User.create!(name: 'satou2', email: 'satou2@example.com', password: 'password',
                                    confirmed_at: DateTime.now)
   end
-
   it 'can add and link facility', js: true do
     sign_in @confirmed_user
     visit new_simulation_path
-    sleep 3
     find("label[for='add-facility']").click
     find('svg#svg02').click(x: 0, y: 0)
     sleep 3
@@ -73,11 +71,9 @@ RSpec.describe 'AddDeleteObjects', type: :system do
   it 'can delete facility', js: true do
     sign_in @confirmed_user
     visit new_simulation_path
-    sleep 3
     find("label[for='delete-object']").click
     find('circle#n1').click
     accept_alert
-
     expect(page).to have_no_css 'circle#n1'
   end
 end
