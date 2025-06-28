@@ -66,6 +66,12 @@ jobs:
 
       - name: Test by Jest
         run: npm test
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failure-screenshots
+          path: tmp/screenshots/
 
   lint:
     runs-on: ubuntu-latest
