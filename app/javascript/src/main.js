@@ -275,7 +275,7 @@ export function setParamsToRouteOnModal() {
   const routeCancelBtn = document.getElementById("route-cancel-btn");
 
   if (routeConfirmBtn) {
-    routeConfirmBtn.addEventListener("click", (e) => {
+    routeConfirmBtn.addEventListener("click", async (e) => {
       if (!routeForm.checkValidity()) {
         routeForm.reportValidity();
         return;
@@ -285,6 +285,7 @@ export function setParamsToRouteOnModal() {
       params.routeLength = document.getElementById("route-length").value;
 
       setObjectParams(e, params, routes);
+      await renderScene(routes, facilities);
       routeDialog.close();
     });
   }
