@@ -1,5 +1,13 @@
 import anime from "animejs";
 
+const RETURN_PREFIX = "re";
+let timeLine = anime.timeline({
+  autoplay: false,
+});
+
+let countHistory = [{ time: 0, productionCount: 0 }];
+const simulationSpeedRatio = 10;
+
 class Location {
   constructor(parameters) {
     this.name = parameters.name;
@@ -13,12 +21,12 @@ class Location {
     this.history = [];
   }
 
-  addStateToHistory(t, state) {
-    this.history.push({ t: t, state: state });
+  addStateToHistory(time, state) {
+    this.history.push({ time: time, state: state });
   }
 
-  addCountToHistory(t, count) {
-    this.history.push({ t: t, productionCount: count });
+  addCountToHistory(time, count) {
+    this.history.push({ time: time, productionCount: count });
   }
 }
 
@@ -34,9 +42,9 @@ class Operator {
     this.history = [];
   }
 
-  addStateToHistory(t, state) {
+  addStateToHistory(time, state) {
     this.history.push({
-      t: t,
+      time: time,
       state: state,
       locationId: this.currentLocation.id,
     });
@@ -64,7 +72,8 @@ class Controller {
     const currentLocation = operator.currentLocation;
     const linkedRoutes = routes.filter(
       (route) =>
-        route.source.index === currentLocation.index && !route.id.includes("re")
+        route.source.index === currentLocation.index &&
+        !route.id.includes(RETURN_PREFIX)
     );
 
     selectedRoute = linkedRoutes.find((route) => {
@@ -95,7 +104,7 @@ class Controller {
           selectedRoute = routes.find(
             (element) =>
               element.source.id === currentLocation.id &&
-              element.id.includes("re")
+              element.id.includes(RETURN_PREFIX)
           );
           destination = selectedRoute.target;
         }
@@ -109,17 +118,16 @@ class Controller {
 export function generatePairRoutes(routes) {
   const lastIds = routes.filter((element) => element.lastId);
   const filteredRoutes = routes.filter((element) => element.routeLength);
-  let routesWithPairs = filteredRoutes;
 
   const convertedRoutes = filteredRoutes.map((element) => {
     return {
       ...element,
       source: element.target,
       target: element.source,
-      id: `re-${element.id}`,
+      id: `${RETURN_PREFIX}-${element.id}`,
     };
   });
-  routesWithPairs = filteredRoutes.concat(convertedRoutes);
+  const routesWithPairs = filteredRoutes.concat(convertedRoutes);
   if (lastIds.length === 0) {
     return routesWithPairs;
   } else {
@@ -127,87 +135,81 @@ export function generatePairRoutes(routes) {
   }
 }
 
-let tl = anime.timeline({
-  autoplay: false,
-});
-
-let countHistory = [{ t: 0, productionCount: 0 }];
-const simulationSpeedRatio = 10;
-
 export function addAnimationPlayEvent() {
   const play = document.getElementById("play");
   const pause = document.getElementById("pause");
 
-  let controlsProgress = document.querySelector("#simulation input.progress");
+  const controlsProgress = document.querySelector("#simulation input.progress");
   if (controlsProgress) {
-    tl = anime.timeline({
+    timeLine = anime.timeline({
       easing: "easeOutExpo",
       autoplay: false,
       update: function () {
         let targetAnimationSecond =
-          tl.duration * (controlsProgress.value / 100);
+          timeLine.duration * (controlsProgress.value / 100);
         let targetSecond =
           (targetAnimationSecond / 1000) * simulationSpeedRatio;
-        controlsProgress.value = tl.progress;
-        dispCount(targetSecond);
+        controlsProgress.value = timeLine.progress;
+        displayCount(targetSecond);
       },
     });
 
     controlsProgress.addEventListener("input", function () {
-      let targetAnimationSecond = tl.duration * (controlsProgress.value / 100);
+      let targetAnimationSecond =
+        timeLine.duration * (controlsProgress.value / 100);
       let targetSecond = (targetAnimationSecond / 1000) * simulationSpeedRatio;
-      tl.seek(targetAnimationSecond);
-      dispCount(targetSecond);
+      timeLine.seek(targetAnimationSecond);
+      displayCount(targetSecond);
     });
   }
 
   if (play) {
     play.addEventListener("click", function () {
-      tl.play();
+      timeLine.play();
     });
   }
   if (pause) {
     pause.addEventListener("click", function () {
-      tl.pause();
+      timeLine.pause();
     });
   }
 }
 
-function dispCount(t) {
+function displayCount(time) {
   let closestTime, count;
-  let timeSeries = countHistory.map((el) => el.t);
-  if (timeSeries[0] > t) {
+  let timeSeries = countHistory.map((el) => el.time);
+  if (timeSeries[0] > time) {
     closestTime = 0;
     count = 0;
   } else {
     closestTime = timeSeries.reduce((a, current) => {
-      if (Math.abs(current - t) < Math.abs(a - t) && current < t) {
+      if (Math.abs(current - time) < Math.abs(a - time) && current < time) {
         return current;
       } else {
         return a;
       }
     });
-    count = countHistory.filter((el) => el.t === closestTime)[0]
+    count = countHistory.filter((el) => el.time === closestTime)[0]
       .productionCount;
   }
 
-  let el = document.querySelector("#count-window pre");
-  el.innerHTML = JSON.stringify(`t: ${Math.trunc(t)} / total:${count}`);
+  const el = document.querySelector("#count-window pre");
+  el.innerHTML = JSON.stringify(`t: ${Math.trunc(time)} / total:${count}`);
 }
 export function addProgressEvent() {
   const controlsProgress = document.querySelector("#simulation input.progress");
   if (controlsProgress) {
     controlsProgress.value = 0;
-    tl = anime.timeline({
+    timeLine = anime.timeline({
       easing: "easeOutExpo",
       autoplay: false,
       update: function () {
         let targetAnimationSecond =
-          tl.duration * (controlsProgress.value / 100);
+          timeLine.duration * (controlsProgress.value / 100);
         let targetSecond =
           (targetAnimationSecond / 1000) * simulationSpeedRatio;
-        controlsProgress.value = tl.progress;
-        dispCount(targetSecond);
+        controlsProgress.value = timeLine.progress;
+        displayCount(targetSecond);
       },
     });
   }
@@ -217,83 +219,121 @@ export function initializeSimulation(params) {
   const routes = params["routes"];
   const facilities = params["facilities"];
 
-  tl.children = [];
-  const copiedFacilities = facilities;
+  timeLine.children = [];
+  timeLine.add({ targets: "#ob1 rect", opacity: 0 }, 0);
+  // const copiedFacilities = facilities;
 
-  copiedFacilities.forEach((el) => (el.hasMaterial = false));
-  copiedFacilities.forEach((el) => (el.isProcessing = false));
-  copiedFacilities.forEach((el) => (el.processingEndTime = 0));
-  const copiedRoutes = routes;
-  const formattedRoutes = copiedRoutes.map((route) => {
+  facilities.forEach((el) => (el.hasMaterial = false));
+  facilities.forEach((el) => (el.isProcessing = false));
+  facilities.forEach((el) => (el.processingEndTime = 0));
+  // const copiedRoutes = routes;
+  const formattedRoutes = routes.map((route) => {
     return {
       ...route,
-      source: copiedFacilities.find(
-        (facility) => facility.id === route.source.id
-      ),
-      target: copiedFacilities.find(
-        (facility) => facility.id === route.target.id
-      ),
+      source: facilities.find((facility) => facility.id === route.source.id),
+      target: facilities.find((facility) => facility.id === route.target.id),
       id: `${route.id}`,
     };
   });
 
-  return { copiedFacilities, formattedRoutes };
-}
+  const routesWithPairs = generatePairRoutes(formattedRoutes);
 
-export async function countStart(linksData, facilities) {
   let locations = [];
-
-  const copiedFacilities = facilities;
-  copiedFacilities.forEach((facility) => {
+  facilities.forEach((facility) => {
     locations.push(new Location(facility));
   });
 
-  const nodesData1 = copiedFacilities;
   const controller = new Controller();
-  controller.setRoutes(linksData);
+  controller.setRoutes(routesWithPairs);
   const goalPoint = locations.find((object) => object.type === "goal");
   const operator1 = new Operator({ name: "Alice" });
-  operator1.currentLocation = nodesData1.find(
+  operator1.currentLocation = facilities.find(
     (object) => object.type === "start"
   );
 
-  const endTime = 400;
-  let t = 0;
-  let object1, material, machineMaterial, machine;
-  let totalCount = 0;
-
-  tl.add({ targets: "#ob1 rect", opacity: 0 }, 0);
-  nodesData1.forEach((machine) => {
-    const object = toggleFacilityHasMaterial(machine);
-    const object2 = { targets: `circle#${machine.id}`, fill: "#99aaee" };
-    tl.add(object, 0);
-    tl.add(object2, 0);
+  facilities.forEach((facility) => {
+    const object = toggleFacilityHasMaterial(facility);
+    const object2 = { targets: `circle#${facility.id}`, fill: "#99aaee" };
+    timeLine.add(object, 0);
+    timeLine.add(object2, 0);
   });
 
-  while (t < endTime) {
+  return { facilities, routesWithPairs, goalPoint, operator1, controller };
+}
+
+export async function startCount(params) {
+  // let linksData = params["routesWithPairs"];
+  let facilities = params["facilities"];
+
+  // let timeLine = params["timeLine"];
+  /* 初期化 */
+
+  /* 初期化後の戻り値：*/
+  // const params = initializeSimulation({ routes, facilities });
+  // initializeSimulation({ routes, facilities });
+  // let locations = [];
+
+  // // const copiedFacilities = facilities;
+  // facilities.forEach((facility) => {
+  //   locations.push(new Location(facility));
+  // });
+
+  // const controller = new Controller();
+  const controller = params["controller"];
+  const goalPoint = params["goalPoint"];
+  const operator1 = params["operator1"];
+  // controller.setRoutes(linksData);
+  // const goalPoint = locations.find((object) => object.type === "goal");
+  // const operator1 = new Operator({ name: "Alice" });
+  // operator1.currentLocation = facilities.find(
+  //   (object) => object.type === "start"
+  // );
+
+  // facilities.forEach((facility) => {
+  //   const object = toggleFacilityHasMaterial(facility);
+  //   const object2 = { targets: `circle#${facility.id}`, fill: "#99aaee" };
+  //   timeLine.add(object, 0);
+  //   timeLine.add(object2, 0);
+  // });
+
+  const endTime = 400;
+  let time = 0;
+  let travelingAnimation, materialHeldByOperator, materialInMachine, machine;
+  let totalCount = 0;
+  /* 初期化おわり
+
+  必要な戻り値 timeLine, operator1,copiedFacilities
+  */
+
+  while (time < endTime) {
     if (operator1.isMoving) {
-      operator1.addStateToHistory(t, "移動中");
-      if (operator1.arrivalTime === t) {
+      operator1.addStateToHistory(time, "移動中");
+      if (operator1.arrivalTime === time) {
         operator1.isMoving = false;
         operator1.currentLocation = operator1.destination;
       }
     } else {
       switch (operator1.currentLocation.type) {
         case "machine":
-          machine = nodesData1.find(
+          machine = facilities.find(
             (element) => element.id === operator1.currentLocation.id
           );
-          if (!machine.isProcessing || Number(machine.processingEndTime) < t) {
-            operator1.addStateToHistory(t, "脱着中");
+          if (
+            !machine.isProcessing ||
+            Number(machine.processingEndTime) < time
+          ) {
+            // 作業者がワークを脱着
+            operator1.addStateToHistory(time, "脱着中");
             if (!machine.hasMaterial) {
               operator1.hasMaterial = false;
             }
             machine.isProcessing = true;
             machine.hasMaterial = true;
-            machineMaterial = toggleFacilityHasMaterial(machine);
-            tl.add(machineMaterial, (t * 1000) / simulationSpeedRatio);
+            materialInMachine = toggleFacilityHasMaterial(machine);
+
             operator1.isWaiting = false;
-            machine.processingEndTime = t + Number(machine.processingTime);
+            machine.processingEndTime = time + Number(machine.processingTime);
+
             let lightingAnime = getMachineLightingAnime(
               machine,
               simulationSpeedRatio
@@ -305,60 +345,77 @@ export async function countStart(linksData, facilities) {
 
             let processingMaterial = getProcessingMaterial(machine);
             let processedMaterial = getProcessedMaterial(machine);
-            tl.add(processingMaterial, (t * 1000) / simulationSpeedRatio)
+
+            // timeLineを更新
+            timeLine.add(
+              materialInMachine,
+              (time * 1000) / simulationSpeedRatio
+            );
+
+            timeLine
+              .add(processingMaterial, (time * 1000) / simulationSpeedRatio)
               .add(lightingAnime, "-=1000")
               .add(lightOutAnime)
               .add(processedMaterial);
           } else {
             operator1.isWaiting = true;
-            operator1.addStateToHistory(t, "待機中");
+            operator1.addStateToHistory(time, "待機中");
           }
           break;
 
         case "start":
           operator1.hasMaterial = true;
-          operator1.addStateToHistory(t, "脱着中");
+          operator1.addStateToHistory(time, "脱着中");
           break;
 
         case "goal":
-          operator1.addStateToHistory(t, "脱着中");
+          operator1.addStateToHistory(time, "脱着中");
           operator1.hasMaterial = false;
           totalCount = totalCount + 1;
           goalPoint.storageSize++;
-          goalPoint.addCountToHistory(t, goalPoint.storageSize);
+          goalPoint.addCountToHistory(time, goalPoint.storageSize);
           break;
       }
 
       if (!operator1.isWaiting) {
         let { destination, selectedRoute } = controller.determineRoute(
           operator1,
-          nodesData1
+          facilities
         );
-        operator1.arrivalTime = t + Number(selectedRoute.routeLength);
-        object1 = getAnimeObject(selectedRoute);
-        tl.add(object1, (t * 1000) / simulationSpeedRatio);
-        material = toggleOperatorHasMaterial(operator1.hasMaterial);
-        tl.add(material, (t * 1000) / simulationSpeedRatio);
+        operator1.arrivalTime = time + Number(selectedRoute.routeLength);
+        travelingAnimation = getAnimeObject(selectedRoute);
+        timeLine.add(travelingAnimation, (time * 1000) / simulationSpeedRatio);
+        materialHeldByOperator = toggleOperatorHasMaterial(
+          operator1.hasMaterial
+        );
+        timeLine.add(
+          materialHeldByOperator,
+          (time * 1000) / simulationSpeedRatio
+        );
         operator1.destination = destination;
         operator1.isMoving = true;
       }
     }
 
-    nodesData1.forEach((machine) => {
+    // 設備の稼働状況を更新
+    facilities.forEach((machine) => {
       if (machine.isProcessing) {
-        if (Number(machine.processingEndTime) === t) {
+        if (Number(machine.processingEndTime) === time) {
           machine.isProcessing = false;
         }
       }
     });
-    t = t + 1;
+
+    // 時間を更新
+    time = time + 1;
   }
 
+  // 結果算出
   countHistory = goalPoint.history;
-  let cycleTime = calculateCycleTime(goalPoint);
-  let waitingArray = formatStateHistory(operator1);
-  let waitingTime = calculateWaitingTime(waitingArray);
-  let bottleneck_process = judgeBottleneckProcess(waitingArray);
+  const cycleTime = calculateCycleTime(goalPoint);
+  const waitingArray = formatStateHistory(operator1);
+  const waitingTime = calculateWaitingTime(waitingArray);
+  const bottleneck_process = judgeBottleneckProcess(waitingArray);
   document.getElementById("simulation_cycle_time").value = cycleTime;
   document.getElementById("simulation_bottleneck_process").value =
     bottleneck_process;
@@ -410,7 +467,7 @@ export function judgeBottleneckProcess(waitingArray) {
 
 export function calculateCycleTime(goalPoint) {
   const history = goalPoint.history;
-  const timeSet = history.map((element) => element.t);
+  const timeSet = history.map((element) => element.time);
   let slicedSet;
   let cycleTime;
   if (timeSet.length === 1) {
@@ -447,39 +504,35 @@ function getAnimeObject(root) {
 }
 
 function toggleOperatorHasMaterial(hasState) {
-  const animeObject = {
+  return {
     targets: "#ob1 rect",
     opacity: hasState ? 1 : 0,
     easing: "steps(1)",
   };
-  return animeObject;
 }
 
 function toggleFacilityHasMaterial(machine) {
-  const animeObject = {
+  return {
     targets: `rect#material-${machine.id}`,
     opacity: machine.hasMaterial ? 1 : 0,
     easing: "steps(1)",
   };
-  return animeObject;
 }
 
 function getProcessedMaterial(machine) {
-  const animeObject = {
+  return {
     targets: `rect#material-${machine.id}`,
     translateX: +30,
     duration: 10,
   };
-  return animeObject;
 }
 
 function getProcessingMaterial(machine) {
-  const animeObject = {
+  return {
     targets: `rect#material-${machine.id}`,
     translateX: -10,
     duration: 10,
   };
-  return animeObject;
 }
 
 function getMachineLightingAnime(machine, simulationSpeedRatio) {
