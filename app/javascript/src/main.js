@@ -4,7 +4,6 @@ import { findInvalidRouteIds } from "src/error_detector";
 import {
   startCount,
   addAnimationPlayEvent,
-  addProgressEvent,
   initializeSimulation,
 } from "src/simulation/runner";
 import {
@@ -20,8 +19,6 @@ import {
 } from "src/simulation/params_setter";
 import {
   inactivePlayButtons,
-  // linkClicked,
-  // nodeClicked,
   findClickedFacility,
   nodeMouseOver,
   nodeMouseOut,
@@ -29,7 +26,6 @@ import {
   linkMouseOut,
   drawLink,
   activePlayButtons,
-  // changeActiveObject,
   displayOperator,
   displayRaiseOperator,
   findClickedRoute,
@@ -443,18 +439,26 @@ async function startSimulation() {
     return;
   }
 
-  await displayOperator();
-
   const params = initializeSimulation({ routes, facilities });
 
   await renderScene(params["routesWithPairs"], params["facilities"]);
+  await displayOperator();
+
   const result = await startCount(params);
-  addAnimationPlayEvent(result["timeLine"]);
-  addProgressEvent(result["timeLine"]);
+  addAnimationPlayEvent(result["timeLine"], result["countHistory"]);
+  displayResult(result);
   displayRaiseOperator();
   displayResultBadge();
   activePlayButtons();
   alert("シミュレーション終了");
+}
+
+function displayResult(result) {
+  document.getElementById("simulation_cycle_time").value = result["cycleTime"];
+  document.getElementById("simulation_bottleneck_process").value =
+    result["bottleneck_process"];
+  document.getElementById("simulation_waiting_time").value =
+    result["waitingTime"];
 }
 
 async function renderScene(routes, facilities, invalidRoutesIds = { ids: [] }) {

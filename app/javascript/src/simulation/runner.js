@@ -1,9 +1,8 @@
 import anime from "animejs";
 
 const RETURN_PREFIX = "re";
-
-let countHistory = [{ time: 0, productionCount: 0 }];
-const simulationSpeedRatio = 10;
+const SPEED_RATIO = 10;
+const END_TIME = 400;
 
 class Location {
   constructor(parameters) {
@@ -54,11 +53,6 @@ class Controller {
     this.route = [];
   }
 
-  assignId() {
-    this.lastId++;
-    return this.lastId;
-  }
-
   setRoutes(routes) {
     this.route = routes;
   }
@@ -74,7 +68,7 @@ class Controller {
     );
 
     selectedRoute = linkedRoutes.find((route) => {
-      let notProcessingMachine = locations.find(
+      const notProcessingMachine = locations.find(
         (machine) => machine.id === route.target.id && !machine.isProcessing
       );
       if (notProcessingMachine) {
@@ -124,33 +118,30 @@ export function generatePairRoutes(routes) {
     };
   });
   const routesWithPairs = filteredRoutes.concat(convertedRoutes);
-  if (lastIds.length === 0) {
-    return routesWithPairs;
-  } else {
-    return routesWithPairs.unshift(lastIds);
-  }
+  return lastIds.length ? routesWithPairs.unshift(lastIds) : routesWithPairs;
 }
 
-export function addAnimationPlayEvent(timeLine) {
+export function addAnimationPlayEvent(timeLine, countHistory) {
   const play = document.getElementById("play");
   const pause = document.getElementById("pause");
 
   const controlsProgress = document.querySelector("#simulation input.progress");
+  const maxTime = (timeLine.duration / 1000) * SPEED_RATIO;
   if (controlsProgress) {
     timeLine.update = function () {
-      let targetAnimationSecond =
+      const targetAnimationSecond =
         timeLine.duration * (controlsProgress.value / 100);
-      let targetSecond = (targetAnimationSecond / 1000) * simulationSpeedRatio;
+      const targetSecond = (targetAnimationSecond / 1000) * SPEED_RATIO;
       controlsProgress.value = timeLine.progress;
-      displayCount(targetSecond);
+      displayCount(targetSecond, maxTime, countHistory);
     };
 
     controlsProgress.addEventListener("input", function () {
-      let targetAnimationSecond =
+      const targetAnimationSecond =
         timeLine.duration * (controlsProgress.value / 100);
-      let targetSecond = (targetAnimationSecond / 1000) * simulationSpeedRatio;
+      const targetSecond = (targetAnimationSecond / 1000) * SPEED_RATIO;
       timeLine.seek(targetAnimationSecond);
-      displayCount(targetSecond);
+      displayCount(targetSecond, maxTime, countHistory);
     });
   }
 
@@ -166,7 +157,7 @@ export function addAnimationPlayEvent(timeLine) {
   }
 }
 
-function displayCount(time) {
+function displayCount(time, maxTime = 10, countHistory) {
   let closestTime, count;
   let timeSeries = countHistory.map((el) => el.time);
   if (timeSeries[0] > time) {
@@ -185,28 +176,15 @@ function displayCount(time) {
   }
 
   const el = document.querySelector("#count-window pre");
-  el.innerHTML = JSON.stringify(`t: ${Math.trunc(time)} / total:${count}`);
-}
-
-export function addProgressEvent(timeLine) {
-  const controlsProgress = document.querySelector("#simulation input.progress");
-  if (controlsProgress) {
-    controlsProgress.value = 0;
-
-    timeLine.update = function () {
-      let targetAnimationSecond =
-        timeLine.duration * (controlsProgress.value / 100);
-      let targetSecond = (targetAnimationSecond / 1000) * simulationSpeedRatio;
-      controlsProgress.value = timeLine.progress;
-      displayCount(targetSecond);
-    };
-  }
+  el.innerHTML = JSON.stringify(
+    `t: ${Math.trunc(time)}:${maxTime} / total:${count}`
+  );
 }
 
 export function initializeSimulation(params) {
   const routes = params["routes"];
-  let facilities = params["facilities"];
-  let timeLine = anime.timeline({
+  const facilities = params["facilities"];
+  const timeLine = anime.timeline({
     autoplay: false,
   });
 
@@ -225,7 +203,7 @@ export function initializeSimulation(params) {
 
   const routesWithPairs = generatePairRoutes(formattedRoutes);
 
-  let locations = [];
+  const locations = [];
   facilities.forEach((facility) => {
     locations.push(new Location(facility));
   });
@@ -249,8 +227,7 @@ export function initializeSimulation(params) {
 }
 
 export async function startCount(params) {
-  let facilities = params["facilities"];
-
+  const facilities = params["facilities"];
   const controller = params["controller"];
   const goalPoint = params["goalPoint"];
   const operator1 = params["operator1"];
@@ -263,12 +240,11 @@ export async function startCount(params) {
     timeLine.add(object2, 0);
   });
 
-  const endTime = 400;
   let time = 0;
   let travelingAnimation, materialHeldByOperator, machine;
   let totalCount = 0;
 
-  while (time < endTime) {
+  while (time < END_TIME) {
     if (operator1.isMoving) {
       operator1.addStateToHistory(time, "移動中");
       if (operator1.arrivalTime === time) {
@@ -297,7 +273,7 @@ export async function startCount(params) {
             // machineの状態によって一連のAnimeオブジェクトを返す
             const machineAnimation = buildMachineAnimation(
               machine,
-              simulationSpeedRatio,
+              SPEED_RATIO,
               time
             );
 
@@ -339,11 +315,8 @@ export async function startCount(params) {
         operator1.destination = destination;
         operator1.isMoving = true;
 
-        timeLine.add(travelingAnimation, (time * 1000) / simulationSpeedRatio);
-        timeLine.add(
-          materialHeldByOperator,
-          (time * 1000) / simulationSpeedRatio
-        );
+        timeLine.add(travelingAnimation, (time * 1000) / SPEED_RATIO);
+        timeLine.add(materialHeldByOperator, (time * 1000) / SPEED_RATIO);
       }
     }
 
@@ -361,16 +334,13 @@ export async function startCount(params) {
   }
 
   // 結果算出
-  countHistory = goalPoint.history;
+  const countHistory = goalPoint.history;
   const cycleTime = calculateCycleTime(goalPoint);
   const waitingArray = formatStateHistory(operator1);
   const waitingTime = calculateWaitingTime(waitingArray);
   const bottleneck_process = judgeBottleneckProcess(waitingArray);
-  document.getElementById("simulation_cycle_time").value = cycleTime;
-  document.getElementById("simulation_bottleneck_process").value =
-    bottleneck_process;
-  document.getElementById("simulation_waiting_time").value = waitingTime;
-  return { timeLine };
+
+  return { timeLine, countHistory, cycleTime, bottleneck_process, waitingTime };
 }
 
 function addMachineToTimeLine(animation, timeLine, time) {
@@ -380,9 +350,9 @@ function addMachineToTimeLine(animation, timeLine, time) {
   const lightingAnime = animation["lightingAnime"];
   const lightOutAnime = animation["lightOutAnime"];
 
-  timeLine.add(materialInMachine, (time * 1000) / simulationSpeedRatio);
+  timeLine.add(materialInMachine, (time * 1000) / SPEED_RATIO);
   timeLine
-    .add(processingMaterial, (time * 1000) / simulationSpeedRatio)
+    .add(processingMaterial, (time * 1000) / SPEED_RATIO)
     .add(lightingAnime, "-=1000")
     .add(lightOutAnime)
     .add(processedMaterial);
@@ -395,8 +365,8 @@ function buildMachineAnimation(machine, time) {
 
   machine.processingEndTime = time + Number(machine.processingTime);
 
-  const lightingAnime = getMachineLightingAnime(machine, simulationSpeedRatio);
-  const lightOutAnime = getMachineLightOutAnime(machine, simulationSpeedRatio);
+  const lightingAnime = getMachineLightingAnime(machine);
+  const lightOutAnime = getMachineLightOutAnime(machine);
 
   const processingMaterial = getProcessingMaterial(machine);
   const processedMaterial = getProcessedMaterial(machine);
@@ -484,7 +454,7 @@ function getAnimeObject(root) {
     targets: "#ob1",
     translateX: path("x"),
     translateY: path("y"),
-    duration: (root.routeLength * 1000) / simulationSpeedRatio,
+    duration: (root.routeLength * 1000) / SPEED_RATIO,
     direction: "reverse",
     easing: "linear",
   };
@@ -523,20 +493,20 @@ function getProcessingMaterial(machine) {
   };
 }
 
-function getMachineLightingAnime(machine, simulationSpeedRatio) {
+function getMachineLightingAnime(machine) {
   return {
     targets: `circle#${machine.id}`,
     easing: "steps(1)",
     fill: "#00f",
-    duration: (machine.processingTime * 1000) / simulationSpeedRatio,
+    duration: (machine.processingTime * 1000) / SPEED_RATIO,
   };
 }
 
-function getMachineLightOutAnime(machine, simulationSpeedRatio) {
+function getMachineLightOutAnime(machine) {
   return {
     targets: `circle#${machine.id}`,
     easing: "steps(1)",
     fill: "#000",
-    duration: 100 / simulationSpeedRatio,
+    duration: 100 / SPEED_RATIO,
   };
 }
