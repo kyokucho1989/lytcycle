@@ -157,7 +157,7 @@ export function addAnimationPlayEvent(timeLine, countHistory) {
   }
 }
 
-function displayCount(time, maxTime = 10, countHistory) {
+function displayCount(time, maxTime, countHistory) {
   let closestTime, count;
   let timeSeries = countHistory.map((el) => el.time);
   if (timeSeries[0] > time) {
