@@ -2,11 +2,10 @@ import * as d3 from "d3";
 import { loadObjects } from "./loader";
 import { findInvalidRouteIds } from "./error_detector";
 import {
-  countStart,
+  startCount,
   addAnimationPlayEvent,
   addProgressEvent,
   initializeSimulation,
-  generatePairRoutes,
 } from "./simulation/runner";
 import {
   routes,
@@ -424,7 +423,6 @@ export async function setupEventListeners() {
   if (start) {
     start.addEventListener("click", startSimulation, false);
   }
-  addAnimationPlayEvent();
 }
 
 export function isConsistency() {
@@ -446,12 +444,13 @@ async function startSimulation() {
   }
 
   await displayOperator();
-  addProgressEvent();
-  const params = initializeSimulation({ routes, facilities });
-  const linksData = generatePairRoutes(params["formattedRoutes"]);
 
-  await renderScene(linksData, params["copiedFacilities"]);
-  await countStart(linksData, params["copiedFacilities"]);
+  const params = initializeSimulation({ routes, facilities });
+
+  await renderScene(params["routesWithPairs"], params["facilities"]);
+  const result = await startCount(params);
+  addAnimationPlayEvent(result["timeLine"]);
+  addProgressEvent(result["timeLine"]);
   displayRaiseOperator();
   displayResultBadge();
   activePlayButtons();
