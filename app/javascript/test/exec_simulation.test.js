@@ -20,9 +20,9 @@ beforeEach(() => {
     name: "goalPoint",
   };
   goalPoint.history = [
-    { productionCount: 1, t: 143 },
-    { productionCount: 2, t: 244 },
-    { productionCount: 3, t: 345 },
+    { productionCount: 1, time: 143 },
+    { productionCount: 2, time: 244 },
+    { productionCount: 3, time: 345 },
   ];
 });
 
