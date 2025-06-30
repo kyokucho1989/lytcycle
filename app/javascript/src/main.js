@@ -1,12 +1,12 @@
 import * as d3 from "d3";
-import { loadObjects } from "./loader";
-import { findInvalidRouteIds } from "./error_detector";
+import { loadObjects } from "src/loader";
+import { findInvalidRouteIds } from "src/error_detector";
 import {
   startCount,
   addAnimationPlayEvent,
   addProgressEvent,
   initializeSimulation,
-} from "./simulation/runner";
+} from "src/simulation/runner";
 import {
   routes,
   operators,
@@ -17,7 +17,7 @@ import {
   deleteFacility,
   setInitial,
   setParams,
-} from "./simulation/params_setter";
+} from "src/simulation/params_setter";
 import {
   inactivePlayButtons,
   // linkClicked,
@@ -33,7 +33,7 @@ import {
   displayOperator,
   displayRaiseOperator,
   findClickedRoute,
-} from "./render";
+} from "src/render";
 
 export let link, node, simulation;
 export let facilityDialog,

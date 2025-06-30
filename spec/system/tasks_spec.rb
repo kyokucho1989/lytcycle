@@ -9,7 +9,7 @@ RSpec.describe 'RenderSVG', type: :system do
   it 'can see facility objects', js: true do
     sign_in @confirmed_user
     visit new_simulation_path
-    sleep 3
+    # sleep 3
     click_on '結果確認'
     fill_in 'simulation[title]', with: 'machine'
     click_on 'データを保存'
@@ -52,24 +52,19 @@ end
 RSpec.describe 'AddDeleteObjects', type: :system do
   it 'can add and link facility', js: true do
     visit new_simulation_path
-    sleep 3
     find("label[for='add-facility']").click
     find('svg#svg02').click(x: 0, y: 0)
-    sleep 3
     expect(page).to have_css 'circle#n4'
     find("label[for='add-link']").click
     find('circle#n1').click
     find('circle#n4').click
-    sleep 3
     expect(page).to have_css('line#rootn1n4', visible: :all)
   end
 
   it 'can delete facility', js: true do
     visit new_simulation_path
-    sleep 3
     find("label[for='delete-object']").click
     find('circle#n1').click
-    sleep 3
     accept_alert
     expect(page).to have_no_css 'circle#n1'
   end
@@ -84,7 +79,6 @@ RSpec.describe 'DeletionErrors', type: :system do
   it 'cannot add duplicate goal and link', js: true do
     sign_in @confirmed_user
     visit new_simulation_path
-    sleep 3
     find("label[for='add-link']").click
     find('circle#start').click
     find('circle#n1').click
