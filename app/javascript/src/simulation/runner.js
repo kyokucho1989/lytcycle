@@ -107,7 +107,6 @@ class Controller {
         }
         break;
     }
-
     return { destination, selectedRoute };
   }
 }
@@ -188,6 +187,7 @@ function displayCount(time) {
   const el = document.querySelector("#count-window pre");
   el.innerHTML = JSON.stringify(`t: ${Math.trunc(time)} / total:${count}`);
 }
+
 export function addProgressEvent(timeLine) {
   const controlsProgress = document.querySelector("#simulation input.progress");
   if (controlsProgress) {
@@ -265,7 +265,7 @@ export async function startCount(params) {
 
   const endTime = 400;
   let time = 0;
-  let travelingAnimation, materialHeldByOperator, materialInMachine, machine;
+  let travelingAnimation, materialHeldByOperator, machine;
   let totalCount = 0;
 
   while (time < endTime) {
@@ -276,6 +276,7 @@ export async function startCount(params) {
         operator1.currentLocation = operator1.destination;
       }
     } else {
+      // 作業者の現在地によって動作を変更
       switch (operator1.currentLocation.type) {
         case "machine":
           machine = facilities.find(
@@ -285,41 +286,24 @@ export async function startCount(params) {
             !machine.isProcessing ||
             Number(machine.processingEndTime) < time
           ) {
-            // 作業者がワークを脱着
             operator1.addStateToHistory(time, "脱着中");
             if (!machine.hasMaterial) {
               operator1.hasMaterial = false;
             }
             machine.isProcessing = true;
             machine.hasMaterial = true;
-            materialInMachine = toggleFacilityHasMaterial(machine);
-
             operator1.isWaiting = false;
-            machine.processingEndTime = time + Number(machine.processingTime);
 
-            let lightingAnime = getMachineLightingAnime(
+            // machineの状態によって一連のAnimeオブジェクトを返す
+            const machineAnimation = buildMachineAnimation(
               machine,
-              simulationSpeedRatio
-            );
-            let lightOutAnime = getMachineLightOutAnime(
-              machine,
-              simulationSpeedRatio
+              simulationSpeedRatio,
+              time
             );
 
-            let processingMaterial = getProcessingMaterial(machine);
-            let processedMaterial = getProcessedMaterial(machine);
+            // 設備のアニメーションをtimeLineへ追加
 
-            // timeLineを更新
-            timeLine.add(
-              materialInMachine,
-              (time * 1000) / simulationSpeedRatio
-            );
-
-            timeLine
-              .add(processingMaterial, (time * 1000) / simulationSpeedRatio)
-              .add(lightingAnime, "-=1000")
-              .add(lightOutAnime)
-              .add(processedMaterial);
+            timeLine = addMachineToTimeLine(machineAnimation, timeLine, time);
           } else {
             operator1.isWaiting = true;
             operator1.addStateToHistory(time, "待機中");
@@ -347,16 +331,19 @@ export async function startCount(params) {
         );
         operator1.arrivalTime = time + Number(selectedRoute.routeLength);
         travelingAnimation = getAnimeObject(selectedRoute);
-        timeLine.add(travelingAnimation, (time * 1000) / simulationSpeedRatio);
+
         materialHeldByOperator = toggleOperatorHasMaterial(
           operator1.hasMaterial
         );
+
+        operator1.destination = destination;
+        operator1.isMoving = true;
+
+        timeLine.add(travelingAnimation, (time * 1000) / simulationSpeedRatio);
         timeLine.add(
           materialHeldByOperator,
           (time * 1000) / simulationSpeedRatio
         );
-        operator1.destination = destination;
-        operator1.isMoving = true;
       }
     }
 
@@ -384,6 +371,43 @@ export async function startCount(params) {
     bottleneck_process;
   document.getElementById("simulation_waiting_time").value = waitingTime;
   return { timeLine };
+}
+
+function addMachineToTimeLine(animation, timeLine, time) {
+  const materialInMachine = animation["materialInMachine"];
+  const processingMaterial = animation["processingMaterial"];
+  const processedMaterial = animation["processedMaterial"];
+  const lightingAnime = animation["lightingAnime"];
+  const lightOutAnime = animation["lightOutAnime"];
+
+  timeLine.add(materialInMachine, (time * 1000) / simulationSpeedRatio);
+  timeLine
+    .add(processingMaterial, (time * 1000) / simulationSpeedRatio)
+    .add(lightingAnime, "-=1000")
+    .add(lightOutAnime)
+    .add(processedMaterial);
+
+  return timeLine;
+}
+
+function buildMachineAnimation(machine, time) {
+  const materialInMachine = toggleFacilityHasMaterial(machine);
+
+  machine.processingEndTime = time + Number(machine.processingTime);
+
+  const lightingAnime = getMachineLightingAnime(machine, simulationSpeedRatio);
+  const lightOutAnime = getMachineLightOutAnime(machine, simulationSpeedRatio);
+
+  const processingMaterial = getProcessingMaterial(machine);
+  const processedMaterial = getProcessedMaterial(machine);
+
+  return {
+    materialInMachine,
+    lightingAnime,
+    lightOutAnime,
+    processedMaterial,
+    processingMaterial,
+  };
 }
 
 function formatStateHistory(operator) {

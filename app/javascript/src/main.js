@@ -423,7 +423,6 @@ export async function setupEventListeners() {
   if (start) {
     start.addEventListener("click", startSimulation, false);
   }
-  // addAnimationPlayEvent();
 }
 
 export function isConsistency() {
