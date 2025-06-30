@@ -5,7 +5,7 @@ import {
   removeResultBadge,
   setObjectParamsOnDetailModal,
   setupEventListeners,
-} from "../src/main";
+} from "src/main";
 
 export default class extends Controller {
   static targets = ["detail", "editButton", "simulationButton"];
