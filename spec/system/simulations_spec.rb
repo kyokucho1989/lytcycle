@@ -34,7 +34,6 @@ RSpec.describe 'SaveSimulation', type: :system do
     visit simulations_path
     click_on('新規作成')
     click_on('結果確認/保存へ')
-    # sleep 3
     fill_in 'simulation[title]', with: '生産ラインA'
     click_on('データを保存')
     expect(page).to have_content 'シミュレーションが作成されました。'
@@ -52,9 +51,7 @@ RSpec.describe 'UpdateAndDeleteSimulation', type: :system do
     sign_in @user
     visit simulations_path
     click_on('編集')
-    # sleep 3
     click_on('結果確認/保存へ')
-    # sleep 3
     fill_in 'simulation[title]', with: '生産ラインB'
     click_on('データを保存')
     expect(page).to have_content 'シミュレーションが更新されました。'
@@ -63,7 +60,6 @@ RSpec.describe 'UpdateAndDeleteSimulation', type: :system do
   it 'can delete simulation', js: true do
     sign_in @user
     visit simulations_path
-    # sleep 3
     click_on('削除')
     accept_alert(wait: 5)
     expect(page).to have_content 'シミュレーションが削除されました。'
