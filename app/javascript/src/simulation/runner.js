@@ -1,9 +1,6 @@
 import anime from "animejs";
 
 const RETURN_PREFIX = "re";
-let timeLine = anime.timeline({
-  autoplay: false,
-});
 
 let countHistory = [{ time: 0, productionCount: 0 }];
 const simulationSpeedRatio = 10;
@@ -135,24 +132,19 @@ export function generatePairRoutes(routes) {
   }
 }
 
-export function addAnimationPlayEvent() {
+export function addAnimationPlayEvent(timeLine) {
   const play = document.getElementById("play");
   const pause = document.getElementById("pause");
 
   const controlsProgress = document.querySelector("#simulation input.progress");
   if (controlsProgress) {
-    timeLine = anime.timeline({
-      easing: "easeOutExpo",
-      autoplay: false,
-      update: function () {
-        let targetAnimationSecond =
-          timeLine.duration * (controlsProgress.value / 100);
-        let targetSecond =
-          (targetAnimationSecond / 1000) * simulationSpeedRatio;
-        controlsProgress.value = timeLine.progress;
-        displayCount(targetSecond);
-      },
-    });
+    timeLine.update = function () {
+      let targetAnimationSecond =
+        timeLine.duration * (controlsProgress.value / 100);
+      let targetSecond = (targetAnimationSecond / 1000) * simulationSpeedRatio;
+      controlsProgress.value = timeLine.progress;
+      displayCount(targetSecond);
+    };
 
     controlsProgress.addEventListener("input", function () {
       let targetAnimationSecond =
@@ -196,37 +188,32 @@ function displayCount(time) {
   const el = document.querySelector("#count-window pre");
   el.innerHTML = JSON.stringify(`t: ${Math.trunc(time)} / total:${count}`);
 }
-export function addProgressEvent() {
+export function addProgressEvent(timeLine) {
   const controlsProgress = document.querySelector("#simulation input.progress");
   if (controlsProgress) {
     controlsProgress.value = 0;
-    timeLine = anime.timeline({
-      easing: "easeOutExpo",
-      autoplay: false,
-      update: function () {
-        let targetAnimationSecond =
-          timeLine.duration * (controlsProgress.value / 100);
-        let targetSecond =
-          (targetAnimationSecond / 1000) * simulationSpeedRatio;
-        controlsProgress.value = timeLine.progress;
-        displayCount(targetSecond);
-      },
-    });
+
+    timeLine.update = function () {
+      let targetAnimationSecond =
+        timeLine.duration * (controlsProgress.value / 100);
+      let targetSecond = (targetAnimationSecond / 1000) * simulationSpeedRatio;
+      controlsProgress.value = timeLine.progress;
+      displayCount(targetSecond);
+    };
   }
 }
 
 export function initializeSimulation(params) {
   const routes = params["routes"];
-  const facilities = params["facilities"];
-
-  timeLine.children = [];
-  timeLine.add({ targets: "#ob1 rect", opacity: 0 }, 0);
-  // const copiedFacilities = facilities;
+  let facilities = params["facilities"];
+  let timeLine = anime.timeline({
+    autoplay: false,
+  });
 
   facilities.forEach((el) => (el.hasMaterial = false));
   facilities.forEach((el) => (el.isProcessing = false));
   facilities.forEach((el) => (el.processingEndTime = 0));
-  // const copiedRoutes = routes;
+
   const formattedRoutes = routes.map((route) => {
     return {
       ...route,
@@ -251,6 +238,24 @@ export function initializeSimulation(params) {
     (object) => object.type === "start"
   );
 
+  return {
+    facilities,
+    routesWithPairs,
+    goalPoint,
+    operator1,
+    controller,
+    timeLine,
+  };
+}
+
+export async function startCount(params) {
+  let facilities = params["facilities"];
+
+  const controller = params["controller"];
+  const goalPoint = params["goalPoint"];
+  const operator1 = params["operator1"];
+  let timeLine = params["timeLine"];
+
   facilities.forEach((facility) => {
     const object = toggleFacilityHasMaterial(facility);
     const object2 = { targets: `circle#${facility.id}`, fill: "#99aaee" };
@@ -258,52 +263,10 @@ export function initializeSimulation(params) {
     timeLine.add(object2, 0);
   });
 
-  return { facilities, routesWithPairs, goalPoint, operator1, controller };
-}
-
-export async function startCount(params) {
-  // let linksData = params["routesWithPairs"];
-  let facilities = params["facilities"];
-
-  // let timeLine = params["timeLine"];
-  /* 初期化 */
-
-  /* 初期化後の戻り値：*/
-  // const params = initializeSimulation({ routes, facilities });
-  // initializeSimulation({ routes, facilities });
-  // let locations = [];
-
-  // // const copiedFacilities = facilities;
-  // facilities.forEach((facility) => {
-  //   locations.push(new Location(facility));
-  // });
-
-  // const controller = new Controller();
-  const controller = params["controller"];
-  const goalPoint = params["goalPoint"];
-  const operator1 = params["operator1"];
-  // controller.setRoutes(linksData);
-  // const goalPoint = locations.find((object) => object.type === "goal");
-  // const operator1 = new Operator({ name: "Alice" });
-  // operator1.currentLocation = facilities.find(
-  //   (object) => object.type === "start"
-  // );
-
-  // facilities.forEach((facility) => {
-  //   const object = toggleFacilityHasMaterial(facility);
-  //   const object2 = { targets: `circle#${facility.id}`, fill: "#99aaee" };
-  //   timeLine.add(object, 0);
-  //   timeLine.add(object2, 0);
-  // });
-
   const endTime = 400;
   let time = 0;
   let travelingAnimation, materialHeldByOperator, materialInMachine, machine;
   let totalCount = 0;
-  /* 初期化おわり
-
-  必要な戻り値 timeLine, operator1,copiedFacilities
-  */
 
   while (time < endTime) {
     if (operator1.isMoving) {
@@ -420,6 +383,7 @@ export async function startCount(params) {
   document.getElementById("simulation_bottleneck_process").value =
     bottleneck_process;
   document.getElementById("simulation_waiting_time").value = waitingTime;
+  return { timeLine };
 }
 
 function formatStateHistory(operator) {

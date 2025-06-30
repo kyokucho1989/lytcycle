@@ -423,7 +423,7 @@ export async function setupEventListeners() {
   if (start) {
     start.addEventListener("click", startSimulation, false);
   }
-  addAnimationPlayEvent();
+  // addAnimationPlayEvent();
 }
 
 export function isConsistency() {
@@ -445,11 +445,13 @@ async function startSimulation() {
   }
 
   await displayOperator();
-  addProgressEvent();
+
   const params = initializeSimulation({ routes, facilities });
 
   await renderScene(params["routesWithPairs"], params["facilities"]);
-  await startCount(params);
+  const result = await startCount(params);
+  addAnimationPlayEvent(result["timeLine"]);
+  addProgressEvent(result["timeLine"]);
   displayRaiseOperator();
   displayResultBadge();
   activePlayButtons();
