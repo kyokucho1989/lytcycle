@@ -31,7 +31,6 @@ class Operator {
     this.name = parameters.name;
     this.destination = 0;
     this.hasMaterial = false;
-    this.arriveUpToDuration = 20;
     this.arrivalTime = 20;
     this.isMoving = false;
     this.isWaiting = false;
