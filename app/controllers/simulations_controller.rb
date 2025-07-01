@@ -7,9 +7,7 @@ class SimulationsController < ApplicationController
   end
 
   def edit
-    respond_to do |format|
-      format.html
-    end
+    respond_to(&:html)
   end
 
   def new
