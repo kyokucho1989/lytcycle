@@ -9,7 +9,6 @@ class SimulationsController < ApplicationController
   def edit
     respond_to do |format|
       format.html
-      format.json { render json: @simulation }
     end
   end
 
