@@ -188,9 +188,11 @@ export function initializeSimulation(params) {
     autoplay: false,
   });
 
-  facilities.forEach((el) => (el.hasMaterial = false));
-  facilities.forEach((el) => (el.isProcessing = false));
-  facilities.forEach((el) => (el.processingEndTime = 0));
+  facilities.forEach((el) => {
+    el.hasMaterial = false;
+    el.isProcessing = false;
+    el.processingEndTime = 0;
+  });
 
   const formattedRoutes = routes.map((route) => {
     return {
@@ -203,10 +205,7 @@ export function initializeSimulation(params) {
 
   const routesWithPairs = generatePairRoutes(formattedRoutes);
 
-  const locations = [];
-  facilities.forEach((facility) => {
-    locations.push(new Location(facility));
-  });
+  const locations = facilities.map((facility) => new Location(facility));
 
   const controller = new Controller();
   controller.setRoutes(routesWithPairs);
@@ -322,9 +321,9 @@ export async function runSimulation(params) {
   const cycleTime = calculateCycleTime(goalPoint);
   const waitingArray = formatStateHistory(operator1);
   const waitingTime = calculateWaitingTime(waitingArray);
-  const bottleneck_process = judgeBottleneckProcess(waitingArray);
+  const bottleneckProcess = judgeBottleneckProcess(waitingArray);
 
-  return { timeLine, countHistory, cycleTime, bottleneck_process, waitingTime };
+  return { timeLine, countHistory, cycleTime, bottleneckProcess, waitingTime };
 }
 
 function travelOperatorSequence(
@@ -410,24 +409,18 @@ function formatStateHistory(operator) {
     ({ locationId }) => locationId
   );
   const array = Array.from(statesEachLocation);
-  const waitingArray = array.map((element) => {
+  return array.map((element) => {
     const states = element[1];
     const filteredStates = states.filter(
       (element) => element.state === "待機中"
     );
     return [element[0], filteredStates.length];
   });
-  return waitingArray;
 }
 
 export function calculateWaitingTime(waitingArray) {
   const waitingTimeArray = waitingArray.map((element) => element[1]);
-  const waitingTime = waitingTimeArray.reduce(
-    (a, b) => Math.max(a, b),
-    -Infinity
-  );
-
-  return waitingTime;
+  return waitingTimeArray.reduce((a, b) => Math.max(a, b), -Infinity);
 }
 
 export function judgeBottleneckProcess(waitingArray) {
@@ -437,14 +430,14 @@ export function judgeBottleneckProcess(waitingArray) {
     -Infinity
   );
 
-  const bottleneck_map = waitingArray.find(
+  const bottleneckMap = waitingArray.find(
     (element) => element[1] === waitingTime
   );
-  let bottleneck_process = bottleneck_map[0];
-  if (bottleneck_process === "start") {
-    bottleneck_process = "なし(移動ネック)";
+  let bottleneckProcess = bottleneckMap[0];
+  if (bottleneckProcess === "start") {
+    bottleneckProcess = "なし(移動ネック)";
   }
-  return bottleneck_process;
+  return bottleneckProcess;
 }
 
 export function calculateCycleTime(goalPoint) {
@@ -460,8 +453,7 @@ export function calculateCycleTime(goalPoint) {
   }
   let deferenceArray = [];
   deferenceArray = slicedSet.map((element, index) => {
-    let answer = element - timeSet[index];
-    return answer;
+    return element - timeSet[index];
   });
   const init = 0;
   const totalTime = deferenceArray.reduce(

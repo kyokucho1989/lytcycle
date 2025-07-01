@@ -11,10 +11,10 @@ export function findInvalidRouteIds(routes) {
       route.target = route.target.id;
     }
   });
-  let groupedRoutes = formatBySource(filteredRoute);
-  let startNode = "start";
-  let goalNode = "goal";
-  let invalidRoutesSet = findInvalidRoutesSetByDFS(
+  const groupedRoutes = formatBySource(filteredRoute);
+  const startNode = "start";
+  const goalNode = "goal";
+  const invalidRoutesSet = findInvalidRoutesSetByDFS(
     groupedRoutes,
     startNode,
     goalNode
@@ -28,11 +28,10 @@ export function findInvalidRouteIds(routes) {
 
 export function findInvalidRoutesSetByDFS(groupedRoutes, startNode, goalNode) {
   const visitedRoutes = [];
-  let invalidRoutes = new Set();
-  let validRoutes = new Set();
+  const validRoutes = new Set();
 
   const keys = Object.keys(groupedRoutes);
-  let allRoutes = [];
+  const allRoutes = [];
   keys.forEach((key) => {
     groupedRoutes[key].forEach((el) => {
       allRoutes.push(`${key}->${el}`);
@@ -40,21 +39,18 @@ export function findInvalidRoutesSetByDFS(groupedRoutes, startNode, goalNode) {
   });
   function depthFirstSearch(node, startNode, path) {
     if (path.includes(startNode) && node === startNode) {
-      path.length === 0;
       return;
     } else {
       path.push(node);
     }
     const neighbors = groupedRoutes[node] || [];
-    let routeKey;
-    let routesConvertFromPath = [];
     for (const neighbor of neighbors) {
-      routeKey = `${node}->${neighbor}`;
+      const routeKey = `${node}->${neighbor}`;
       if (!visitedRoutes.includes(routeKey)) {
         visitedRoutes.push(routeKey);
         depthFirstSearch(neighbor, startNode, path);
       }
-      routesConvertFromPath = [];
+      const routesConvertFromPath = [];
       path.slice(1).forEach((el, i) => {
         routesConvertFromPath.push(`${path[i]}->${el}`);
       });
@@ -71,19 +67,17 @@ export function findInvalidRoutesSetByDFS(groupedRoutes, startNode, goalNode) {
   depthFirstSearch(startNode, startNode, []);
 
   const allRoutesSet = new Set(allRoutes);
-  invalidRoutes = allRoutesSet.difference(validRoutes);
-  return invalidRoutes;
+  return allRoutesSet.difference(validRoutes);
 }
 
 export function formatBySource(routes) {
-  const groupedRoutes = routes.reduce((a, x) => {
+  return routes.reduce((a, x) => {
     if (!a[x["source"]]) {
       a[x["source"]] = [];
     }
     a[x["source"]].push(x["target"]);
     return a;
   }, {});
-  return groupedRoutes;
 }
 
 export default invalidRoutesIds;
