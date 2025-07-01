@@ -2,9 +2,8 @@ import * as d3 from "d3";
 import { loadObjects } from "src/loader";
 import { findInvalidRouteIds } from "src/error_detector";
 import {
-  startCount,
+  runSimulation,
   addAnimationPlayEvent,
-  addProgressEvent,
   initializeSimulation,
 } from "src/simulation/runner";
 import {
@@ -20,8 +19,6 @@ import {
 } from "src/simulation/params_setter";
 import {
   inactivePlayButtons,
-  // linkClicked,
-  // nodeClicked,
   findClickedFacility,
   nodeMouseOver,
   nodeMouseOut,
@@ -29,7 +26,6 @@ import {
   linkMouseOut,
   drawLink,
   activePlayButtons,
-  // changeActiveObject,
   displayOperator,
   displayRaiseOperator,
   findClickedRoute,
@@ -443,18 +439,26 @@ async function startSimulation() {
     return;
   }
 
-  await displayOperator();
-
   const params = initializeSimulation({ routes, facilities });
 
   await renderScene(params["routesWithPairs"], params["facilities"]);
-  const result = await startCount(params);
-  addAnimationPlayEvent(result["timeLine"]);
-  addProgressEvent(result["timeLine"]);
+  await displayOperator();
+
+  const result = await runSimulation(params);
+  addAnimationPlayEvent(result["timeLine"], result["countHistory"]);
+  displayResult(result);
   displayRaiseOperator();
   displayResultBadge();
   activePlayButtons();
   alert("シミュレーション終了");
+}
+
+function displayResult(result) {
+  document.getElementById("simulation_cycle_time").value = result["cycleTime"];
+  document.getElementById("simulation_bottleneck_process").value =
+    result["bottleneck_process"];
+  document.getElementById("simulation_waiting_time").value =
+    result["waitingTime"];
 }
 
 async function renderScene(routes, facilities, invalidRoutesIds = { ids: [] }) {
