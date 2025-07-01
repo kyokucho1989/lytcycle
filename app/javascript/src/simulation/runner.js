@@ -226,11 +226,11 @@ export function initializeSimulation(params) {
   };
 }
 
-export async function startCount(params) {
+export async function runSimulation(params) {
   const facilities = params["facilities"];
   const controller = params["controller"];
   const goalPoint = params["goalPoint"];
-  const operator1 = params["operator1"];
+  let operator1 = params["operator1"];
   let timeLine = params["timeLine"];
 
   facilities.forEach((facility) => {
@@ -241,7 +241,7 @@ export async function startCount(params) {
   });
 
   let time = 0;
-  let travelingAnimation, materialHeldByOperator, machine;
+  let machine;
   let totalCount = 0;
 
   while (time < END_TIME) {
@@ -262,24 +262,15 @@ export async function startCount(params) {
             !machine.isProcessing ||
             Number(machine.processingEndTime) < time
           ) {
-            operator1.addStateToHistory(time, "脱着中");
-            if (!machine.hasMaterial) {
-              operator1.hasMaterial = false;
-            }
-            machine.isProcessing = true;
-            machine.hasMaterial = true;
-            operator1.isWaiting = false;
-
-            // machineの状態によって一連のAnimeオブジェクトを返す
-            const machineAnimation = buildMachineAnimation(
+            const result = attachMaterialSequence(
+              operator1,
               machine,
-              SPEED_RATIO,
+              timeLine,
               time
             );
-
-            // 設備のアニメーションをtimeLineへ追加
-
-            timeLine = addMachineToTimeLine(machineAnimation, timeLine, time);
+            operator1 = result["operator1"];
+            machine = result["machine"];
+            timeLine = result["addedTimeLine"];
           } else {
             operator1.isWaiting = true;
             operator1.addStateToHistory(time, "待機中");
@@ -301,22 +292,15 @@ export async function startCount(params) {
       }
 
       if (!operator1.isWaiting) {
-        let { destination, selectedRoute } = controller.determineRoute(
+        const result = travelOperatorSequence(
+          controller,
           operator1,
-          facilities
+          facilities,
+          time,
+          timeLine
         );
-        operator1.arrivalTime = time + Number(selectedRoute.routeLength);
-        travelingAnimation = getAnimeObject(selectedRoute);
-
-        materialHeldByOperator = toggleOperatorHasMaterial(
-          operator1.hasMaterial
-        );
-
-        operator1.destination = destination;
-        operator1.isMoving = true;
-
-        timeLine.add(travelingAnimation, (time * 1000) / SPEED_RATIO);
-        timeLine.add(materialHeldByOperator, (time * 1000) / SPEED_RATIO);
+        operator1 = result["operator1"];
+        timeLine = result["timeLine"];
       }
     }
 
@@ -343,6 +327,47 @@ export async function startCount(params) {
   return { timeLine, countHistory, cycleTime, bottleneck_process, waitingTime };
 }
 
+function travelOperatorSequence(
+  controller,
+  operator1,
+  facilities,
+  time,
+  timeLine
+) {
+  const { destination, selectedRoute } = controller.determineRoute(
+    operator1,
+    facilities
+  );
+  operator1.arrivalTime = time + Number(selectedRoute.routeLength);
+  const travelingAnimation = getAnimeObject(selectedRoute);
+  const materialHeldByOperator = toggleOperatorHasMaterial(
+    operator1.hasMaterial
+  );
+
+  operator1.destination = destination;
+  operator1.isMoving = true;
+
+  timeLine.add(travelingAnimation, (time * 1000) / SPEED_RATIO);
+  timeLine.add(materialHeldByOperator, (time * 1000) / SPEED_RATIO);
+
+  return { timeLine, operator1 };
+}
+
+function attachMaterialSequence(operator1, machine, timeLine, time) {
+  operator1.addStateToHistory(time, "脱着中");
+  if (!machine.hasMaterial) {
+    operator1.hasMaterial = false;
+  }
+  machine.isProcessing = true;
+  machine.hasMaterial = true;
+  operator1.isWaiting = false;
+
+  const machineAnimation = buildMachineAnimation(machine, SPEED_RATIO, time);
+  const addedTimeLine = addMachineToTimeLine(machineAnimation, timeLine, time);
+
+  return { addedTimeLine, operator1, machine };
+}
+
 function addMachineToTimeLine(animation, timeLine, time) {
   const materialInMachine = animation["materialInMachine"];
   const processingMaterial = animation["processingMaterial"];
@@ -367,7 +392,6 @@ function buildMachineAnimation(machine, time) {
 
   const lightingAnime = getMachineLightingAnime(machine);
   const lightOutAnime = getMachineLightOutAnime(machine);
-
   const processingMaterial = getProcessingMaterial(machine);
   const processedMaterial = getProcessedMaterial(machine);
 

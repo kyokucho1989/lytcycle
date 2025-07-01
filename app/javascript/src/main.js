@@ -2,7 +2,7 @@ import * as d3 from "d3";
 import { loadObjects } from "src/loader";
 import { findInvalidRouteIds } from "src/error_detector";
 import {
-  startCount,
+  runSimulation,
   addAnimationPlayEvent,
   initializeSimulation,
 } from "src/simulation/runner";
@@ -444,7 +444,7 @@ async function startSimulation() {
   await renderScene(params["routesWithPairs"], params["facilities"]);
   await displayOperator();
 
-  const result = await startCount(params);
+  const result = await runSimulation(params);
   addAnimationPlayEvent(result["timeLine"], result["countHistory"]);
   displayResult(result);
   displayRaiseOperator();
