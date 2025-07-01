@@ -7,10 +7,7 @@ class SimulationsController < ApplicationController
   end
 
   def edit
-    respond_to do |format|
-      format.html
-      format.json { render json: @simulation }
-    end
+    respond_to(&:html)
   end
 
   def new

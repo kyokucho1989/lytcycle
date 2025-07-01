@@ -9,7 +9,6 @@ RSpec.describe 'RenderSVG', type: :system do
   it 'can see facility objects', js: true do
     sign_in @confirmed_user
     visit new_simulation_path
-    # sleep 3
     click_on '結果確認'
     fill_in 'simulation[title]', with: 'machine'
     click_on 'データを保存'
@@ -43,7 +42,7 @@ RSpec.describe 'EditObjects', type: :system do
     find('line#root1-1').click
     fill_in '距離', with: '30', fill_options: { clear: :backspace }
     click_on '保存'
-    sleep 3
+    # sleep 3
     find('line#root1-1').click
     expect(page).to have_css('line#root1-1', wait: 5, visible: :all)
   end

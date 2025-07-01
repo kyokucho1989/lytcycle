@@ -1,13 +1,9 @@
 export async function loadObjects() {
-  try {
-    const response = await fetch("edit.json");
-    if (!response.ok) {
-      throw new Error(`レスポンスステータス: ${response.status}`);
-    }
-    const json = await response.json();
-    const routes = JSON.parse(json.routes);
-    const facilities = JSON.parse(json.facilities);
-    const operators = JSON.parse(json.operators);
+  const simulationData = document.getElementById("simulation-data");
+  if (simulationData) {
+    const routes = JSON.parse(simulationData.dataset.routes);
+    const facilities = JSON.parse(simulationData.dataset.facilities);
+    const operators = JSON.parse(simulationData.dataset.operators);
 
     routes.forEach((route) => {
       if (typeof route.source === "object") {
@@ -18,7 +14,5 @@ export async function loadObjects() {
       }
     });
     return { routes, facilities, operators };
-  } catch (error) {
-    console.error(error.message);
   }
 }
