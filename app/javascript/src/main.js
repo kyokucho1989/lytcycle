@@ -198,8 +198,6 @@ export function switchAddRouteMode() {
         const params = addRoute(targetId, sourceId);
         await renderScene(params["routes"], params["facilities"]);
         isLinking = false;
-      } else {
-        sourceId = this.id;
       }
     }
   });
@@ -245,11 +243,11 @@ export function setParamsToFacilityOnModal() {
         return;
       }
 
-      const params = {};
-      params.id = document.getElementById("hidden-id").value;
-      params.name = document.getElementById("name").value;
-      params.processingTime = document.getElementById("processingTime").value;
-
+      const params = {
+        id: document.getElementById("hidden-id").value,
+        name: document.getElementById("name").value,
+        processingTime: document.getElementById("processingTime").value,
+      };
       setObjectParams(e, params, facilities);
       await renderScene(routes, facilities);
       facilityDialog.close();
@@ -275,9 +273,10 @@ export function setParamsToRouteOnModal() {
         routeForm.reportValidity();
         return;
       }
-      const params = {};
-      params.id = document.getElementById("route-hidden-id").value;
-      params.routeLength = document.getElementById("route-length").value;
+      const params = {
+        id: document.getElementById("route-hidden-id").value,
+        routeLength: document.getElementById("route-length").value,
+      };
 
       setObjectParams(e, params, routes);
       await renderScene(routes, facilities);
@@ -314,9 +313,7 @@ export function addOpenHelpDialogEvent() {
   const helpBtns = document.querySelectorAll(".help-button");
   const closeBtns = document.querySelectorAll(".close-button");
 
-  if (helpDialogs.length === 0) {
-    return;
-  } else {
+  if (helpDialogs.length) {
     helpDialogs.forEach((dialog) => {
       dialog.addEventListener("click", (e) => {
         if (e.target.closest("#help-dialog-container") === null) {
@@ -326,9 +323,7 @@ export function addOpenHelpDialogEvent() {
     });
   }
 
-  if (helpBtns.length === 0) {
-    return;
-  } else {
+  if (helpBtns.length) {
     helpBtns.forEach((btn) => {
       btn.addEventListener("click", () => {
         const targetId = btn.dataset.helpTargetId;
@@ -338,7 +333,7 @@ export function addOpenHelpDialogEvent() {
     });
   }
 
-  if (closeBtns.length !== 0) {
+  if (closeBtns.length) {
     closeBtns.forEach((btn) => {
       btn.addEventListener("click", () => {
         const targetId = btn.dataset.targetId;
@@ -409,6 +404,8 @@ export async function setupScene() {
   }
 }
 
+// 画面更新時に実行される一連の処理
+// Stimulusのconnect()から呼ばれる
 export async function setupEventListeners() {
   setupScene();
   await setParamsToFacilityOnModal();
@@ -430,6 +427,7 @@ export function isConsistency() {
   }
 }
 
+// シミュレーション実行が押された時の処理
 async function startSimulation() {
   const invalidRoutesIds = findInvalidRouteIds(routes);
 
@@ -456,11 +454,12 @@ async function startSimulation() {
 function displayResult(result) {
   document.getElementById("simulation_cycle_time").value = result["cycleTime"];
   document.getElementById("simulation_bottleneck_process").value =
-    result["bottleneck_process"];
+    result["bottleneckProcess"];
   document.getElementById("simulation_waiting_time").value =
     result["waitingTime"];
 }
 
+// 画面描画とmodeに応じたイベントリスナーの登録を行う
 async function renderScene(routes, facilities, invalidRoutesIds = { ids: [] }) {
   await drawLink(routes, facilities, invalidRoutesIds);
   const selectMode = document.querySelector(
