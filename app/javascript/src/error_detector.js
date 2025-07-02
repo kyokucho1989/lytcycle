@@ -1,9 +1,9 @@
 export let invalidRoutesIds = { ids: [] };
 
 export function findInvalidRouteIds(routes) {
-  const copiedRoutes = JSON.parse(JSON.stringify(routes));
-  const filteredRoute = copiedRoutes.filter((el) => !el["lastId"]);
-  filteredRoute.forEach((route) => {
+  const copiedRoutes = JSON.parse(JSON.stringify(routes)); // routesをディープコピーする
+  const filteredRoutes = copiedRoutes.filter((el) => !el["lastId"]);
+  filteredRoutes.forEach((route) => {
     if (typeof route.source === "object") {
       route.source = route.source.id;
     }
@@ -11,7 +11,7 @@ export function findInvalidRouteIds(routes) {
       route.target = route.target.id;
     }
   });
-  const groupedRoutes = formatBySource(filteredRoute);
+  const groupedRoutes = formatBySource(filteredRoutes);
   const startNode = "start";
   const goalNode = "goal";
   const invalidRoutesSet = findInvalidRoutesSetByDFS(
@@ -19,7 +19,7 @@ export function findInvalidRouteIds(routes) {
     startNode,
     goalNode
   );
-  const invalidRoutes = filteredRoute.filter((route) =>
+  const invalidRoutes = filteredRoutes.filter((route) =>
     invalidRoutesSet.has(`${route.source}->${route.target}`)
   );
   invalidRoutesIds.ids = invalidRoutes.map((route) => route["id"]);
@@ -70,13 +70,22 @@ export function findInvalidRoutesSetByDFS(groupedRoutes, startNode, goalNode) {
   return allRoutesSet.difference(validRoutes);
 }
 
+// formatBySource(routes)
+// routesをsourceごとにtargetをまとめた形式に変換
+// 例：
+// routes = [
+//   { source: "start", target: 1 },
+//   { source: "start", target: 2 },
+//   { source: "start", target: 3 }]
+// formatBySource(routes) => { start: [1, 2, 3]}
+
 export function formatBySource(routes) {
-  return routes.reduce((a, x) => {
-    if (!a[x["source"]]) {
-      a[x["source"]] = [];
+  return routes.reduce((routesBySource, route) => {
+    if (!routesBySource[route["source"]]) {
+      routesBySource[route["source"]] = [];
     }
-    a[x["source"]].push(x["target"]);
-    return a;
+    routesBySource[route["source"]].push(route["target"]);
+    return routesBySource;
   }, {});
 }
 

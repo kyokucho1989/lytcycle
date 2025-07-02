@@ -63,19 +63,19 @@ export function deleteFacility(element) {
     alert("スタートとゴールは削除できません。");
     return;
   }
-  const unConnectedRoutes = routes.filter(
+  const unconnectedRoutes = routes.filter(
     (route) =>
       route.target.id !== selectedFacility.id &&
       route.source.id !== selectedFacility.id
   );
 
-  const unConnectedRoutesIds = unConnectedRoutes.map((route) => route.id);
+  const unconnectedRoutesIds = unconnectedRoutes.map((route) => route.id);
 
   if (window.confirm("削除しますか？")) {
     facilities = facilities.filter(
       (facility) => facility.id !== selectedFacility.id
     );
-    routes = routes.filter((route) => unConnectedRoutesIds.includes(route.id));
+    routes = routes.filter((route) => unconnectedRoutesIds.includes(route.id));
   }
   return { routes, facilities };
 }
@@ -92,18 +92,18 @@ export function addRoute(targetId, sourceId) {
     index: routes.length,
   };
 
-  const duplicatedLogic = (route) =>
+  const duplicatedLinks = (route) =>
     (route.target.id === targetId && route.source.id === sourceId) ||
     (route.target.id === sourceId && route.source.id === targetId);
 
-  if (routes.some(duplicatedLogic)) {
+  if (routes.some(duplicatedLinks)) {
     alert("すでにリンクが作成されています");
   } else {
     routes = routes.concat(route);
   }
   const selectedNodes = document.querySelectorAll("circle[selected]");
 
-  [...selectedNodes].forEach((element) => {
+  selectedNodes.forEach((element) => {
     element.removeAttribute("selected");
   });
   return { routes, facilities };
@@ -140,7 +140,7 @@ export function addFacility([x, y]) {
   return { routes, facilities };
 }
 
-export function setInitial() {
+export function setInitialParams() {
   routes = routesInitial;
   operators = operatorsInitial;
   facilities = facilitiesInitial;
@@ -148,7 +148,5 @@ export function setInitial() {
 }
 
 export function setParams(params) {
-  routes = params["routes"];
-  operators = params["operators"];
-  facilities = params["facilities"];
+  ({ routes, operators, facilities } = params);
 }

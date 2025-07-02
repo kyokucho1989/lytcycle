@@ -49,16 +49,16 @@ class Operator {
 class Controller {
   constructor() {
     this.lastId = 0;
-    this.route = [];
+    this.routes = [];
   }
 
   setRoutes(routes) {
-    this.route = routes;
+    this.routes = routes;
   }
 
   determineRoute(operator, locations) {
     let selectedRoute, destination;
-    const routes = this.route;
+    const routes = this.routes;
     const currentLocation = operator.currentLocation;
     const linkedRoutes = routes.filter(
       (route) =>
@@ -105,15 +105,15 @@ class Controller {
 }
 
 export function generatePairRoutes(routes) {
-  const lastIds = routes.filter((element) => element.lastId);
-  const filteredRoutes = routes.filter((element) => element.routeLength);
+  const lastIds = routes.filter((route) => route.lastId);
+  const filteredRoutes = routes.filter((route) => route.routeLength);
 
-  const convertedRoutes = filteredRoutes.map((element) => {
+  const convertedRoutes = filteredRoutes.map((route) => {
     return {
-      ...element,
-      source: element.target,
-      target: element.source,
-      id: `${RETURN_PREFIX}-${element.id}`,
+      ...route,
+      source: route.target,
+      target: route.source,
+      id: `${RETURN_PREFIX}-${route.id}`,
     };
   });
   const routesWithPairs = filteredRoutes.concat(convertedRoutes);
@@ -158,19 +158,22 @@ export function addAnimationPlayEvent(timeLine, countHistory) {
 
 function displayCount(time, maxTime, countHistory) {
   let closestTime, count;
-  let timeSeries = countHistory.map((el) => el.time);
+  const timeSeries = countHistory.map((record) => record.time);
   if (timeSeries[0] > time) {
     closestTime = 0;
     count = 0;
   } else {
-    closestTime = timeSeries.reduce((a, current) => {
-      if (Math.abs(current - time) < Math.abs(a - time) && current < time) {
+    closestTime = timeSeries.reduce((latestPastTime, current) => {
+      if (
+        Math.abs(current - time) < Math.abs(latestPastTime - time) &&
+        current < time
+      ) {
         return current;
       } else {
-        return a;
+        return latestPastTime;
       }
     });
-    count = countHistory.filter((el) => el.time === closestTime)[0]
+    count = countHistory.filter((record) => record.time === closestTime)[0]
       .productionCount;
   }
 
@@ -181,16 +184,15 @@ function displayCount(time, maxTime, countHistory) {
 }
 
 export function initializeSimulation(params) {
-  const routes = params["routes"];
-  const facilities = params["facilities"];
+  const { routes, facilities } = params;
   const timeLine = anime.timeline({
     autoplay: false,
   });
 
-  facilities.forEach((el) => {
-    el.hasMaterial = false;
-    el.isProcessing = false;
-    el.processingEndTime = 0;
+  facilities.forEach((facility) => {
+    facility.hasMaterial = false;
+    facility.isProcessing = false;
+    facility.processingEndTime = 0;
   });
 
   const formattedRoutes = routes.map((route) => {
@@ -198,7 +200,7 @@ export function initializeSimulation(params) {
       ...route,
       source: facilities.find((facility) => facility.id === route.source.id),
       target: facilities.find((facility) => facility.id === route.target.id),
-      id: `${route.id}`,
+      id: String(route.id),
     };
   });
 
@@ -225,17 +227,17 @@ export function initializeSimulation(params) {
 }
 
 export async function runSimulation(params) {
-  const facilities = params["facilities"];
-  const controller = params["controller"];
-  const goalPoint = params["goalPoint"];
-  let operator1 = params["operator1"];
-  let timeLine = params["timeLine"];
+  const { facilities, controller, goalPoint } = params;
+  let { operator1, timeLine } = params;
 
   facilities.forEach((facility) => {
-    const object = toggleFacilityHasMaterial(facility);
-    const object2 = { targets: `circle#${facility.id}`, fill: "#99aaee" };
-    timeLine.add(object, 0);
-    timeLine.add(object2, 0);
+    const facilityInitialAnimation = toggleFacilityHasMaterial(facility);
+    const materialInitialAnimation = {
+      targets: `circle#${facility.id}`,
+      fill: "#99aaee",
+    };
+    timeLine.add(facilityInitialAnimation, 0);
+    timeLine.add(materialInitialAnimation, 0);
   });
 
   let time = 0;
@@ -266,9 +268,8 @@ export async function runSimulation(params) {
               timeLine,
               time
             );
-            operator1 = result["operator1"];
-            machine = result["machine"];
-            timeLine = result["addedTimeLine"];
+            ({ operator1, machine } = result);
+            timeLine = result.addedTimeLine;
           } else {
             operator1.isWaiting = true;
             operator1.addStateToHistory(time, "待機中");
@@ -297,8 +298,7 @@ export async function runSimulation(params) {
           time,
           timeLine
         );
-        operator1 = result["operator1"];
-        timeLine = result["timeLine"];
+        ({ operator1, timeLine } = result);
       }
     }
 
@@ -311,8 +311,7 @@ export async function runSimulation(params) {
       }
     });
 
-    // 時間を更新
-    time = time + 1;
+    time++;
   }
 
   // 結果算出
@@ -367,11 +366,13 @@ function attachMaterialSequence(operator1, machine, timeLine, time) {
 }
 
 function addMachineToTimeLine(animation, timeLine, time) {
-  const materialInMachine = animation["materialInMachine"];
-  const processingMaterial = animation["processingMaterial"];
-  const processedMaterial = animation["processedMaterial"];
-  const lightingAnime = animation["lightingAnime"];
-  const lightOutAnime = animation["lightOutAnime"];
+  const {
+    materialInMachine,
+    processedMaterial,
+    processingMaterial,
+    lightOutAnime,
+    lightingAnime,
+  } = animation;
 
   timeLine.add(materialInMachine, (time * 1000) / SPEED_RATIO);
   timeLine
@@ -432,11 +433,7 @@ export function judgeBottleneckProcess(waitingArray) {
   const bottleneckMap = waitingArray.find(
     (element) => element[1] === waitingTime
   );
-  let bottleneckProcess = bottleneckMap[0];
-  if (bottleneckProcess === "start") {
-    bottleneckProcess = "なし(移動ネック)";
-  }
-  return bottleneckProcess;
+  return bottleneckMap[0] === "start" ? "なし(移動ネック)" : bottleneckMap[0];
 }
 
 export function calculateCycleTime(goalPoint) {
@@ -450,22 +447,19 @@ export function calculateCycleTime(goalPoint) {
   } else {
     slicedSet = timeSet.slice(1);
   }
-  let deferenceArray = [];
-  deferenceArray = slicedSet.map((element, index) => {
+  const deferenceArray = slicedSet.map((element, index) => {
     return element - timeSet[index];
   });
-  const init = 0;
   const totalTime = deferenceArray.reduce(
     (sum, currentValue) => sum + currentValue,
-    init
+    0
   );
-  cycleTime = totalTime / deferenceArray.length;
-  return cycleTime;
+  return totalTime / deferenceArray.length;
 }
 
 function getAnimeObject(root) {
   const path = anime.path(`#svg02 line#${root.id}`);
-  const animeObject = {
+  return {
     targets: "#ob1",
     translateX: path("x"),
     translateY: path("y"),
@@ -473,7 +467,6 @@ function getAnimeObject(root) {
     direction: "reverse",
     easing: "linear",
   };
-  return animeObject;
 }
 
 function toggleOperatorHasMaterial(hasState) {
