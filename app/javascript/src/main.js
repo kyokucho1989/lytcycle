@@ -14,18 +14,18 @@ import {
   addRoute,
   deleteRoute,
   deleteFacility,
-  setInitial,
+  setInitialParams,
   setParams,
 } from "src/simulation/params_setter";
 import {
-  inactivePlayButtons,
+  inactivatePlayButtons,
   findClickedFacility,
   nodeMouseOver,
   nodeMouseOut,
   linkMouseOver,
   linkMouseOut,
   drawLink,
-  activePlayButtons,
+  activatePlayButtons,
   displayOperator,
   displayRaiseOperator,
   findClickedRoute,
@@ -81,8 +81,7 @@ export async function setClickEventToObject(object) {
 }
 
 function changeActiveObject(params) {
-  const routes = params["routes"];
-  const facilities = params["facilities"];
+  const { routes, facilities } = params;
   d3.select("#svg02")
     .selectAll("line")
     .on("click", function () {
@@ -227,7 +226,7 @@ export function setObjectParams(e, params, objects) {
       selectedObject[key] = value;
     }
   }
-  inactivePlayButtons();
+  inactivatePlayButtons();
 }
 
 export function setParamsToFacilityOnModal() {
@@ -245,8 +244,8 @@ export function setParamsToFacilityOnModal() {
 
       const params = {
         id: document.getElementById("hidden-id").value,
-        name: document.getElementById("name").value,
-        processingTime: document.getElementById("processingTime").value,
+        name: document.getElementById("facility-name").value,
+        processingTime: document.getElementById("processing-time").value,
       };
       setObjectParams(e, params, facilities);
       await renderScene(routes, facilities);
@@ -316,7 +315,7 @@ export function addOpenHelpDialogEvent() {
   if (helpDialogs.length) {
     helpDialogs.forEach((dialog) => {
       dialog.addEventListener("click", (e) => {
-        if (e.target.closest("#help-dialog-container") === null) {
+        if (e.target.closest("#help-dialog-container")) {
           helpDialog.close();
         }
       });
@@ -346,8 +345,8 @@ export function addOpenHelpDialogEvent() {
 
 export function setFacilityDataToModal(facility) {
   const id = document.getElementById("hidden-id");
-  const name = document.getElementById("name");
-  const processingTime = document.getElementById("processingTime");
+  const name = document.getElementById("facility-name");
+  const processingTime = document.getElementById("processing-time");
 
   id.value = facility.id;
   name.value = facility.name;
@@ -364,16 +363,12 @@ export function setRouteDataToModal(route) {
 
 export function displayResultBadge() {
   const badge = document.getElementById("simulation-result-badge");
-  if (badge.classList.contains("hidden")) {
-    badge.classList.remove("hidden");
-  }
+  badge.classList.remove("hidden");
 }
 
 export function removeResultBadge() {
   const badge = document.getElementById("simulation-result-badge");
-  if (!badge.classList.contains("hidden")) {
-    badge.classList.add("hidden");
-  }
+  badge.classList.add("hidden");
 }
 
 function toggleUserMenu() {
@@ -394,7 +389,7 @@ export async function setupScene() {
   if (simulationParameters) {
     const simulationId = simulationParameters.dataset.id;
     if (simulationId === "") {
-      const params = setInitial();
+      const params = setInitialParams();
       await renderScene(params["routes"], params["facilities"]);
     } else {
       const params = await loadObjects();
@@ -420,11 +415,7 @@ export async function setupEventListeners() {
 
 export function isConsistency() {
   const result = findInvalidRouteIds(routes);
-  if (result.ids.length === 0) {
-    return true;
-  } else {
-    return false;
-  }
+  return result.ids.length === 0;
 }
 
 // シミュレーション実行が押された時の処理
@@ -447,7 +438,7 @@ async function startSimulation() {
   displayResult(result);
   displayRaiseOperator();
   displayResultBadge();
-  activePlayButtons();
+  activatePlayButtons();
   alert("シミュレーション終了");
 }
 
@@ -465,11 +456,7 @@ async function renderScene(routes, facilities, invalidRoutesIds = { ids: [] }) {
   const selectMode = document.querySelector(
     'fieldset#modeSelection  input[type="radio"]:checked'
   );
-  let selectModeName;
-
-  if (selectMode !== null) {
-    selectModeName = selectMode.id;
-  }
+  const selectModeName = selectMode ? selectMode.id : undefined;
   const modeState = {};
 
   switch (selectModeName) {

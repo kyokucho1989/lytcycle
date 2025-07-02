@@ -45,11 +45,6 @@ export default class extends Controller {
     this.detailTarget.close();
   }
 
-  changeModeToAddMan() {
-    this.state = this.STATES.ADD_OPERATOR;
-    setClickEventToObject(this);
-  }
-
   changeModeToAddFacility() {
     this.state = this.STATES.ADD_FACILITY;
     setClickEventToObject(this);

@@ -55,13 +55,13 @@ test("button click and set params", async () => {
     <dialog id="facilityDialog">
       <div id="hidden-id" hidden></div>
       <div>
-        <label for="name">設備名</label>
-        <input type="text" id="name" name="name" maxlength="16" size="15" />
+        <label for="facility-name">設備名</label>
+        <input type="text" id="facility-name" name="name" maxlength="16" size="15" />
       </div>
       <div>
-        <label for="processingTime">加工時間</label>
+        <label for="processing-time">加工時間</label>
         <span id="counter">0</span>
-        <input type="number" id="processingTime" name="name" min="0" max="400" />
+        <input type="number" id="processing-time" name="name" min="0" max="400" />
       </div>
       <div>
         <button id="confirmBtn" value="default">保存</button>
@@ -81,8 +81,8 @@ test("button click and set params", async () => {
   button.addEventListener("click", (e) => {
     let params = {};
     params.id = document.getElementById("hidden-id").value;
-    params.name = document.getElementById("name").value;
-    params.processingTime = document.getElementById("processingTime").value;
+    params.name = document.getElementById("facility-name").value;
+    params.processingTime = document.getElementById("processing-time").value;
 
     setObjectParams(e, params, facilities);
   });

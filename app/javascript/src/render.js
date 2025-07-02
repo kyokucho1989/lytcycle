@@ -150,7 +150,7 @@ export async function drawLink(
       resolve();
     }
     displayStartGoalName();
-    inactivePlayButtons();
+    inactivatePlayButtons();
   });
 }
 
@@ -160,7 +160,7 @@ export async function setNodeColor(nodesData, color) {
     .attr("fill", color);
 }
 
-export function inactivePlayButtons() {
+export function inactivatePlayButtons() {
   const play = document.getElementById("play");
   const pause = document.getElementById("pause");
   const progress = document.getElementById("progress");
@@ -171,7 +171,7 @@ export function inactivePlayButtons() {
   }
 }
 
-export function activePlayButtons() {
+export function activatePlayButtons() {
   const play = document.getElementById("play");
   const pause = document.getElementById("pause");
   const progress = document.getElementById("progress");
