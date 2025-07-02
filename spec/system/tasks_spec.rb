@@ -30,6 +30,7 @@ RSpec.describe 'EditObjects', type: :system do
     visit new_simulation_path
     sleep 3
     find('circle#n1').click
+    sleep 3
     fill_in '設備名', with: '変更後の設備名', fill_options: { clear: :backspace }
     fill_in '加工時間', with: '30', fill_options: { clear: :backspace }
     click_on '保存'
