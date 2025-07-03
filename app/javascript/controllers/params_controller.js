@@ -44,9 +44,9 @@ export default class extends Controller {
     this.routeLengthTarget.value = route.routeLength;
   }
 
-  async setFacilityParams() {
-    if (!this.facilityForm.checkValidity()) {
-      this.facilityForm.reportValidity();
+  async setFacilityParams(e) {
+    if (!this.facilityFormTarget.checkValidity()) {
+      this.facilityFormTarget.reportValidity();
       return;
     }
 
@@ -56,13 +56,33 @@ export default class extends Controller {
       processingTime: this.processingTimeTarget.value,
     };
 
-    setObjectParams(params, facilities);
+    setObjectParams(e, params, facilities);
     await renderScene(routes, facilities);
-    this.facilityDialog.close();
+    this.facilityDialogTarget.close();
+  }
+
+  async setRouteParams(e) {
+    if (!this.routeFormTarget.checkValidity()) {
+      this.routeFormTarget.reportValidity();
+      return;
+    }
+
+    const params = {
+      id: this.hiddenRouteIdTarget.value,
+      routeLength: this.routeLengthTarget.value,
+    };
+
+    setObjectParams(e, params, routes);
+    await renderScene(routes, facilities);
+    this.routeDialogTarget.close();
   }
 
   cancelFacilityParams() {
     this.facilityDialogTarget.close();
+  }
+
+  cancelRouteParams() {
+    this.routeDialogTarget.close();
   }
 
   findClickedFacility(element, facilities) {

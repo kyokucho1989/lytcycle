@@ -214,67 +214,6 @@ export function setObjectParams(e, params, objects) {
   inactivatePlayButtons();
 }
 
-export function setParamsToFacilityOnModal() {
-  facilityDialog = document.getElementById("facilityDialog");
-  confirmBtn = document.getElementById("confirmBtn");
-  facilityForm = document.getElementById("facility-form");
-  // const cancelBtn = document.getElementById("cancel-btn");
-
-  if (confirmBtn) {
-    confirmBtn.addEventListener("click", async (e) => {
-      if (!facilityForm.checkValidity()) {
-        facilityForm.reportValidity();
-        return;
-      }
-
-      const params = {
-        id: document.getElementById("hidden-id").value,
-        name: document.getElementById("facility-name").value,
-        processingTime: document.getElementById("processing-time").value,
-      };
-      setObjectParams(e, params, facilities);
-      await renderScene(routes, facilities);
-      facilityDialog.close();
-    });
-  }
-
-  // if (cancelBtn) {
-  //   cancelBtn.addEventListener("click", () => {
-  //     facilityDialog.close();
-  //   });
-  // }
-}
-
-export function setParamsToRouteOnModal() {
-  routeDialog = document.getElementById("route-dialog");
-  routeConfirmBtn = document.getElementById("route-confirm-btn");
-  routeForm = document.getElementById("route-form");
-  // const routeCancelBtn = document.getElementById("route-cancel-btn");
-
-  if (routeConfirmBtn) {
-    routeConfirmBtn.addEventListener("click", async (e) => {
-      if (!routeForm.checkValidity()) {
-        routeForm.reportValidity();
-        return;
-      }
-      const params = {
-        id: document.getElementById("route-hidden-id").value,
-        routeLength: document.getElementById("route-length").value,
-      };
-
-      setObjectParams(e, params, routes);
-      await renderScene(routes, facilities);
-      routeDialog.close();
-    });
-  }
-
-  // if (routeCancelBtn) {
-  //   routeCancelBtn.addEventListener("click", () => {
-  //     routeDialog.close();
-  //   });
-  // }
-}
-
 export async function setObjectParamsOnDetailModal() {
   const routesInForm = document.getElementById("simulation-routes");
   const facilitiesInForm = document.getElementById("simulation-facilities");
@@ -370,8 +309,6 @@ export async function setupScene() {
 // Stimulusのconnect()から呼ばれる
 export async function setupEventListeners() {
   setupScene();
-  await setParamsToFacilityOnModal();
-  await setParamsToRouteOnModal();
   addToggleMenuEvent();
   addOpenHelpDialogEvent();
   const start = document.getElementById("startSimulation2");

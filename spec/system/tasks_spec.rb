@@ -21,15 +21,16 @@ RSpec.describe 'RenderSVG', type: :system do
 end
 
 RSpec.describe 'EditObjects', type: :system do
-  before do
-    @confirmed_user = User.create!(name: 'satou2', email: 'satou2@example.com', password: 'password',
-                                   confirmed_at: DateTime.now)
-  end
+  # before do
+  #   @confirmed_user = User.create!(name: 'satou2', email: 'satou2@example.com', password: 'password',
+  #                                  confirmed_at: DateTime.now)
+  # end
 
   it 'can edit facility attributes', js: true do
     visit new_simulation_path
     sleep 3
     find('circle#n1').click
+    sleep 3
     fill_in '設備名', with: '変更後の設備名', fill_options: { clear: :backspace }
     fill_in '加工時間', with: '30', fill_options: { clear: :backspace }
     click_on '保存'
@@ -38,11 +39,12 @@ RSpec.describe 'EditObjects', type: :system do
 
   it 'can edit link attributes', js: true do
     visit new_simulation_path
-    sleep 3
+    sleep 5
     find('line#root1-1').click
+    sleep 5
     fill_in '距離', with: '30', fill_options: { clear: :backspace }
     click_on '保存'
-    # sleep 3
+    sleep 5
     find('line#root1-1').click
     expect(page).to have_css('line#root1-1', wait: 5, visible: :all)
   end
