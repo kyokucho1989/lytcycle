@@ -204,14 +204,6 @@ export function nodeMouseOut(event) {
   d3.select(event.currentTarget).attr("fill", "#99aaee");
 }
 
-// export function findClickedFacility(element, facilities) {
-//   return facilities.find((facility) => facility.id === element.id);
-// }
-
-// export function findClickedRoute(element, routes) {
-//   return routes.find((route) => route.id === element.id);
-// }
-
 function dragStarted(event) {
   if (!event.active) simulation.alphaTarget(0.3).restart();
   event.subject.fx = event.subject.x;
