@@ -218,7 +218,7 @@ export function setParamsToFacilityOnModal() {
   facilityDialog = document.getElementById("facilityDialog");
   confirmBtn = document.getElementById("confirmBtn");
   facilityForm = document.getElementById("facility-form");
-  const cancelBtn = document.getElementById("cancel-btn");
+  // const cancelBtn = document.getElementById("cancel-btn");
 
   if (confirmBtn) {
     confirmBtn.addEventListener("click", async (e) => {
@@ -238,18 +238,18 @@ export function setParamsToFacilityOnModal() {
     });
   }
 
-  if (cancelBtn) {
-    cancelBtn.addEventListener("click", () => {
-      facilityDialog.close();
-    });
-  }
+  // if (cancelBtn) {
+  //   cancelBtn.addEventListener("click", () => {
+  //     facilityDialog.close();
+  //   });
+  // }
 }
 
 export function setParamsToRouteOnModal() {
   routeDialog = document.getElementById("route-dialog");
   routeConfirmBtn = document.getElementById("route-confirm-btn");
   routeForm = document.getElementById("route-form");
-  const routeCancelBtn = document.getElementById("route-cancel-btn");
+  // const routeCancelBtn = document.getElementById("route-cancel-btn");
 
   if (routeConfirmBtn) {
     routeConfirmBtn.addEventListener("click", async (e) => {
@@ -268,11 +268,11 @@ export function setParamsToRouteOnModal() {
     });
   }
 
-  if (routeCancelBtn) {
-    routeCancelBtn.addEventListener("click", () => {
-      routeDialog.close();
-    });
-  }
+  // if (routeCancelBtn) {
+  //   routeCancelBtn.addEventListener("click", () => {
+  //     routeDialog.close();
+  //   });
+  // }
 }
 
 export async function setObjectParamsOnDetailModal() {
@@ -418,7 +418,11 @@ function displayResult(result) {
 }
 
 // 画面描画とmodeに応じたイベントリスナーの登録を行う
-async function renderScene(routes, facilities, invalidRoutesIds = { ids: [] }) {
+export async function renderScene(
+  routes,
+  facilities,
+  invalidRoutesIds = { ids: [] }
+) {
   await drawLink(routes, facilities, invalidRoutesIds);
   const selectMode = document.querySelector(
     'fieldset#modeSelection  input[type="radio"]:checked'

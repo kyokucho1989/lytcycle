@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 import { facilities, routes } from "src/simulation/params_setter";
+import { renderScene, setObjectParams } from "src/main";
 
 export default class extends Controller {
   static targets = [
@@ -11,6 +12,8 @@ export default class extends Controller {
     "hiddenRouteId",
     "routeLength",
     "routeDialog",
+    "facilityForm",
+    "routeForm",
   ];
 
   connect() {}
@@ -20,25 +23,46 @@ export default class extends Controller {
       event.currentTarget,
       facilities
     );
-    this.setFacilityDataToModal(facilityForEdit);
+    this.fillFacilityParamsToForm(facilityForEdit);
     this.facilityDialogTarget.showModal();
   }
 
   showRouteDialog(event) {
     const routeForEdit = this.findClickedRoute(event.currentTarget, routes);
-    this.setRouteDataToModal(routeForEdit);
+    this.fillRouteParamsToForm(routeForEdit);
     this.routeDialogTarget.showModal();
   }
 
-  setFacilityDataToModal(facility) {
+  fillFacilityParamsToForm(facility) {
     this.hiddenFacilityIdTarget.value = facility.id;
     this.facilityNameTarget.value = facility.name;
     this.processingTimeTarget.value = facility.processingTime;
   }
 
-  setRouteDataToModal(route) {
+  fillRouteParamsToForm(route) {
     this.hiddenRouteIdTarget.value = route.id;
     this.routeLengthTarget.value = route.routeLength;
+  }
+
+  async setFacilityParams() {
+    if (!this.facilityForm.checkValidity()) {
+      this.facilityForm.reportValidity();
+      return;
+    }
+
+    const params = {
+      id: this.hiddenFacilityIdTarget.value,
+      name: this.facilityNameTarget.value,
+      processingTime: this.processingTimeTarget.value,
+    };
+
+    setObjectParams(params, facilities);
+    await renderScene(routes, facilities);
+    this.facilityDialog.close();
+  }
+
+  cancelFacilityParams() {
+    this.facilityDialogTarget.close();
   }
 
   findClickedFacility(element, facilities) {
