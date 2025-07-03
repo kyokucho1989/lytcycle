@@ -19,7 +19,6 @@ import {
 } from "src/simulation/params_setter";
 import {
   inactivatePlayButtons,
-  findClickedFacility,
   nodeMouseOver,
   nodeMouseOut,
   linkMouseOver,
@@ -28,7 +27,6 @@ import {
   activatePlayButtons,
   displayOperator,
   displayRaiseOperator,
-  findClickedRoute,
 } from "src/render";
 
 export let link, node, simulation;
@@ -47,19 +45,15 @@ export async function setClickEventToObject(object) {
     case "edit":
       clearGhostObjects();
       removeSelectAttribute();
-      changeActiveObject({ routes, facilities });
+      changeActiveObject();
       svg.on("click", null);
       svg.on("mousemove", null);
-      svg.selectAll("line").on("click", function () {
-        const routeForEdit = findClickedRoute(this, routes);
-        setRouteDataToModal(routeForEdit);
-        routeDialog.showModal();
-      });
-      svg.selectAll("circle").on("click", function () {
-        const facilityForEdit = findClickedFacility(this, facilities);
-        setFacilityDataToModal(facilityForEdit);
-        facilityDialog.showModal();
-      });
+      svg
+        .selectAll("line")
+        .attr("data-action", "click->params#showRouteDialog");
+      svg
+        .selectAll("circle")
+        .attr("data-action", "click->params#showFacilityDialog");
       svg.selectAll("line").on("mouseover", linkMouseOver);
       svg.selectAll("line").on("mouseout", linkMouseOut);
       svg.selectAll("circle").on("mouseover", nodeMouseOver);
@@ -80,22 +74,13 @@ export async function setClickEventToObject(object) {
   }
 }
 
-function changeActiveObject(params) {
-  const { routes, facilities } = params;
+function changeActiveObject() {
   d3.select("#svg02")
     .selectAll("line")
-    .on("click", function () {
-      const routeForEdit = findClickedRoute(this, routes);
-      setRouteDataToModal(routeForEdit);
-      routeDialog.showModal();
-    });
+    .attr("data-action", "click->params#showRouteDialog");
   d3.select("#svg02")
     .selectAll("circle")
-    .on("click", function () {
-      const facilityForEdit = findClickedFacility(this, facilities);
-      setFacilityDataToModal(facilityForEdit);
-      facilityDialog.showModal();
-    });
+    .attr("data-action", "click->params#showFacilityDialog");
 }
 
 export function switchDeleteObjectMode() {
@@ -341,24 +326,6 @@ export function addOpenHelpDialogEvent() {
       });
     });
   }
-}
-
-export function setFacilityDataToModal(facility) {
-  const id = document.getElementById("hidden-id");
-  const name = document.getElementById("facility-name");
-  const processingTime = document.getElementById("processing-time");
-
-  id.value = facility.id;
-  name.value = facility.name;
-  processingTime.value = facility.processingTime;
-}
-
-export function setRouteDataToModal(route) {
-  const id = document.getElementById("route-hidden-id");
-  const length = document.getElementById("route-length");
-
-  id.value = route.id;
-  length.value = route.routeLength;
 }
 
 export function displayResultBadge() {
