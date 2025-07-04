@@ -4,6 +4,12 @@ const RETURN_PREFIX = "re";
 const SPEED_RATIO = 10;
 const END_TIME = 400;
 
+let timeLine = anime.timeline({
+  autoplay: false,
+});
+
+// let playTimeLine, pauseTimeLine;
+
 class Location {
   constructor(parameters) {
     this.name = parameters.name;
@@ -120,7 +126,7 @@ export function generatePairRoutes(routes) {
   return lastIds.length ? routesWithPairs.unshift(lastIds) : routesWithPairs;
 }
 
-export function addAnimationPlayEvent(timeLine, countHistory) {
+export function addAnimationPlayEvent(countHistory) {
   const play = document.getElementById("play");
   const pause = document.getElementById("pause");
 
@@ -143,16 +149,28 @@ export function addAnimationPlayEvent(timeLine, countHistory) {
       displayCount(targetSecond, maxTime, countHistory);
     });
   }
+  // 過去のtimeLineが残ったままだと再生時にエラーが出る
+  // 一旦イベントリスナーを解除してもう一度付与させる。
+
+  // if (play && playTimeLine) {
+  //   play.removeEventListener("click", playTimeLine);
+  // }
+  // if (pause && pauseTimeLine) {
+  //   pause.removeEventListener("click", pauseTimeLine);
+  // }
+
+  const playTimeLine = function () {
+    timeLine.play();
+  };
+  const pauseTimeLine = function () {
+    timeLine.pause();
+  };
 
   if (play) {
-    play.addEventListener("click", function () {
-      timeLine.play();
-    });
+    play.addEventListener("click", playTimeLine);
   }
   if (pause) {
-    pause.addEventListener("click", function () {
-      timeLine.pause();
-    });
+    pause.addEventListener("click", pauseTimeLine);
   }
 }
 
@@ -185,9 +203,10 @@ function displayCount(time, maxTime, countHistory) {
 
 export function initializeSimulation(params) {
   const { routes, facilities } = params;
-  const timeLine = anime.timeline({
-    autoplay: false,
-  });
+  timeLine.children = [];
+  // const timeLine = anime.timeline({
+  //   autoplay: false,
+  // });
 
   facilities.forEach((facility) => {
     facility.hasMaterial = false;
@@ -228,8 +247,8 @@ export function initializeSimulation(params) {
 
 export async function runSimulation(params) {
   const { facilities, controller, goalPoint } = params;
-  let { operator1, timeLine } = params;
-
+  // let { operator1, timeLine } = params;
+  let operator1 = params["operator1"];
   facilities.forEach((facility) => {
     const facilityInitialAnimation = toggleFacilityHasMaterial(facility);
     const materialInitialAnimation = {

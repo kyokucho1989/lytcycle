@@ -1,10 +1,15 @@
 import { Controller } from "@hotwired/stimulus";
 
 import { facilities, routes } from "src/simulation/params_setter";
-import { renderScene, setObjectParams } from "src/main";
+import {
+  renderScene,
+  setObjectParams,
+  // setObjectParamsOnDetailModal,
+} from "src/main";
 
 export default class extends Controller {
   static targets = [
+    "result",
     "facilityDialog",
     "hiddenFacilityId",
     "facilityName",

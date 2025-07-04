@@ -8,7 +8,7 @@ import {
 } from "src/simulation/runner";
 import {
   routes,
-  operators,
+  // operators,
   facilities,
   addFacility,
   addRoute,
@@ -203,6 +203,7 @@ function removeSelectAttribute() {
     el.removeAttribute("selected");
   });
 }
+
 export function setObjectParams(e, params, objects) {
   const id = params.id;
   const selectedObject = objects.find((object) => object.id === id);
@@ -212,22 +213,6 @@ export function setObjectParams(e, params, objects) {
     }
   }
   inactivatePlayButtons();
-}
-
-export async function setObjectParamsOnDetailModal() {
-  const routesInForm = document.getElementById("simulation-routes");
-  const facilitiesInForm = document.getElementById("simulation-facilities");
-  const operatorsInForm = document.getElementById("simulation-operators");
-
-  if (routesInForm) {
-    routesInForm.value = JSON.stringify(routes);
-  }
-  if (facilitiesInForm) {
-    facilitiesInForm.value = JSON.stringify(facilities);
-  }
-  if (operatorsInForm) {
-    operatorsInForm.value = JSON.stringify(operators);
-  }
 }
 
 export function addOpenHelpDialogEvent() {
@@ -338,15 +323,16 @@ async function startSimulation() {
   await displayOperator();
 
   const result = await runSimulation(params);
-  addAnimationPlayEvent(result["timeLine"], result["countHistory"]);
-  displayResult(result);
+  // addAnimationPlayEvent(result["timeLine"], result["countHistory"]);
+  addAnimationPlayEvent(result["countHistory"]);
+  outputResult(result);
   displayRaiseOperator();
   displayResultBadge();
   activatePlayButtons();
   alert("シミュレーション終了");
 }
 
-function displayResult(result) {
+function outputResult(result) {
   document.getElementById("simulation_cycle_time").value = result["cycleTime"];
   document.getElementById("simulation_bottleneck_process").value =
     result["bottleneckProcess"];

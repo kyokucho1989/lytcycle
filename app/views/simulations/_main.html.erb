@@ -12,8 +12,10 @@
       <%= render "simulations/tool_palette" %>
       <%= render "simulations/canvas" %>
       <%= render "simulations/operation_panel" %>
-      <%= render "simulations/result_button" %>
-      <%= render "simulations/result_window" %>
+      <div data-controller="result" id="result-controller">
+        <%= render "simulations/result_button" %>
+        <%= render "simulations/result_window" %>
+      </div>
     </div>
   </div>
 </div>
