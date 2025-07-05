@@ -1,11 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
 
-import {
-  setClickEventToObject,
-  removeResultBadge,
-  setObjectParamsOnDetailModal,
-  setupEventListeners,
-} from "src/main";
+import { setClickEventToObject, setupEventListeners } from "src/main";
 
 export default class extends Controller {
   static targets = ["detail", "editButton", "simulationButton"];
@@ -22,27 +17,9 @@ export default class extends Controller {
     setupEventListeners();
   }
 
-  close(event) {
-    if (event.detail.success) {
-      this.closeDetail();
-      const url = event.detail.fetchResponse.response.url;
-      window.Turbo.visit(url);
-    }
-  }
-
   edit() {
     this.state = this.STATES.EDIT;
     setClickEventToObject(this);
-  }
-
-  showDetail() {
-    removeResultBadge();
-    setObjectParamsOnDetailModal();
-    this.detailTarget.showModal();
-  }
-
-  closeDetail() {
-    this.detailTarget.close();
   }
 
   changeModeToAddFacility() {

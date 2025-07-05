@@ -8,7 +8,6 @@ import {
 } from "src/simulation/runner";
 import {
   routes,
-  operators,
   facilities,
   addFacility,
   addRoute,
@@ -19,7 +18,6 @@ import {
 } from "src/simulation/params_setter";
 import {
   inactivatePlayButtons,
-  findClickedFacility,
   nodeMouseOver,
   nodeMouseOut,
   linkMouseOver,
@@ -28,7 +26,6 @@ import {
   activatePlayButtons,
   displayOperator,
   displayRaiseOperator,
-  findClickedRoute,
 } from "src/render";
 
 export let link, node, simulation;
@@ -47,19 +44,15 @@ export async function setClickEventToObject(object) {
     case "edit":
       clearGhostObjects();
       removeSelectAttribute();
-      changeActiveObject({ routes, facilities });
+      changeActiveObject();
       svg.on("click", null);
       svg.on("mousemove", null);
-      svg.selectAll("line").on("click", function () {
-        const routeForEdit = findClickedRoute(this, routes);
-        setRouteDataToModal(routeForEdit);
-        routeDialog.showModal();
-      });
-      svg.selectAll("circle").on("click", function () {
-        const facilityForEdit = findClickedFacility(this, facilities);
-        setFacilityDataToModal(facilityForEdit);
-        facilityDialog.showModal();
-      });
+      svg
+        .selectAll("line")
+        .attr("data-action", "click->params#showRouteDialog");
+      svg
+        .selectAll("circle")
+        .attr("data-action", "click->params#showFacilityDialog");
       svg.selectAll("line").on("mouseover", linkMouseOver);
       svg.selectAll("line").on("mouseout", linkMouseOut);
       svg.selectAll("circle").on("mouseover", nodeMouseOver);
@@ -80,22 +73,13 @@ export async function setClickEventToObject(object) {
   }
 }
 
-function changeActiveObject(params) {
-  const { routes, facilities } = params;
+function changeActiveObject() {
   d3.select("#svg02")
     .selectAll("line")
-    .on("click", function () {
-      const routeForEdit = findClickedRoute(this, routes);
-      setRouteDataToModal(routeForEdit);
-      routeDialog.showModal();
-    });
+    .attr("data-action", "click->params#showRouteDialog");
   d3.select("#svg02")
     .selectAll("circle")
-    .on("click", function () {
-      const facilityForEdit = findClickedFacility(this, facilities);
-      setFacilityDataToModal(facilityForEdit);
-      facilityDialog.showModal();
-    });
+    .attr("data-action", "click->params#showFacilityDialog");
 }
 
 export function switchDeleteObjectMode() {
@@ -218,6 +202,7 @@ function removeSelectAttribute() {
     el.removeAttribute("selected");
   });
 }
+
 export function setObjectParams(e, params, objects) {
   const id = params.id;
   const selectedObject = objects.find((object) => object.id === id);
@@ -227,138 +212,6 @@ export function setObjectParams(e, params, objects) {
     }
   }
   inactivatePlayButtons();
-}
-
-export function setParamsToFacilityOnModal() {
-  facilityDialog = document.getElementById("facilityDialog");
-  confirmBtn = document.getElementById("confirmBtn");
-  facilityForm = document.getElementById("facility-form");
-  const cancelBtn = document.getElementById("cancel-btn");
-
-  if (confirmBtn) {
-    confirmBtn.addEventListener("click", async (e) => {
-      if (!facilityForm.checkValidity()) {
-        facilityForm.reportValidity();
-        return;
-      }
-
-      const params = {
-        id: document.getElementById("hidden-id").value,
-        name: document.getElementById("facility-name").value,
-        processingTime: document.getElementById("processing-time").value,
-      };
-      setObjectParams(e, params, facilities);
-      await renderScene(routes, facilities);
-      facilityDialog.close();
-    });
-  }
-
-  if (cancelBtn) {
-    cancelBtn.addEventListener("click", () => {
-      facilityDialog.close();
-    });
-  }
-}
-
-export function setParamsToRouteOnModal() {
-  routeDialog = document.getElementById("route-dialog");
-  routeConfirmBtn = document.getElementById("route-confirm-btn");
-  routeForm = document.getElementById("route-form");
-  const routeCancelBtn = document.getElementById("route-cancel-btn");
-
-  if (routeConfirmBtn) {
-    routeConfirmBtn.addEventListener("click", async (e) => {
-      if (!routeForm.checkValidity()) {
-        routeForm.reportValidity();
-        return;
-      }
-      const params = {
-        id: document.getElementById("route-hidden-id").value,
-        routeLength: document.getElementById("route-length").value,
-      };
-
-      setObjectParams(e, params, routes);
-      await renderScene(routes, facilities);
-      routeDialog.close();
-    });
-  }
-
-  if (routeCancelBtn) {
-    routeCancelBtn.addEventListener("click", () => {
-      routeDialog.close();
-    });
-  }
-}
-
-export async function setObjectParamsOnDetailModal() {
-  const routesInForm = document.getElementById("simulation-routes");
-  const facilitiesInForm = document.getElementById("simulation-facilities");
-  const operatorsInForm = document.getElementById("simulation-operators");
-
-  if (routesInForm) {
-    routesInForm.value = JSON.stringify(routes);
-  }
-  if (facilitiesInForm) {
-    facilitiesInForm.value = JSON.stringify(facilities);
-  }
-  if (operatorsInForm) {
-    operatorsInForm.value = JSON.stringify(operators);
-  }
-}
-
-export function addOpenHelpDialogEvent() {
-  const helpDialog = document.getElementById("helpDialog");
-  const helpDialogs = document.querySelectorAll(".help-button");
-  const helpBtns = document.querySelectorAll(".help-button");
-  const closeBtns = document.querySelectorAll(".close-button");
-
-  if (helpDialogs.length) {
-    helpDialogs.forEach((dialog) => {
-      dialog.addEventListener("click", (e) => {
-        if (e.target.closest("#help-dialog-container")) {
-          helpDialog.close();
-        }
-      });
-    });
-  }
-
-  if (helpBtns.length) {
-    helpBtns.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const targetId = btn.dataset.helpTargetId;
-        const dialog = document.getElementById(`${targetId}`);
-        dialog.showModal();
-      });
-    });
-  }
-
-  if (closeBtns.length) {
-    closeBtns.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const targetId = btn.dataset.targetId;
-        const dialog = document.getElementById(`${targetId}`);
-        dialog.close();
-      });
-    });
-  }
-}
-
-export function setFacilityDataToModal(facility) {
-  const id = document.getElementById("hidden-id");
-  const name = document.getElementById("facility-name");
-  const processingTime = document.getElementById("processing-time");
-
-  id.value = facility.id;
-  name.value = facility.name;
-  processingTime.value = facility.processingTime;
-}
-
-export function setRouteDataToModal(route) {
-  const id = document.getElementById("route-hidden-id");
-  const length = document.getElementById("route-length");
-
-  id.value = route.id;
-  length.value = route.routeLength;
 }
 
 export function displayResultBadge() {
@@ -403,10 +256,7 @@ export async function setupScene() {
 // Stimulusのconnect()から呼ばれる
 export async function setupEventListeners() {
   setupScene();
-  await setParamsToFacilityOnModal();
-  await setParamsToRouteOnModal();
   addToggleMenuEvent();
-  addOpenHelpDialogEvent();
   const start = document.getElementById("startSimulation2");
   if (start) {
     start.addEventListener("click", startSimulation, false);
@@ -429,20 +279,19 @@ async function startSimulation() {
   }
 
   const params = initializeSimulation({ routes, facilities });
-
   await renderScene(params["routesWithPairs"], params["facilities"]);
   await displayOperator();
 
   const result = await runSimulation(params);
-  addAnimationPlayEvent(result["timeLine"], result["countHistory"]);
-  displayResult(result);
+  addAnimationPlayEvent(result["countHistory"]);
+  outputResult(result);
   displayRaiseOperator();
   displayResultBadge();
   activatePlayButtons();
   alert("シミュレーション終了");
 }
 
-function displayResult(result) {
+function outputResult(result) {
   document.getElementById("simulation_cycle_time").value = result["cycleTime"];
   document.getElementById("simulation_bottleneck_process").value =
     result["bottleneckProcess"];
@@ -451,7 +300,11 @@ function displayResult(result) {
 }
 
 // 画面描画とmodeに応じたイベントリスナーの登録を行う
-async function renderScene(routes, facilities, invalidRoutesIds = { ids: [] }) {
+export async function renderScene(
+  routes,
+  facilities,
+  invalidRoutesIds = { ids: [] }
+) {
   await drawLink(routes, facilities, invalidRoutesIds);
   const selectMode = document.querySelector(
     'fieldset#modeSelection  input[type="radio"]:checked'
