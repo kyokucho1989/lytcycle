@@ -8,8 +8,6 @@ let timeLine = anime.timeline({
   autoplay: false,
 });
 
-// let playTimeLine, pauseTimeLine;
-
 class Location {
   constructor(parameters) {
     this.name = parameters.name;
@@ -133,6 +131,8 @@ export function addAnimationPlayEvent(countHistory) {
   const controlsProgress = document.querySelector("#simulation input.progress");
   const maxTime = (timeLine.duration / 1000) * SPEED_RATIO;
   if (controlsProgress) {
+    controlsProgress.value = 0;
+    displayCount(0, maxTime, countHistory);
     timeLine.update = function () {
       const targetAnimationSecond =
         timeLine.duration * (controlsProgress.value / 100);
@@ -149,15 +149,6 @@ export function addAnimationPlayEvent(countHistory) {
       displayCount(targetSecond, maxTime, countHistory);
     });
   }
-  // 過去のtimeLineが残ったままだと再生時にエラーが出る
-  // 一旦イベントリスナーを解除してもう一度付与させる。
-
-  // if (play && playTimeLine) {
-  //   play.removeEventListener("click", playTimeLine);
-  // }
-  // if (pause && pauseTimeLine) {
-  //   pause.removeEventListener("click", pauseTimeLine);
-  // }
 
   const playTimeLine = function () {
     timeLine.play();
@@ -203,10 +194,10 @@ function displayCount(time, maxTime, countHistory) {
 
 export function initializeSimulation(params) {
   const { routes, facilities } = params;
+  timeLine = anime.timeline({
+    autoplay: false,
+  });
   timeLine.children = [];
-  // const timeLine = anime.timeline({
-  //   autoplay: false,
-  // });
 
   facilities.forEach((facility) => {
     facility.hasMaterial = false;
@@ -241,13 +232,11 @@ export function initializeSimulation(params) {
     goalPoint,
     operator1,
     controller,
-    timeLine,
   };
 }
 
 export async function runSimulation(params) {
   const { facilities, controller, goalPoint } = params;
-  // let { operator1, timeLine } = params;
   let operator1 = params["operator1"];
   facilities.forEach((facility) => {
     const facilityInitialAnimation = toggleFacilityHasMaterial(facility);
@@ -281,14 +270,8 @@ export async function runSimulation(params) {
             !machine.isProcessing ||
             Number(machine.processingEndTime) < time
           ) {
-            const result = attachMaterialSequence(
-              operator1,
-              machine,
-              timeLine,
-              time
-            );
+            const result = attachMaterialSequence(operator1, machine, time);
             ({ operator1, machine } = result);
-            timeLine = result.addedTimeLine;
           } else {
             operator1.isWaiting = true;
             operator1.addStateToHistory(time, "待機中");
@@ -310,14 +293,12 @@ export async function runSimulation(params) {
       }
 
       if (!operator1.isWaiting) {
-        const result = travelOperatorSequence(
+        operator1 = travelOperatorSequence(
           controller,
           operator1,
           facilities,
-          time,
-          timeLine
+          time
         );
-        ({ operator1, timeLine } = result);
       }
     }
 
@@ -340,16 +321,10 @@ export async function runSimulation(params) {
   const waitingTime = calculateWaitingTime(waitingArray);
   const bottleneckProcess = judgeBottleneckProcess(waitingArray);
 
-  return { timeLine, countHistory, cycleTime, bottleneckProcess, waitingTime };
+  return { countHistory, cycleTime, bottleneckProcess, waitingTime };
 }
 
-function travelOperatorSequence(
-  controller,
-  operator1,
-  facilities,
-  time,
-  timeLine
-) {
+function travelOperatorSequence(controller, operator1, facilities, time) {
   const { destination, selectedRoute } = controller.determineRoute(
     operator1,
     facilities
@@ -366,10 +341,10 @@ function travelOperatorSequence(
   timeLine.add(travelingAnimation, (time * 1000) / SPEED_RATIO);
   timeLine.add(materialHeldByOperator, (time * 1000) / SPEED_RATIO);
 
-  return { timeLine, operator1 };
+  return operator1;
 }
 
-function attachMaterialSequence(operator1, machine, timeLine, time) {
+function attachMaterialSequence(operator1, machine, time) {
   operator1.addStateToHistory(time, "脱着中");
   if (!machine.hasMaterial) {
     operator1.hasMaterial = false;
@@ -379,12 +354,12 @@ function attachMaterialSequence(operator1, machine, timeLine, time) {
   operator1.isWaiting = false;
 
   const machineAnimation = buildMachineAnimation(machine, SPEED_RATIO, time);
-  const addedTimeLine = addMachineToTimeLine(machineAnimation, timeLine, time);
+  addMachineToTimeLine(machineAnimation, time);
 
-  return { addedTimeLine, operator1, machine };
+  return { operator1, machine };
 }
 
-function addMachineToTimeLine(animation, timeLine, time) {
+function addMachineToTimeLine(animation, time) {
   const {
     materialInMachine,
     processedMaterial,
@@ -399,8 +374,6 @@ function addMachineToTimeLine(animation, timeLine, time) {
     .add(lightingAnime, "-=1000")
     .add(lightOutAnime)
     .add(processedMaterial);
-
-  return timeLine;
 }
 
 function buildMachineAnimation(machine, time) {

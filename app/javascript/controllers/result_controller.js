@@ -41,8 +41,14 @@ export default class extends Controller {
   }
 
   async fillHiddenFieldOnResult() {
-    this.hiddenRoutesTarget.value = JSON.stringify(routes);
-    this.hiddenFacilitiesTarget.value = JSON.stringify(facilities);
-    this.hiddenOperatorsTarget.value = JSON.stringify(operators);
+    if (this.hasHiddenRoutesTarget) {
+      this.hiddenRoutesTarget.value = JSON.stringify(routes);
+    }
+    if (this.hasHiddenFacilitiesTarget) {
+      this.hiddenFacilitiesTarget.value = JSON.stringify(facilities);
+    }
+    if (this.hasHiddenOperatorsTarget) {
+      this.hiddenOperatorsTarget.value = JSON.stringify(operators);
+    }
   }
 }

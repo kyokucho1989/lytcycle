@@ -8,7 +8,6 @@ import {
 } from "src/simulation/runner";
 import {
   routes,
-  // operators,
   facilities,
   addFacility,
   addRoute,
@@ -318,12 +317,10 @@ async function startSimulation() {
   }
 
   const params = initializeSimulation({ routes, facilities });
-
   await renderScene(params["routesWithPairs"], params["facilities"]);
   await displayOperator();
 
   const result = await runSimulation(params);
-  // addAnimationPlayEvent(result["timeLine"], result["countHistory"]);
   addAnimationPlayEvent(result["countHistory"]);
   outputResult(result);
   displayRaiseOperator();
