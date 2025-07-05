@@ -150,18 +150,15 @@ export function addAnimationPlayEvent(countHistory) {
     });
   }
 
-  const playTimeLine = function () {
-    timeLine.play();
-  };
-  const pauseTimeLine = function () {
-    timeLine.pause();
-  };
-
   if (play) {
-    play.addEventListener("click", playTimeLine);
+    play.addEventListener("click", function () {
+      timeLine.play();
+    });
   }
   if (pause) {
-    pause.addEventListener("click", pauseTimeLine);
+    pause.addEventListener("click", function () {
+      timeLine.pause();
+    });
   }
 }
 
@@ -194,6 +191,8 @@ function displayCount(time, maxTime, countHistory) {
 
 export function initializeSimulation(params) {
   const { routes, facilities } = params;
+
+  // timeLineを初期化（初期化しないとseekバーを動かした時にエラーが起きるため）
   timeLine = anime.timeline({
     autoplay: false,
   });
@@ -215,7 +214,6 @@ export function initializeSimulation(params) {
   });
 
   const routesWithPairs = generatePairRoutes(formattedRoutes);
-
   const locations = facilities.map((facility) => new Location(facility));
 
   const controller = new Controller();
@@ -353,7 +351,7 @@ function attachMaterialSequence(operator1, machine, time) {
   machine.hasMaterial = true;
   operator1.isWaiting = false;
 
-  const machineAnimation = buildMachineAnimation(machine, SPEED_RATIO, time);
+  const machineAnimation = buildMachineAnimation(machine, time);
   addMachineToTimeLine(machineAnimation, time);
 
   return { operator1, machine };
