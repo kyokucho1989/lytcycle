@@ -214,43 +214,6 @@ export function setObjectParams(e, params, objects) {
   inactivatePlayButtons();
 }
 
-export function addOpenHelpDialogEvent() {
-  const helpDialog = document.getElementById("helpDialog");
-  const helpDialogs = document.querySelectorAll(".help-button");
-  const helpBtns = document.querySelectorAll(".help-button");
-  const closeBtns = document.querySelectorAll(".close-button");
-
-  if (helpDialogs.length) {
-    helpDialogs.forEach((dialog) => {
-      dialog.addEventListener("click", (e) => {
-        if (e.target.closest("#help-dialog-container")) {
-          helpDialog.close();
-        }
-      });
-    });
-  }
-
-  if (helpBtns.length) {
-    helpBtns.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const targetId = btn.dataset.helpTargetId;
-        const dialog = document.getElementById(`${targetId}`);
-        dialog.showModal();
-      });
-    });
-  }
-
-  if (closeBtns.length) {
-    closeBtns.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const targetId = btn.dataset.targetId;
-        const dialog = document.getElementById(`${targetId}`);
-        dialog.close();
-      });
-    });
-  }
-}
-
 export function displayResultBadge() {
   const badge = document.getElementById("simulation-result-badge");
   badge.classList.remove("hidden");
@@ -294,7 +257,6 @@ export async function setupScene() {
 export async function setupEventListeners() {
   setupScene();
   addToggleMenuEvent();
-  addOpenHelpDialogEvent();
   const start = document.getElementById("startSimulation2");
   if (start) {
     start.addEventListener("click", startSimulation, false);

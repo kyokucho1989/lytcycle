@@ -1,4 +1,4 @@
-<dialog id="helpDialog1" class="transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-xl sm:p-6">
+<dialog data-help-target="toolsHelpDialog" id="helpDialog1" class="transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-xl sm:p-6">
   <div id="help-dialog-container" class="mt-3 sm:mt-5">
     <h3 class="text-base font-semibold text-gray-900" id="help-title">ツールパレット</h3>
     <div class="mt-2">
@@ -55,12 +55,12 @@
       </dl>
     </div>
     <div class="mt-2 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-col-start-2 sm:gap-3">
-      <button type="button" id="help-close1" data-target-id="helpDialog1" value="cancel" class="close-button mt-1 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0" formmethod="dialog">閉じる</button>
+      <button type="button" id="help-close1" data-target-id="toolsHelpDialog" data-action="help#closeHelpDialog" value="cancel" class="close-button mt-1 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0" formmethod="dialog">閉じる</button>
     </div>
   </div>
 </dialog>
 
-<dialog id="helpDialog2" class="transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-xl sm:p-6">
+<dialog data-help-target="simulationHelpDialog" id="helpDialog2" class="transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-xl sm:p-6">
   <div id="help-dialog-container" class="mt-3 sm:mt-5">
     <h3 class="text-base font-semibold text-gray-900" id="help-title">シミュレーション画面</h3>
     <div class="mt-2">
@@ -69,12 +69,12 @@
       </p>
     </div>
     <div class="mt-2 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-col-start-2 sm:gap-3">
-      <button type="button" id="help-close2" data-target-id="helpDialog2" value="cancel" class="close-button mt-1 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0" formmethod="dialog">閉じる</button>
+      <button type="button" id="help-close2" data-target-id="simulationHelpDialog" data-action="help#closeHelpDialog" value="cancel" class="close-button mt-1 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0" formmethod="dialog">閉じる</button>
     </div>
   </div>
 </dialog>
 
-<dialog id="helpDialog3" class="transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-xl sm:p-6">
+<dialog data-help-target="operationHelpDialog" id="helpDialog3" class="transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-xl sm:p-6">
   <div id="help-dialog-container" class="mt-3 sm:mt-5">
     <h3 class="text-base font-semibold text-gray-900" id="help-title3">シミュレーション操作</h3>
     <div class="mt-2">
@@ -128,18 +128,7 @@
       </dl>
     </div>
     <div class="mt-2 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-col-start-2 sm:gap-3">
-      <button type="button" id="help-close3" data-target-id="helpDialog3" value="cancel" class="close-button mt-1 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0" formmethod="dialog">閉じる</button>
-    </div>
-  </div>
-</dialog>
-<dialog id="helpDialog" class="transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
-  <div id="help-dialog-container" class="mt-3 text-center sm:mt-5">
-    <h3 class="text-base font-semibold text-gray-900" id="help-title"></h3>
-    <div class="mt-2">
-      <p class="text-sm text-gray-500" id="help-text"></p>
-    </div>
-    <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-col-start-2 sm:gap-3">
-      <button type="button" id="help-close" value="cancel" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0" formmethod="dialog">閉じる</button>
+      <button type="button" id="help-close3" data-action="help#closeHelpDialog" data-target-id="operationHelpDialog" value="cancel" class="close-button mt-1 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0" formmethod="dialog">閉じる</button>
     </div>
   </div>
 </dialog>
